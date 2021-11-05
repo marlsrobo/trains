@@ -1,0 +1,17 @@
+{"width" : 400,
+  "height" : 400,
+  "cities" : [["Boston", [350, 50]],
+    ["NYC", [300, 100]],
+    ["LA", [50, 300]]],
+  "connections" : {"Boston" : {"NYC" : {"red" : 3, "green" : 4}},
+                  "LA" : {"NYC" : {"blue" : 5}}}}
+
+{"this" :
+    {"destination1" : ["Boston", "NYC"],
+     "destination2" : ["Boston", "LA"],
+     "rails" : 30,
+     "cards" : {"red" : 4,
+                "blue" : 2},
+     "acquired" : [["LA", "NYC", "blue", 5],
+                   ["Boston", "NYC", "green", 4]]},
+ "acquired" : []}

@@ -1,0 +1,38 @@
+"Boston"
+"NYC"
+{"width" : 400,
+  "height" : 400,
+  "cities" : [["Boston", [350, 50]],
+    ["NYC", [300, 100]],
+    ["LA", [50, 300]],
+    ["Houston", [200, 350]],
+    ["Miami", [350, 380]],
+    ["Seattle", [50, 50]],
+    ["DC", [300, 250]],
+    ["San Francisco", [50, 250]],
+    ["Philadelphia", [275, 125]],
+    ["Phoenix", [100, 350]],
+    ["Las Vegas", [75, 275]],
+    ["Salt Lake City", [100, 200]],
+    ["Chicago", [275, 100]],
+    ["Detroit", [290, 80]]],
+  "connections" : {"LA" :
+  {"San Francisco" : {"red" : 4,
+    "blue" : 3},
+    "Phoenix" : {"white" : 5},
+    "Las Vegas" : {"green" : 3,
+      "red" : 3,
+      "blue" : 4}},
+    "Chicago" :
+    {"Detroit" : {"red" : 3}},
+    "Detroit" :
+    {"Philadelphia" : {"blue" : 5},
+      "Houston" : {"white" : 4,
+        "green" : 5}},
+    "NYC" :
+    {"Philadelphia" : {"white" : 3,
+        "green" : 4}},
+    "Boston" : {"NYC" : {"red" : 4, "blue" :  4}},
+    "DC" : {"NYC" : {"green" : 4}},
+    "Miami" : {"NYC" : {"blue" : 5}},
+    "Salt Lake City" : {"Seattle" : {"white" : 5}}}}

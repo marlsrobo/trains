@@ -1,0 +1,15 @@
+{
+   "username" : "name",
+   "password" : "pass",
+   "number" : 1234567890,
+   "hidden" : {
+      "more" : [
+         {
+        "key1": "one",
+        "key2": "two",
+        "key3" : null,
+        "key4" : true
+         }, -123, true, false
+      ]
+   }
+}

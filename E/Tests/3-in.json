@@ -1,0 +1,20 @@
+{
+    "username" : "name",
+    "password" : "pass",
+    "boolean" : false,
+    "hidden" : {
+       "more" : [
+          {
+         "a": "hi",
+         "b": "bye",
+         "c" : null,
+         "d" : true
+          },
+          123,
+          4.89
+       ]
+    }
+ }
+"morejson"
+"evenmore"
+{ "pair" :[]}
