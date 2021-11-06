@@ -18,15 +18,35 @@
   RE: Codebase switch Request
 </p>
 
-<p>
-  Project Design Decisions That Illustrate why we would like to swap
-<p/>
+<h4>
+  Project Design Decisions That Illustrate Why The Gallatin Code is Preferable Over Bighorn
+</h4>
 <ol>
   <li>
-    The Gallatin code base's RefereeGameState is more clearly the source of truth for modifying and maintaining the state of the game.
+    The Gallatin code base's RefereeGameState is more clearly the source of truth for modifying and
+    maintaining the state of the game. In the Gallatin code, the RefereeGameState handles making any
+    modifications to the state of the game, as well as checking if moves are invalid. As a result, it is the job
+    of the Referee to communicate with Players and eliminate any cheating players which in effect
+    controls flow of the game. The Bighorn code, on the other hand, has methods both within the Referee
+    and the RefereeGameState that modify the state of the game. For instance, in the tryCardsAction method
+    within the Referee, the Referee handles modification of the cards for the current player's hand
+    and setting the inventory of that Player. Instead of splitting the functionality of modifying the
+    game state between the Referee and the RefereeGameState, it is better to keep in centralized just
+    in the RefereeGameState.
   </li>
   <li>
-    The Strategy interface and abstract class in Gallatin expose only methods for the decision and contain a better abstraction.
+    In the RefereeGameState in the Bighorn code, the Players are tracked by an int ID. The Gallatin
+    code does not track Players in this way. The RefereeGameState in Gallatin only maintains a list
+    of Player in turn order and which Player is currently active. There is no need for IDs because
+    there is less coupling between a Referee and RefereeGameState, removing the need to refer to a
+    Player specifically.
+  </li>
+  <li>
+    The Strategy interface and abstract class in Gallatin expose only methods for the decision and
+    contain a better abstraction. In the Gallatin code, the Strategy interface only contains the
+    methods for picking initial destination and to take a turn. The extra methods in the Bighorn
+    code for the Strategy interface are found in the Gallatin code, but are instead within the
+    abstract class where they are used as helpers.
   </li>
   <li>
     The Gallatin code base abstracts over the deck and destinations in the setup of the Referee.
@@ -34,9 +54,6 @@
   <li>
     The Gallatin Player class only contains fields for the initial setup, and does not track and update its own game state.
     The BigHorn code stores the PlayerGameState in the Player and in the RefereeGameState, and updates both. This
-  </li>
-  <li>
-    The Gallatin code base does not track Players by an ID in the Referee or the RefereeGameState
   </li>
 </ol>
 
