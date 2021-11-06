@@ -23,39 +23,54 @@
 </h4>
 <ol>
   <li>
+    In the Gallatin code, the RefereeGameState handles making any modifications to the state of the
+    game, as well as checking if moves are invalid. It is the job of the Referee to communicate with
+    Players, eliminate any cheating players, and control flow of the game.
+    In the Bighorn code there are methods in both the Referee and the RefereeGameState that modify
+    the state of the game. For example, the tryCardsAction method within the Referee directly
+    handles modification of the cards in the current player's hand and setting the inventory of that
+    Player.
     The Gallatin code base's RefereeGameState is more clearly the source of truth for modifying and
-    maintaining the state of the game. In the Gallatin code, the RefereeGameState handles making any
-    modifications to the state of the game, as well as checking if moves are invalid. As a result, it is the job
-    of the Referee to communicate with Players and eliminate any cheating players which in effect
-    controls flow of the game. The Bighorn code, on the other hand, has methods both within the Referee
-    and the RefereeGameState that modify the state of the game. For instance, in the tryCardsAction method
-    within the Referee, the Referee handles modification of the cards for the current player's hand
-    and setting the inventory of that Player. Instead of splitting the functionality of modifying the
-    game state between the Referee and the RefereeGameState, it is better to keep in centralized just
-    in the RefereeGameState.
+    maintaining the state of the game.
   </li>
   <li>
-    In the RefereeGameState in the Bighorn code, the Players are tracked by an int ID. The Gallatin
-    code does not track Players in this way. The RefereeGameState in Gallatin only maintains a list
-    of Player in turn order and which Player is currently active. There is no need for IDs because
-    there is less coupling between a Referee and RefereeGameState, removing the need to refer to a
-    Player specifically.
+    In Gallatin's code, the RefereeGameState maintains a list of PlayerData for each player left in
+    the game. Each PlayerData contains a list of connections that that player occupies. The Bighorn
+    RefereeGameState contains a map from connection to the PlayerID of the player that occupies it,
+    or -1 if it is unoccupied. The approach used in Gallatin better contains the information about
+    each player in one place, and removes for the referee and RefereeGameState to communicate using
+    IDs for players.
+  </li>
+  <li>
+    The RefereeGameState in Bighorn is initialized before setup of the game, with empty values for
+    the PlayerInventory of each Player. Gallatin's RefereeGameState is not initialized until the
+    game is actually about to start. It does not make sense for the game to have a state before it
+    has started, which leads to the uninitialized fields in Bighorn. It also removes the need to
+    update the RefereeGameState to a new, but still not valid, state after each player chooses
+    destinations.
   </li>
   <li>
     The Strategy interface and abstract class in Gallatin expose only methods for the decision and
-    contain a better abstraction. In the Gallatin code, the Strategy interface only contains the
-    methods for picking initial destination and to take a turn. The extra methods in the Bighorn
-    code for the Strategy interface are found in the Gallatin code, but are instead within the
-    abstract class where they are used as helpers.
+    contain a better abstraction. The Gallatin Code abstracts more of the decision making in a
+    strategy to the AStrategy abstract class, and hides the extra methods as protected helpers.
   </li>
   <li>
-    The Gallatin code base abstracts over the deck and destinations in the setup of the Referee.
-  </li>
-  <li>
-    The Gallatin Player class only contains fields for the initial setup, and does not track and update its own game state.
-    The BigHorn code stores the PlayerGameState in the Player and in the RefereeGameState, and updates both. This
+    The Gallatin Player class only contains fields for the initial setup, and does not track and
+    update its own game state. The BigHorn code stores the PlayerGameState in the Player and in the
+    RefereeGameState, and updates both. The Bighorn code has to update both of these states when the
+    player receives any information from the referee.
   </li>
 </ol>
+
+<h4>
+  Executive Summary:
+</h4>
+<p>
+  Gallatin's code has a clearer purpose statements for both the Referee and RefereeGameState,
+  leading to better separation of responsibilities and organization of data. Gallatin's abstraction
+  of the Player and Strategy classes allowed more freedom for future implementations to control
+  their behavior.
+</p>
 
 </body>
 </html>
