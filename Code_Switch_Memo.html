@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Code Switch Memo</title>
+</head>
+<body>
+<p>
+  To: Professor Lerner and Cameron Moy
+</p>
+<p>
+  From: Marley Robinson and Ronan Loughlin
+</p>
+<p>
+  Date: November 6th, 2021
+</p>
+<p>
+  RE: Codebase switch Request
+</p>
+
+<p>
+  Project Design Decisions That Illustrate why we would like to swap
+<p/>
+<ol>
+  <li>
+    The Gallatin code base's RefereeGameState is more clearly the source of truth for modifying and maintaining the state of the game.
+  </li>
+  <li>
+    The Strategy interface and abstract class in Gallatin expose only methods for the decision and contain a better abstraction.
+  </li>
+  <li>
+    The Gallatin code base abstracts over the deck and destinations in the setup of the Referee.
+  </li>
+  <li>
+    The Gallatin Player class only contains fields for the initial setup, and does not track and update its own game state.
+    The BigHorn code stores the PlayerGameState in the Player and in the RefereeGameState, and updates both. This
+  </li>
+  <li>
+    The Gallatin code base does not track Players by an ID in the Referee or the RefereeGameState
+  </li>
+</ol>
+
+</body>
+</html>
