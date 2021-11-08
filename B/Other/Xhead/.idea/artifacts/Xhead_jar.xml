@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" build-on-make="true" name="Xhead:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Xhead_jar</output-path>
-    <root id="archive" name="Xhead.jar">
-      <element id="module-output" name="Xhead" />
-    </root>
-  </artifact>
-</component>

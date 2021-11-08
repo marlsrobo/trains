@@ -1,9 +1,0 @@
-#!/bin/bash
-
-export CLASSPATH=$CLASSPATH:$PWD/Other/lib/gson-2.8.8.jar:$PWD/Other/lib/gson-2.8.8-sources.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.controls.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.fxml.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.base.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.graphics.jar
-
-cd Other/src/
-
-javac -cp $CLASSPATH sample/Xgui.java sample/Main.java 
-
-java -cp $CLASSPATH sample.Main

@@ -1,9 +1,0 @@
-#!/bin/bash
-
-cd Other
-javac Xhead.java 
-java Xhead $1
-cd ..
-
-chmod +x xhead
- 

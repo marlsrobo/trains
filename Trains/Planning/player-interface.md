@@ -1,44 +1,78 @@
-For this design task, we focused on the 3 major "phases" of a game of Trains: set up,
-playing turns, and ending the game. During each phase, the players and referee must communicate
-to update the game state.
+# Player Interface Planning:
 
-We decided on the referee taking the initiative of asking each player to make moves. Our "player interface" is thus the design
-of an API that communicates with the ref, requesting more cards, attempting to acquire connections, etc. The order of
-method calls will correspond with the order in which they appear in this memo.
+### Phases in a game of Trains
+1. The Referee determines the player's initial cards and trains (before any communication between referee and player via this interface)
+2. One-by-one, the Referee gives out destinations by calling chooseDestinations() on the players. This gives the players a representation of the initial game state and expects the players to choose the specified amount of destinations (two) and return them.
+3. One-by-one, the Referee will call takeTurn() on each player, in the correct turn order. This gives the player the most up-to-date version of the PlayerGameState and expects an action the player wishes to take.
+    - Each player will only be given an update on the state of the game at the start of their turn 
+    through this takeTurn() call.
+    - If a player is removed from the game, the Referee will handle skipping their turn.
+4. Once the game has ended, the Referee will determine the winner, and then call receiveEndState()
+on each Player to inform them of the winner and the state of the game as it ended.
+    - The Referee will end communication with the player via this interface after this call to receiveEndState()
 
-### Player Interface, The Plan
+### Interface that a Player should implement:
+```
+/**
+* The Player should select numToChoose destinations from the Set destinationOptions, and return them
+* to the referee. 
+* The Referee will call this method during setup of the game after the initial setup of the map, and
+* after cards and trains have been determined for each player.
+* The Player will be given the initial state of the game, PlayerGameState initialPlayerGameState, 
+* which contains the cards in the player's starting hand, the game map, and all other information 
+* that should be available to the player.
+*/
+Set<Destination> chooseDestinations(Set<Destination> destinationOptions, int numToChoose, 
+PlayerGameState initialPlayerGameState);
 
-1. Set up
-2. Playing Turns
-3. Ending the Game
+/**
+* The Player should decide what action it will take on its turn by returning a valid strategy.TurnAction. 
+* The Referee will call this method when it is this Player's turn, and provide the current state of 
+* the game that is visible to this player, currentPlayerGameState.
+*/
+strategy.TurnAction takeTurn(PlayerGameState currentPlayerGameState);
 
-#### Setup
-* <code>void setup(TrainsMap map, int rails, Map<ConnectionColor, Integer> cards)</code>
-  * Signature: TrainsMap, int, Map<ConnectionColor, Integer> ->
-  * Interpretation: Gives the Player their initial components for the game including the map of the game, their initial number of rails, and initial colored cards
-  * Purpose: Sets the Player up with their game components to allow them to make decisions on which destinations to chose later
+/**
+* The Referee will call this method after the end of the game to inform this Player that the game 
+* has ended, the state of the board at the end of the game, and who won.
+* The Set of PlayerGameStates endStatesForAllPlayers will contain the PlayerGameStates of all 
+* players in the game at the moment the game ended, so that this player can see all selected 
+* destinations, all hands, and get all information necessary to determine why the winner won.
+*/
+void receiveEndState(Set<PlayerGameState> endStatesForAllPlayers, String winnerID);
 
-* <code>Set\<Desination\> pick(Set\<Desination\> destinations)</code>
-  * Signature: Set\<Desination\> -> Set\<Desination\>
-  * Interpretation: Given some Destinations in a set, where each Destination represents a destination between 2 cities each, 
-the method will return the destinations not picked by the player.
-  * Purpose: To offer the Player with a selection of Destinations to chose from, and then know which Destinations they did not choose.
-  
-#### Playing Turns
-* <code>Action play(PlayerGameState state)</code>
-  * Signature: PlayerGameState -> Action
-  * Interpretation: Gives the Player their current state of the game and returns the specific Action that the Player wants to take.
-  * Purpose: To tell a Player that it is their turn and receive the type of turn that the Player wants to make so that the Referee can decide if the move is legal and how to update the state of the game.
+/**
+* The Referee will call this method to notify a player that the player has been removed from the 
+* game, for any reason. The player will receive no further communication from the referee.
+* No information about the game or reason is given, nor is a response expected. This method will be
+* called if the player attempts to cheat or misbehave.
+*/
+void removedFromGame();
+```
 
-* <code>void more(Map<ConnectionColor, Integer> cards)</code>
-  * Signature: Map<ConnectionColor, Integer> ->
-  * Interpretation: Gives a Player a randomly selected amount of colored cards
-  * Purpose: To give the Player more colored cards after they had specified that they would like to request the cards as a move.
 
-#### Ending
-* <code>void win(boolean winner)</code>
-  * Signature: boolean -> 
-  * Interpretation: Gives the player true if they won the game, false if they lost.
-  * Purpose: To tell the player if they won or lost the game and indicate the end of the game.
+### Data Definition
+A strategy.TurnAction represents the player's desired action for a single turn, and contains the following:
+- An enum strategy.Action
+- An ```Optional<IRailConnection>```
+    - must be empty if action is DRAW_CARDS
+    - must contain a value if strategy.Action is ACQUIRE_CONNECTION
+- Contains getters for the strategy.Action and IRailConnection that return defensive copies of the data
 
-*Before and after the game, there are additional methods that will specifically be called by the Tournament Manager on the Player, which are outlined in this document: [Manager-Player Interface](https://github.ccs.neu.edu/CS4500-F21/bighorn/blob/master/Trains/Planning/manager-player-interface.md)
+strategy.TurnAction objects are only created using the following Factory Pattern:
+- strategy.TurnAction will have the methods:
+```
+    static strategy.TurnAction createDrawCards()
+    static strategy.TurnAction createAcquireConnection(IRailConnection railConnection)
+```
+- strategy.TurnAction will have a private constructor
+```
+    private strategy.TurnAction(strategy.Action action, Optional<IRailConnection> railConnection)
+```
+
+
+An strategy.Action is one of:
+```
+- DRAW_CARDS
+- ACQUIRE_CONNECTION
+```

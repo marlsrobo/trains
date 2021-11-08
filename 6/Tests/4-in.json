@@ -1,17 +1,26 @@
-{"width" : 400,
-  "height" : 400,
-  "cities" : [["Boston", [350, 50]],
-    ["NYC", [300, 100]],
-    ["LA", [50, 300]]],
-  "connections" : {"Boston" : {"NYC" : {"red" : 3, "green" : 4}},
-    "LA" : {"NYC" : {"blue" : 5}}}}
-
-{"this" :
-{"destination1" : ["Boston", "NYC"],
-  "destination2" : ["Boston", "LA"],
-  "rails" : 30,
-  "cards" : {"red" : 2,
-    "blue" : 10},
-  "acquired" : [["LA", "NYC", "blue", 5],
-    ["Boston", "NYC", "green", 4]]},
-  "acquired" : []}
+{
+  "width" : 400,
+  "height": 400,
+  "cities": [["Seattle", [25, 25]], ["Boston", [375, 25]], ["Texas", [250, 375]]],
+  "connections": {
+    "Boston": {
+      "Seattle": {"red": 3, "blue": 4, "white": 5},
+      "Texas": {"green": 5}
+    },
+    "Seattle": {"Texas": {"blue": 4}}}
+}
+{
+  "this": {
+    "destination1": ["Boston", "Seattle"],
+    "destination2": ["Seattle", "Texas"],
+    "rails": 250,
+    "cards": {
+      "red": 2,
+      "white": 500,
+      "blue": 500,
+      "green": 4
+    },
+    "acquired": [["Boston", "Seattle", "blue", 4]]
+  },
+  "acquired": [[["Boston", "Seattle", "white", 5]], [], [["Seattle", "Texas", "blue", 4]]]
+}

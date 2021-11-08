@@ -1,26 +1,27 @@
-{"width" : 400,
-  "height" : 400,
-  "cities" : [["Boston", [350, 50]],
-    ["NYC", [300, 100]],
-    ["LA", [50, 300]],
-    ["Seattle", [50, 50]],
-    ["Miami", [350, 350]]],
-  "connections" : {"Boston" : {"NYC" : {"red" : 3},
-                              "Miami" : {"white" : 5,
-                                          "green" : 5}},
-                  "LA" : {"NYC" : {"blue" : 5},
-                          "Seattle" : {"green" : 4,
-                                       "blue" : 3}},
-                  "Miami" : {"NYC" : {"red" : 5}}}}
-
-{"this" :
-    {"destination1" : ["LA", "Miami"],
-     "destination2" : ["Miami", "Seattle"],
-     "rails" : 30,
-     "cards" : {"red" : 4,
-                "blue" : 2},
-     "acquired" : []},
- "acquired" : [[["Boston", "NYC", "red", 3], ["LA", "Seattle", "blue", 3]],
-               [["Miami", "NYC", "red", 5]]]}
-
-["LA", "NYC", "blue", 5]
+{
+  "width" : 400,
+  "height": 400,
+  "cities": [["Seattle", [25, 25]], ["Boston", [375, 25]], ["Texas", [250, 375]]],
+  "connections": {
+    "Boston": {
+      "Seattle": {"red": 3, "blue": 4, "white": 5},
+      "Texas": {"green": 5}
+    },
+    "Seattle": {"Texas": {"blue": 4}}}
+}
+{
+  "this": {
+    "destination1": ["Boston", "Seattle"],
+    "destination2": ["Seattle", "Texas"],
+    "rails": 250,
+    "cards": {
+      "red": 2,
+      "white": 500,
+      "blue": 500,
+      "green": 500
+    },
+    "acquired": [["Boston", "Seattle", "blue", 4]]
+  },
+  "acquired": [[["Boston", "Seattle", "white", 5], ["Boston", "Texas", "green", 5]], [], [["Seattle", "Texas", "blue", 4]]]
+}
+["Boston", "Seattle", "red", 3]

@@ -1,8 +1,0 @@
-#!/bin/bash
-
-export CLASSPATH=$CLASSPATH:$PWD/Other/lib/gson-2.8.8.jar:$PWD/Other/lib/gson-2.8.8-sources.jar
-
-cd Other/src/
-
-javac -cp $CLASSPATH Xtcp.java
-java -cp $CLASSPATH Xtcp $1

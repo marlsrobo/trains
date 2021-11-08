@@ -1,11 +1,5 @@
 #!/bin/bash
-
-cd ../Trains/
-
-export CLASSPATH=$CLASSPATH:$PWD/Other/lib/gson-2.8.8.jar:$PWD/Other/lib/gson-2.8.8-sources.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.controls.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.fxml.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.base.jar:$PWD/Other/lib/javafx-sdk-11/lib/javafx.graphics.jar
-
-export SOURCEPATH=$SOURCEPATH:$PWD
-
-javac -cp $CLASSPATH -sourcepath $SOURCEPATH Other/*.java Common/TrainsMap.java Other/JsonTesting/*.java
-
-java -cp $CLASSPATH Other.JsonTesting.JsonLegalAcquisition
+full_path=$(realpath $0)
+dir_path=$(dirname $full_path)
+cd $dir_path
+java -jar ../out/artifacts/xlegal_jar/xlegal.jar
