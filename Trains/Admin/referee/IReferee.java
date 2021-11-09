@@ -15,5 +15,14 @@ public interface IReferee {
    *
    * @return the rankings, scores, and removed players as a GameEndReport.
    */
-  GameEndReport playGame();
+  void playGame();
+
+  /**
+   * Calculates the scores of each player in the game and ranks them by ascending order of score.
+   * Players that were removed from the game due to cheating are including separately in the game report.
+   * @return a container for the game report
+   */
+  GameEndReport calculateGameEndReport();
+
+
 }

@@ -62,6 +62,7 @@ public class TrainsReferee implements IReferee {
   private final Function<ITrainMap, List<Destination>> destinationProvider;
   private final Supplier<List<RailCard>> deckSupplier;
   private final Set<Integer> removedPlayersIndices;
+  private IRefereeGameState refereeGameState;
 
   private TrainsReferee(
       ITrainMap map,
@@ -162,27 +163,26 @@ public class TrainsReferee implements IReferee {
   }
 
   @Override
-  public GameEndReport playGame() {
+  public void playGame() {
     // TODO: Validate number of players, abstract over destinations and cards
-    IRefereeGameState refereeGameState = this.initializeGame();
-    return this.runGame(refereeGameState);
+    this.refereeGameState = this.initializeGame();
+    this.runGame();
   }
 
-  private GameEndReport runGame(IRefereeGameState refereeGameState) {
+  private void runGame() {
     int numConsecutiveInsignificantTurns = 0;
     List<IPlayer> remainingPlayers = this.remainingPlayersInOrder();
     Iterator<IPlayer> turnOrder = Iterables.cycle(remainingPlayers).iterator();
 
-    while (!this.isGameOver(numConsecutiveInsignificantTurns, refereeGameState)) {
-      boolean significantTurn = this.takePlayerTurn(turnOrder, refereeGameState);
+    while (!this.isGameOver(numConsecutiveInsignificantTurns)) {
+      boolean significantTurn = this.takePlayerTurn(turnOrder);
 
       numConsecutiveInsignificantTurns = significantTurn ? 0 : numConsecutiveInsignificantTurns + 1;
     }
-    return this.calculateGameEndReport(refereeGameState);
   }
 
-  private GameEndReport calculateGameEndReport(IRefereeGameState gameState) {
-    List<Integer> finalScoresInTurnOrder = gameState.calculatePlayerScores();
+  public GameEndReport calculateGameEndReport() {
+    List<Integer> finalScoresInTurnOrder = this.refereeGameState.calculatePlayerScores();
     List<PlayerScore> gameReportScores = new ArrayList<>();
     for (int index = 0; index < this.playersInOrder.size(); index += 1) {
       if (!this.removedPlayersIndices.contains(index)) {
@@ -203,14 +203,14 @@ public class TrainsReferee implements IReferee {
   }
 
   /** @return boolean indicating whether turn was significant */
-  private boolean takePlayerTurn(Iterator<IPlayer> turnOrder, IRefereeGameState gameState) {
+  private boolean takePlayerTurn(Iterator<IPlayer> turnOrder) {
     IPlayer activePlayer = turnOrder.next();
 
     try {
-      TurnAction turn = activePlayer.takeTurn(gameState.getActivePlayerState());
-      TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer, gameState);
+      TurnAction turn = activePlayer.takeTurn(this.refereeGameState.getActivePlayerState());
+      TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer);
       if (turnApplyResult != TurnResult.INVALID) {
-        gameState.advanceTurn();
+        this.refereeGameState.advanceTurn();
         return turnApplyResult == TurnResult.SIGNIFICANT;
       }
     } catch (Exception ignored) {
@@ -220,20 +220,20 @@ public class TrainsReferee implements IReferee {
     // if decide to use indices
     this.removedPlayersIndices.add(this.playersInOrder.indexOf(activePlayer));
     turnOrder.remove();
-    gameState.removeActivePlayer();
+    this.refereeGameState.removeActivePlayer();
     return true;
   }
 
   private TurnResult applyActionToActivePlayer(
-      TurnAction action, IPlayer player, IRefereeGameState gameState) {
+      TurnAction action, IPlayer player) {
     switch (action.getActionType()) {
       case DRAW_CARDS:
-        List<RailCard> drawnCards = gameState.drawCardsForActivePlayer(PLAYER_NUM_CARDS_PER_DRAW);
+        List<RailCard> drawnCards = this.refereeGameState.drawCardsForActivePlayer(PLAYER_NUM_CARDS_PER_DRAW);
         player.receiveCards(new ArrayList<>(drawnCards));
         return drawnCards.isEmpty() ? TurnResult.INSIGNIFICANT : TurnResult.SIGNIFICANT;
       case ACQUIRE_CONNECTION:
         boolean connectionAcquired =
-            gameState.acquireConnectionForActivePlayer(action.getRailConnection().get());
+            this.refereeGameState.acquireConnectionForActivePlayer(action.getRailConnection().get());
         return connectionAcquired ? TurnResult.SIGNIFICANT : TurnResult.INVALID;
       default:
         return TurnResult.INVALID;
@@ -246,9 +246,9 @@ public class TrainsReferee implements IReferee {
     INVALID
   }
 
-  private boolean isGameOver(int numConsecutiveInsignificantTurns, IRefereeGameState gameState) {
+  private boolean isGameOver(int numConsecutiveInsignificantTurns) {
     return numConsecutiveInsignificantTurns == this.numPlayersRemaining()
-        || gameState.getActivePlayerState().getNumRails() <= PLAYER_NUM_RAILS_GAME_OVER;
+        || this.refereeGameState.getActivePlayerState().getNumRails() <= PLAYER_NUM_RAILS_GAME_OVER;
   }
 
   private int numPlayersRemaining() {
