@@ -1,26 +1,16 @@
 package referee;
 
-import com.google.common.collect.Iterators;
 import game_state.IOpponentInfo;
 import game_state.IPlayerGameState;
 import game_state.OpponentInfo;
 import game_state.PlayerGameState;
 import game_state.RailCard;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import map.Destination;
 import map.IRailConnection;
 import map.ITrainMap;
-import org.jgrapht.alg.connectivity.ConnectivityInspector;
-import org.jgrapht.alg.shortestpath.YenShortestPathIterator;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
-import player.IPlayer;
 import utils.RailCardUtils;
-import org.jgrapht.Graph;
 
 public class RefereeGameState implements IRefereeGameState {
 
