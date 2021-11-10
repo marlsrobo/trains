@@ -171,7 +171,6 @@ public class TrainsReferee implements IReferee {
 
     @Override
     public void playGame() {
-        // TODO: Validate number of players, abstract over destinations and cards
         this.refereeGameState = this.initializeGame();
         this.runGame();
     }
@@ -216,18 +215,23 @@ public class TrainsReferee implements IReferee {
     private boolean takePlayerTurn(Iterator<IPlayer> turnOrder) {
         IPlayer activePlayer = turnOrder.next();
 
-        Optional<TurnAction> OptionalTurn = callFunction(
-            () -> activePlayer.takeTurn(this.refereeGameState.getActivePlayerState()),
-            () -> this.removePlayer(activePlayer, turnOrder));
-        if (OptionalTurn.isPresent()) {
-            TurnAction turn = OptionalTurn.get();
-            TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer);
+        try {
+            Optional<TurnAction> OptionalTurn = callFunctionOnPlayer(
+                () -> activePlayer.takeTurn(this.refereeGameState.getActivePlayerState()));
+            if (OptionalTurn.isPresent()) {
+                TurnAction turn = OptionalTurn.get();
+                TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer);
 
-            if (turnApplyResult != TurnResult.INVALID) {
-                this.refereeGameState.advanceTurn();
-                return turnApplyResult == TurnResult.SIGNIFICANT;
+                if (turnApplyResult != TurnResult.INVALID) {
+                    this.refereeGameState.advanceTurn();
+                    return turnApplyResult == TurnResult.SIGNIFICANT;
+                }
             }
         }
+        catch (PlayerMisbehaviorException ignored) {
+            // If the player misbehaves, or performs an invalid action, the result id the same.
+        }
+        this.removePlayer(activePlayer, turnOrder);
         return true;
     }
 
@@ -237,12 +241,12 @@ public class TrainsReferee implements IReferee {
         this.refereeGameState.removeActivePlayer();
     }
 
-    private <T> Optional<T> callFunction(Supplier<T> function, Runnable onException) {
+    private <T> Optional<T> callFunctionOnPlayer(Supplier<T> function) throws PlayerMisbehaviorException {
         try {
             return Optional.ofNullable(function.get());
         } catch (Exception ignored) {
-            onException.run();
-            return Optional.empty();
+            // We are catching any exception because the player could throw any exception.
+            throw new PlayerMisbehaviorException();
         }
     }
 
@@ -256,6 +260,8 @@ public class TrainsReferee implements IReferee {
         INSIGNIFICANT,
         INVALID
     }
+
+    private static class PlayerMisbehaviorException extends Exception {}
 
     private boolean isGameOver(int numConsecutiveInsignificantTurns) {
         return numConsecutiveInsignificantTurns == this.numPlayersRemaining()
@@ -301,7 +307,7 @@ public class TrainsReferee implements IReferee {
         List<Destination> playerDestinationOptions =
             activeDestinationList.subList(0, PLAYER_NUM_DEST_OPTIONS);
 
-        Set<Destination> chosenDestinations = new HashSet<>();
+        Set<Destination> chosenDestinations;
         try {
             player.setup(map, PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
             chosenDestinations = player.chooseDestinations(new HashSet<>(playerDestinationOptions));

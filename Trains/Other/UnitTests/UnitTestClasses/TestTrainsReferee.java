@@ -321,6 +321,7 @@ public class TestTrainsReferee {
         expectedDrawnCards.add(List.of(RailCard.WHITE, RailCard.BLUE));
         expectedDrawnCards.add(List.of(RailCard.GREEN, RailCard.GREEN));
         expectedDrawnCards.add(List.of(RailCard.RED, RailCard.RED));
+        expectedDrawnCards.add(new ArrayList<>());
 
         List<IPlayer> playersInTurnOrder = new ArrayList<>();
         playersInTurnOrder.add(new MockDrawCardsPlayer(expectedDrawnCards));
