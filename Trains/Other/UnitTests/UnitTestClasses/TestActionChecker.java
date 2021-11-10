@@ -1,13 +1,13 @@
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import referee.IPlayerData;
+import referee.game_state.IPlayerData;
 import game_state.IPlayerGameState;
-import referee.IRefereeGameState;
-import referee.PlayerData;
+import referee.game_state.IRefereeGameState;
+import referee.game_state.PlayerData;
 import game_state.RailCard;
-import referee.RefereeGameState;
-import referee.TrainsPlayerHand;
+import referee.game_state.RefereeGameState;
+import referee.game_state.TrainsPlayerHand;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

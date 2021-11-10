@@ -182,7 +182,8 @@ public class TestTrainsReferee {
         expectedPlayerScores.add(new PlayerScore(0, 3));
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores, new HashSet<>());
 
-        GameEndReport actualGameReport = referee.playGame();
+        referee.playGame();
+        GameEndReport actualGameReport = referee.calculateGameEndReport();
 
         assertGameReportEquals(expectedGameReport, actualGameReport);
     }
@@ -205,7 +206,8 @@ public class TestTrainsReferee {
         expectedPlayerScores.add(new PlayerScore(0, 65));
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores, new HashSet<>());
 
-        GameEndReport actualGameReport = referee.playGame();
+        referee.playGame();
+        GameEndReport actualGameReport = referee.calculateGameEndReport();
 
         assertGameReportEquals(expectedGameReport, actualGameReport);
     }
@@ -230,7 +232,8 @@ public class TestTrainsReferee {
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
-        GameEndReport actualGameReport = referee.playGame();
+        referee.playGame();
+        GameEndReport actualGameReport = referee.calculateGameEndReport();
 
         assertGameReportEquals(expectedGameReport, actualGameReport);
     }
@@ -255,7 +258,8 @@ public class TestTrainsReferee {
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
-        GameEndReport actualGameReport = referee.playGame();
+        referee.playGame();
+        GameEndReport actualGameReport = referee.calculateGameEndReport();
 
         assertGameReportEquals(expectedGameReport, actualGameReport);
     }
@@ -280,7 +284,8 @@ public class TestTrainsReferee {
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
-        GameEndReport actualGameReport = referee.playGame();
+        referee.playGame();
+        GameEndReport actualGameReport = referee.calculateGameEndReport();
 
         assertGameReportEquals(expectedGameReport, actualGameReport);
     }
@@ -304,7 +309,8 @@ public class TestTrainsReferee {
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
-        GameEndReport actualGameReport = referee.playGame();
+        referee.playGame();
+        GameEndReport actualGameReport = referee.calculateGameEndReport();
 
         assertGameReportEquals(expectedGameReport, actualGameReport);
     }

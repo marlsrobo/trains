@@ -1,5 +1,6 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import action.DrawCardsAction;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ import java.util.Set;
 import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
-import strategy.TurnAction;
+import action.TurnAction;
 
 public class MockDrawCardsPlayer implements IPlayer {
     private int numCardsDrawn;
@@ -32,7 +33,7 @@ public class MockDrawCardsPlayer implements IPlayer {
 
     @Override
     public TurnAction takeTurn(IPlayerGameState playerGameState) {
-        return TurnAction.createDrawCards();
+        return new DrawCardsAction();
     }
 
     @Override

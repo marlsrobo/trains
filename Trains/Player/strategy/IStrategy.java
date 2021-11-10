@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import map.Destination;
 import map.ITrainMap;
+import action.TurnAction;
 
 /**
  * Provides decisions about what actions a player would take in choosing destinations or taking a
@@ -32,7 +33,7 @@ public interface IStrategy {
      * @param currentPlayerGameState the state of the game on which the turn is taken.
      * @param map                    the game map for this game of Trains.
      * @param chosenDestinations
-     * @return a strategy.TurnAction specifying the selected move to take on the turn.
+     * @return a action.TurnAction specifying the selected move to take on the turn.
      */
     TurnAction takeTurn(IPlayerGameState currentPlayerGameState, ITrainMap map,
         Set<Destination> chosenDestinations);

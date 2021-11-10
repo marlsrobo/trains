@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Set;
 import map.IRailConnection;
 import map.ITrainMap;
-import referee.IPlayerData;
+import referee.game_state.IPlayerData;
 
 public class PlayerGameState implements IPlayerGameState {
   private final Set<IRailConnection> ownedConnections;

@@ -1,5 +1,7 @@
 package strategy;
 
+import action.AcquireConnectionAction;
+import action.DrawCardsAction;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
 import java.util.HashSet;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 import map.Destination;
 import map.IRailConnection;
 import map.ITrainMap;
+import action.TurnAction;
 import utils.RailCardUtils;
 
 /**
@@ -55,7 +58,7 @@ public abstract class AStrategy implements IStrategy {
      * @param currentPlayerGameState the state of the game on which the turn is taken.
      * @param map                    the game map for this game of Trains.
      * @param chosenDestinations
-     * @return a strategy.TurnAction representing this strategy's choice of action.
+     * @return a action.TurnAction representing this strategy's choice of action.
      */
     @Override
     public TurnAction takeTurn(IPlayerGameState currentPlayerGameState, ITrainMap map,
@@ -66,9 +69,9 @@ public abstract class AStrategy implements IStrategy {
         // Automatically draw cards if no connections can be bought,
         // or if strategy specifically requests it
         if (canAcquire.isEmpty() || this.chooseDrawCards(canAcquire, currentPlayerGameState, chosenDestinations)) {
-            return TurnAction.createDrawCards();
+            return new DrawCardsAction();
         } else {
-            return TurnAction.createAcquireConnection(
+            return new AcquireConnectionAction(
                 this.getPreferredConnection(canAcquire, currentPlayerGameState, chosenDestinations));
         }
     }

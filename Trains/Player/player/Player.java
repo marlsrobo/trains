@@ -7,12 +7,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeoutException;
 import map.Destination;
 import map.ITrainMap;
-import referee.TrainsPlayerHand;
+import referee.game_state.TrainsPlayerHand;
 import strategy.IStrategy;
-import strategy.TurnAction;
+import action.TurnAction;
 
 /**
  * A player that only relies on one strategy, computes moves as they are requested, and otherwise

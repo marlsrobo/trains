@@ -1,3 +1,4 @@
+import action.AcquireConnectionAction;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
 import java.util.Map;
@@ -5,7 +6,7 @@ import java.util.Set;
 import map.Destination;
 import map.ITrainMap;
 import strategy.IStrategy;
-import strategy.TurnAction;
+import action.TurnAction;
 
 public class InvalidDestinationSelection implements IStrategy {
 
@@ -18,7 +19,6 @@ public class InvalidDestinationSelection implements IStrategy {
     @Override
     public TurnAction takeTurn(IPlayerGameState currentPlayerGameState, ITrainMap map,
         Set<Destination> chosenDestinations) {
-        return TurnAction
-            .createAcquireConnection(map.getRailConnections().stream().findFirst().get());
+        return new AcquireConnectionAction(map.getRailConnections().stream().findFirst().get());
     }
 }

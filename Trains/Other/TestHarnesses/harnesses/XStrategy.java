@@ -7,7 +7,6 @@ import static utils.ComparatorUtils.fromUnordered;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 import game_state.IPlayerGameState;
 import java.io.IOException;
@@ -17,9 +16,8 @@ import java.io.Reader;
 import map.ICity;
 import map.IRailConnection;
 import map.ITrainMap;
-import strategy.Action;
 import strategy.Hold10;
-import strategy.TurnAction;
+import action.TurnAction;
 import utils.OrderedPair;
 
 public class XStrategy {
@@ -46,13 +44,7 @@ public class XStrategy {
     }
 
     public static JsonElement turnActionToJSON(TurnAction turnAction) {
-        if (turnAction.getActionType() == Action.DRAW_CARDS) {
-            return new JsonPrimitive("more cards");
-        }
-        else if (turnAction.getActionType() == Action.ACQUIRE_CONNECTION) {
-            return railConnectionToJSON(turnAction.getRailConnection().get());
-        }
-        return new JsonPrimitive("");
+        return new ActionToJSONVisitor().apply(turnAction);
     }
 
     public static JsonElement railConnectionToJSON(IRailConnection railConnection) {

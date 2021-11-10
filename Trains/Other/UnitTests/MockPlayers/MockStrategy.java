@@ -7,7 +7,7 @@ import map.Destination;
 import map.ITrainMap;
 import org.junit.jupiter.api.Assertions;
 import strategy.IStrategy;
-import strategy.TurnAction;
+import action.TurnAction;
 
 public class MockStrategy implements IStrategy {
 

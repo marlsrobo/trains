@@ -5,7 +5,7 @@ import java.util.Set;
 import map.Destination;
 import map.ITrainMap;
 import strategy.IStrategy;
-import strategy.TurnAction;
+import action.TurnAction;
 
 public class ThrowException implements IStrategy {
 

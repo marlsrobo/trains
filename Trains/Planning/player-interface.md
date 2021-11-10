@@ -26,11 +26,11 @@ Set<Destination> chooseDestinations(Set<Destination> destinationOptions, int num
 PlayerGameState initialPlayerGameState);
 
 /**
-* The Player should decide what action it will take on its turn by returning a valid strategy.TurnAction. 
+* The Player should decide what action it will take on its turn by returning a valid action.TurnAction. 
 * The Referee will call this method when it is this Player's turn, and provide the current state of 
 * the game that is visible to this player, currentPlayerGameState.
 */
-strategy.TurnAction takeTurn(PlayerGameState currentPlayerGameState);
+action.TurnAction takeTurn(PlayerGameState currentPlayerGameState);
 
 /**
 * The Referee will call this method after the end of the game to inform this Player that the game 
@@ -52,26 +52,26 @@ void removedFromGame();
 
 
 ### Data Definition
-A strategy.TurnAction represents the player's desired action for a single turn, and contains the following:
-- An enum strategy.Action
+A action.TurnAction represents the player's desired action for a single turn, and contains the following:
+- An enum action.Action
 - An ```Optional<IRailConnection>```
     - must be empty if action is DRAW_CARDS
-    - must contain a value if strategy.Action is ACQUIRE_CONNECTION
-- Contains getters for the strategy.Action and IRailConnection that return defensive copies of the data
+    - must contain a value if action.Action is ACQUIRE_CONNECTION
+- Contains getters for the action.Action and IRailConnection that return defensive copies of the data
 
-strategy.TurnAction objects are only created using the following Factory Pattern:
-- strategy.TurnAction will have the methods:
+action.TurnAction objects are only created using the following Factory Pattern:
+- action.TurnAction will have the methods:
 ```
-    static strategy.TurnAction createDrawCards()
-    static strategy.TurnAction createAcquireConnection(IRailConnection railConnection)
+    static action.TurnAction createDrawCards()
+    static action.TurnAction createAcquireConnection(IRailConnection railConnection)
 ```
-- strategy.TurnAction will have a private constructor
+- action.TurnAction will have a private constructor
 ```
-    private strategy.TurnAction(strategy.Action action, Optional<IRailConnection> railConnection)
+    private action.TurnAction(action.Action action, Optional<IRailConnection> railConnection)
 ```
 
 
-An strategy.Action is one of:
+An action.Action is one of:
 ```
 - DRAW_CARDS
 - ACQUIRE_CONNECTION

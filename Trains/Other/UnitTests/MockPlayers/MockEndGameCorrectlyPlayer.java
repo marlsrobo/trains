@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Set;
 import map.Destination;
 import map.ITrainMap;
-import org.junit.jupiter.api.Assertions;
 import player.IPlayer;
 import player.Player;
 import strategy.Hold10;
-import strategy.TurnAction;
+import action.TurnAction;
 
 public class MockEndGameCorrectlyPlayer implements IPlayer {
     private Player underlyingPlayer;

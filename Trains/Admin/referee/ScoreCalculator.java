@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import map.IRailConnection;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import referee.game_state.IPlayerData;
 
 /**
  * To calculate scores of players in Trains.

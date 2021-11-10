@@ -10,11 +10,10 @@ import map.ICity;
 import map.RailColor;
 import map.RailConnection;
 import org.junit.jupiter.api.Test;
-import player.IPlayer;
-import referee.IPlayerData;
-import referee.PlayerData;
+import referee.game_state.IPlayerData;
+import referee.game_state.PlayerData;
 import referee.ScoreCalculator;
-import referee.TrainsPlayerHand;
+import referee.game_state.TrainsPlayerHand;
 import utils.UnorderedPair;
 
 public class TestScoreCalculator {

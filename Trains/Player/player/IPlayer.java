@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 import map.Destination;
 import map.ITrainMap;
-import strategy.TurnAction;
+import action.TurnAction;
 
 /**
  * The Player interface by which the Referee component interacts with the Player for playing a game
