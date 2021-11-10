@@ -318,10 +318,8 @@ public class TrainsReferee implements IReferee {
         if (!validDestinationChoice(new HashSet<>(playerDestinationOptions), chosenDestinations)) {
             return Optional.empty();
         }
-        // TODO: Figure out playerID here
         IPlayerData result =
             new PlayerData(
-                "REMOVE THIS",
                 startingHand,
                 PLAYER_NUM_RAILS_START,
                 chosenDestinations,

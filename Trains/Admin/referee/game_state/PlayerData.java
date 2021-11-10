@@ -9,29 +9,21 @@ import map.IRailConnection;
 
 public class PlayerData implements IPlayerData {
 
-    private final String playerID;
     private final IPlayerHand<RailCard> hand;
     private int numRails;
     private final Set<Destination> destinations;
     private final Set<IRailConnection> ownedConnections;
 
-    public PlayerData(String playerID, IPlayerHand<RailCard> hand, int numRails,
+    public PlayerData(IPlayerHand<RailCard> hand, int numRails,
         Set<Destination> destinations, Set<IRailConnection> ownedConnections) {
-        Objects.requireNonNull(playerID);
         Objects.requireNonNull(hand);
         Objects.requireNonNull(destinations);
         Objects.requireNonNull(ownedConnections);
 
-        this.playerID = playerID;
         this.hand = hand;
         this.numRails = numRails;
         this.destinations = destinations;
         this.ownedConnections = ownedConnections;
-    }
-
-    @Override
-    public String getPlayerID() {
-        return this.playerID;
     }
 
     @Override
@@ -64,7 +56,7 @@ public class PlayerData implements IPlayerData {
 
     @Override
     public IPlayerData copyData() {
-        return new PlayerData(this.playerID, new TrainsPlayerHand(this.hand.getHand()),
+        return new PlayerData(new TrainsPlayerHand(this.hand.getHand()),
             this.numRails, new HashSet<>(this.destinations), new HashSet<>(this.ownedConnections));
     }
 }

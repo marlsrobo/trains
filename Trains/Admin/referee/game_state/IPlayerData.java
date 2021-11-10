@@ -6,7 +6,6 @@ import map.Destination;
 import map.IRailConnection;
 
 public interface IPlayerData {
-  String getPlayerID();
   IPlayerHand<RailCard> getPlayerHand();
   int getNumRails();
   void setNumRails(int numRails) throws IllegalArgumentException, IllegalStateException;

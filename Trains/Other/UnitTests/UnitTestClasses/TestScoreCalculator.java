@@ -26,7 +26,7 @@ public class TestScoreCalculator {
 
     @Test
     public void testScoreNoConnections() {
-        IPlayerData data = new PlayerData("", new TrainsPlayerHand(new HashMap<>()), 5,
+        IPlayerData data = new PlayerData(new TrainsPlayerHand(new HashMap<>()), 5,
             new HashSet<>(), new HashSet<>());
 
         // 0 total segments
@@ -43,7 +43,6 @@ public class TestScoreCalculator {
         ICity boston = new City("Boston", 0, 0);
         ICity nyc = new City("NYC", 0, 0);
         IPlayerData data = new PlayerData(
-            "",
             new TrainsPlayerHand(new HashMap<>()),
             5,
             new HashSet<>(List.of(new Destination(boston, nyc))),
@@ -64,7 +63,6 @@ public class TestScoreCalculator {
         ICity boston = new City("Boston", 0, 0);
         ICity nyc = new City("NYC", 0, 0);
         IPlayerData data = new PlayerData(
-            "",
             new TrainsPlayerHand(new HashMap<>()),
             5,
             new HashSet<>(List.of(new Destination(boston, nyc))),
@@ -87,14 +85,12 @@ public class TestScoreCalculator {
         ICity chicago = new City("Chicago", 0, 0);
 
         IPlayerData data1 = new PlayerData(
-            "",
             new TrainsPlayerHand(new HashMap<>()),
             5,
             new HashSet<>(List.of(new Destination(boston, nyc))),
             new HashSet<>());
 
         IPlayerData data2 = new PlayerData(
-            "",
             new TrainsPlayerHand(new HashMap<>()),
             3,
             new HashSet<>(List.of(new Destination(texas, chicago))),
@@ -104,7 +100,6 @@ public class TestScoreCalculator {
                 new RailConnection(new UnorderedPair<>(boston, chicago),5, RailColor.BLUE))));
 
         IPlayerData data3 = new PlayerData(
-            "",
             new TrainsPlayerHand(new HashMap<>()),
             3,
             new HashSet<>(List.of(new Destination(nyc, chicago), new Destination(boston, texas))),

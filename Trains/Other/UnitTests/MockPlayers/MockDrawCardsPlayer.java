@@ -38,7 +38,6 @@ public class MockDrawCardsPlayer implements IPlayer {
 
     @Override
     public void receiveCards(List<RailCard> drawnCards) {
-        System.out.println(drawnCards);
         assertEquals(this.expectedDrawnCards.get(this.numCardsDrawn), drawnCards);
         this.numCardsDrawn++;
     }

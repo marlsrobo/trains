@@ -66,7 +66,7 @@ public class TestActionChecker {
 
         List<IPlayerData> playerData = new ArrayList<>();
         playerData.add(
-            new PlayerData("player1", new TrainsPlayerHand(cardsInHand), 6, new HashSet<>(),
+            new PlayerData( new TrainsPlayerHand(cardsInHand), 6, new HashSet<>(),
                 new HashSet<>()));
 
         this.simpleRefereeGameState = new RefereeGameState(playerData, deck, map);

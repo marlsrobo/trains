@@ -80,7 +80,6 @@ public class XLegal {
 
         return new PlayerGameState(
             new PlayerData(
-                PLAYER_ID,
                 new TrainsPlayerHand(cardsInHand),
                 thisPlayersData.get("rails").getAsInt(),
                 new HashSet<>(),
