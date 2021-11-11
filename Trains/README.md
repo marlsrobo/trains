@@ -1,5 +1,5 @@
 # CS4500 Software Development Project
-## By William Cutler and Ronan Loughlin
+## By Marley Robinson and Ronan Loughlin
 
 ### Admin
 Contains a link to the referee game state source code.
