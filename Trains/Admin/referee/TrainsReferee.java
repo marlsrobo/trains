@@ -216,38 +216,21 @@ public class TrainsReferee implements IReferee {
         IPlayer activePlayer = turnOrder.next();
 
         try {
-            Optional<TurnAction> OptionalTurn = callFunctionOnPlayer(
-                () -> activePlayer.takeTurn(this.refereeGameState.getActivePlayerState()));
-            if (OptionalTurn.isPresent()) {
-                TurnAction turn = OptionalTurn.get();
-                TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer);
+            TurnAction turn = activePlayer.takeTurn(this.refereeGameState.getActivePlayerState());
+            TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer);
 
-                if (turnApplyResult != TurnResult.INVALID) {
-                    this.refereeGameState.advanceTurn();
-                    return turnApplyResult == TurnResult.SIGNIFICANT;
-                }
+            if (turnApplyResult != TurnResult.INVALID) {
+                this.refereeGameState.advanceTurn();
+                return turnApplyResult == TurnResult.SIGNIFICANT;
             }
         }
-        catch (PlayerMisbehaviorException ignored) {
+        catch (Exception ignored) {
             // If the player misbehaves, or performs an invalid action, the result id the same.
         }
-        this.removePlayer(activePlayer, turnOrder);
-        return true;
-    }
-
-    private void removePlayer(IPlayer activePlayer, Iterator<IPlayer> turnOrder) {
         this.removedPlayersIndices.add(this.playersInOrder.indexOf(activePlayer));
         turnOrder.remove();
         this.refereeGameState.removeActivePlayer();
-    }
-
-    private <T> Optional<T> callFunctionOnPlayer(Supplier<T> function) throws PlayerMisbehaviorException {
-        try {
-            return Optional.ofNullable(function.get());
-        } catch (Exception ignored) {
-            // We are catching any exception because the player could throw any exception.
-            throw new PlayerMisbehaviorException();
-        }
+        return true;
     }
 
     private TurnResult applyActionToActivePlayer(
