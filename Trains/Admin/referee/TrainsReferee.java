@@ -262,6 +262,9 @@ public class TrainsReferee implements IReferee {
     private IRefereeGameState initializeGame() {
         List<Destination> activeDestinationList =
             new ArrayList<>(this.destinationProvider.apply(this.map));
+        if (activeDestinationList.size() < (playersInOrder.size() * 2) + 3) {
+            throw new IllegalArgumentException("error: not enough destinations");
+        }
         List<RailCard> deck = this.deckSupplier.get();
         List<IPlayerData> playerDataInTurnOrder = new ArrayList<>();
 
