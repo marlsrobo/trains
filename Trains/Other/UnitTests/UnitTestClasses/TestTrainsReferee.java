@@ -4,6 +4,7 @@ import static org.junit.Assert.fail;
 import game_state.RailCard;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -131,17 +132,17 @@ public class TestTrainsReferee {
     @Test
     public void testConstruction() {
         // valid construction
-        new TrainsReferee.RefereeBuilder(this.simpleMap, new ArrayList<>()).build();
-        new TrainsReferee.RefereeBuilder(this.largeBlueMap, new ArrayList<>())
+        new TrainsReferee.RefereeBuilder(this.simpleMap, new LinkedHashMap<>()).build();
+        new TrainsReferee.RefereeBuilder(this.largeBlueMap, new LinkedHashMap<>())
             .deckProvider(TestTrainsReferee::ThousandBlueCardDeckSupplier).build();
-        new TrainsReferee.RefereeBuilder(this.simpleMap, new ArrayList<>())
+        new TrainsReferee.RefereeBuilder(this.simpleMap, new LinkedHashMap<>())
             .destinationProvider(TestTrainsReferee::destinationProvider).build();
-        new TrainsReferee.RefereeBuilder(this.largeBlueMap, new ArrayList<>())
+        new TrainsReferee.RefereeBuilder(this.largeBlueMap, new LinkedHashMap<>())
             .destinationProvider(TestTrainsReferee::destinationProvider)
             .deckProvider(TestTrainsReferee::ThousandBlueCardDeckSupplier).build();
 
         try {
-            new TrainsReferee.RefereeBuilder(null, new ArrayList<>()).build();
+            new TrainsReferee.RefereeBuilder(null, new LinkedHashMap<>()).build();
             fail();
         } catch (NullPointerException ignored) {
         }
@@ -151,13 +152,13 @@ public class TestTrainsReferee {
         } catch (NullPointerException ignored) {
         }
         try {
-            new TrainsReferee.RefereeBuilder(this.simpleMap, new ArrayList<>()).deckProvider(null)
+            new TrainsReferee.RefereeBuilder(this.simpleMap, new LinkedHashMap<>()).deckProvider(null)
                 .build();
             fail();
         } catch (NullPointerException ignored) {
         }
         try {
-            new TrainsReferee.RefereeBuilder(this.simpleMap, new ArrayList<>()).destinationProvider(null)
+            new TrainsReferee.RefereeBuilder(this.simpleMap, new LinkedHashMap<>()).destinationProvider(null)
                 .build();
             fail();
         } catch (NullPointerException ignored) {
@@ -168,9 +169,9 @@ public class TestTrainsReferee {
     public void TestAllDrawCards() {
         // Two BuyNow players with the given game setup will run out of cards before using all of
         // their rails
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new Player(new BuyNow()));
-        playersInTurnOrder.add(new Player(new BuyNow()));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new Player(new BuyNow()));
+        playersInTurnOrder.put("playerTwo", new Player(new BuyNow()));
 
         IReferee referee = new RefereeBuilder(this.simpleMap, playersInTurnOrder)
             .destinationProvider(TestTrainsReferee::destinationProvider)
@@ -178,8 +179,8 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore(1, -20));
-        expectedPlayerScores.add(new PlayerScore(0, 3));
+        expectedPlayerScores.add(new PlayerScore("playerTwo", -20));
+        expectedPlayerScores.add(new PlayerScore("playerOne", 3));
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores, new HashSet<>());
 
         referee.playGame();
@@ -192,9 +193,9 @@ public class TestTrainsReferee {
     public void testRunOutOfRails() {
         // Two BuyNow players with the given game setup will run out of cards before using all of
         // their rails
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new Player(new BuyNow()));
-        playersInTurnOrder.add(new Player(new Hold10()));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new Player(new BuyNow()));
+        playersInTurnOrder.put("playerTwo", new Player(new Hold10()));
 
         IReferee referee = new RefereeBuilder(this.largeBlueMap, playersInTurnOrder)
             .destinationProvider(TestTrainsReferee::destinationProvider)
@@ -202,8 +203,8 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore(1, 39));
-        expectedPlayerScores.add(new PlayerScore(0, 65));
+        expectedPlayerScores.add(new PlayerScore("playerTwo", 39));
+        expectedPlayerScores.add(new PlayerScore("playerOne", 65));
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores, new HashSet<>());
 
         referee.playGame();
@@ -215,9 +216,9 @@ public class TestTrainsReferee {
     @Test
     public void testOneInvalidPlayer() {
         // The InvalidAcquire player will misbehave on their first turn, and be kicked out
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new Player(new InvalidAcquire()));
-        playersInTurnOrder.add(new Player(new Hold10()));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new Player(new InvalidAcquire()));
+        playersInTurnOrder.put("playerTwo", new Player(new Hold10()));
 
         // On the large blue map the Hold10 player will end the game by running out of rails
         IReferee referee = new RefereeBuilder(this.largeBlueMap, playersInTurnOrder)
@@ -226,9 +227,9 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore(1, 85));
-        Set<Integer> expectedKickedOutPlayers = new HashSet<>();
-        expectedKickedOutPlayers.add(0);
+        expectedPlayerScores.add(new PlayerScore("playerTwo", 85));
+        Set<String> expectedKickedOutPlayers = new HashSet<>();
+        expectedKickedOutPlayers.add("playerOne");
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
@@ -241,9 +242,9 @@ public class TestTrainsReferee {
     @Test
     public void testOneInvalidDestSelectionPlayer() {
         // The InvalidDestinationSelection player will misbehave during destination selection
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new Player(new InvalidDestinationSelection()));
-        playersInTurnOrder.add(new Player(new Hold10()));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new Player(new InvalidDestinationSelection()));
+        playersInTurnOrder.put("playerTwo", new Player(new Hold10()));
 
         // On the large blue map the Hold10 player will end the game by running out of rails
         IReferee referee = new RefereeBuilder(this.largeBlueMap, playersInTurnOrder)
@@ -252,9 +253,9 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore(1, 85));
-        Set<Integer> expectedKickedOutPlayers = new HashSet<>();
-        expectedKickedOutPlayers.add(0);
+        expectedPlayerScores.add(new PlayerScore("playerTwo", 85));
+        Set<String> expectedKickedOutPlayers = new HashSet<>();
+        expectedKickedOutPlayers.add("playerOne");
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
@@ -267,9 +268,9 @@ public class TestTrainsReferee {
     @Test
     public void testOneInvalidThrowsExceptionPlayer() {
         // The InvalidDestinationSelection player will misbehave during destination selection
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new Player(new ThrowException()));
-        playersInTurnOrder.add(new Player(new Hold10()));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new Player(new ThrowException()));
+        playersInTurnOrder.put("playerTwo", new Player(new Hold10()));
 
         // On the large blue map the Hold10 player will end the game by running out of rails
         IReferee referee = new RefereeBuilder(this.largeBlueMap, playersInTurnOrder)
@@ -278,9 +279,9 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore(1, 85));
-        Set<Integer> expectedKickedOutPlayers = new HashSet<>();
-        expectedKickedOutPlayers.add(0);
+        expectedPlayerScores.add(new PlayerScore("playerTwo", 85));
+        Set<String> expectedKickedOutPlayers = new HashSet<>();
+        expectedKickedOutPlayers.add("playerOne");
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
@@ -293,9 +294,9 @@ public class TestTrainsReferee {
     @Test
     public void testTwoInvalidPlayers() {
         // Both InvalidAcquire players will misbehave on their first turn, and be kicked out
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new Player(new InvalidAcquire()));
-        playersInTurnOrder.add(new Player(new InvalidAcquire()));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new Player(new InvalidAcquire()));
+        playersInTurnOrder.put("playerTwo", new Player(new InvalidAcquire()));
 
         IReferee referee = new RefereeBuilder(this.simpleMap, playersInTurnOrder)
             .destinationProvider(TestTrainsReferee::destinationProvider)
@@ -303,9 +304,9 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        Set<Integer> expectedKickedOutPlayers = new HashSet<>();
-        expectedKickedOutPlayers.add(0);
-        expectedKickedOutPlayers.add(1);
+        Set<String> expectedKickedOutPlayers = new HashSet<>();
+        expectedKickedOutPlayers.add("playerOne");
+        expectedKickedOutPlayers.add("playerTwo");
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores,
             expectedKickedOutPlayers);
 
@@ -323,8 +324,8 @@ public class TestTrainsReferee {
         expectedDrawnCards.add(List.of(RailCard.RED, RailCard.RED));
         expectedDrawnCards.add(new ArrayList<>());
 
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new MockDrawCardsPlayer(expectedDrawnCards));
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new MockDrawCardsPlayer(expectedDrawnCards));
 
         IReferee referee = new RefereeBuilder(this.simpleMap, playersInTurnOrder)
             .destinationProvider(TestTrainsReferee::destinationProvider)
@@ -337,9 +338,9 @@ public class TestTrainsReferee {
     public void testGameEndsWhenNoRailsRemaining() {
         // MockEndGameCorrectlyPlayer assert that they dont begin their turn when the game should
         // be over
-        List<IPlayer> playersInTurnOrder = new ArrayList<>();
-        playersInTurnOrder.add(new MockEndGameCorrectlyPlayer());
-        playersInTurnOrder.add(new MockEndGameCorrectlyPlayer());
+        LinkedHashMap<String, IPlayer> playersInTurnOrder = new LinkedHashMap<>();
+        playersInTurnOrder.put("playerOne", new MockEndGameCorrectlyPlayer());
+        playersInTurnOrder.put("playerTwo", new MockEndGameCorrectlyPlayer());
 
         IReferee referee = new RefereeBuilder(this.largeBlueMap, playersInTurnOrder)
             .destinationProvider(TestTrainsReferee::destinationProvider)
@@ -354,11 +355,10 @@ public class TestTrainsReferee {
             PlayerScore actualPlayerScore = actual.playerRanking.get(ii);
 
             assertEquals(expectedPlayerScore.score, actualPlayerScore.score);
-            assertEquals(expectedPlayerScore.playerTurnOrderIndex,
-                actualPlayerScore.playerTurnOrderIndex);
+            assertEquals(expectedPlayerScore.playerName,
+                actualPlayerScore.playerName);
         }
-        assertEquals(expected.removedPlayerTurnOrderIndices,
-            actual.removedPlayerTurnOrderIndices);
+        assertEquals(expected.removedPlayerNames, actual.removedPlayerNames);
     }
 
 }
