@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
@@ -65,22 +67,22 @@ public class TrainsReferee implements IReferee {
     public static final int PLAYER_NUM_CARDS_PER_DRAW = 2;
 
     private final ITrainMap map;
-    private final List<IPlayer> playersInOrder;
+    private final LinkedHashMap<String, IPlayer> playersInOrder;
     private final Function<ITrainMap, List<Destination>> destinationProvider;
     private final Supplier<List<RailCard>> deckSupplier;
-    private final Set<Integer> removedPlayersIndices;
+    private final Set<String> removedPlayerNames;
     private IRefereeGameState refereeGameState;
 
     private TrainsReferee(
         ITrainMap map,
-        List<IPlayer> playersInOrder,
+        LinkedHashMap<String, IPlayer> playersInOrder,
         Function<ITrainMap, List<Destination>> destinationProvider,
         Supplier<List<RailCard>> deckSupplier) {
         this.map = map;
-        this.playersInOrder = new ArrayList<>(playersInOrder);
+        this.playersInOrder = new LinkedHashMap<>(playersInOrder);
         this.destinationProvider = destinationProvider;
         this.deckSupplier = deckSupplier;
-        this.removedPlayersIndices = new HashSet<>();
+        this.removedPlayerNames = new HashSet<>();
     }
 
     /**
@@ -92,7 +94,7 @@ public class TrainsReferee implements IReferee {
         private static final int NUM_CARDS_IN_DECK = 250;
 
         private final ITrainMap map;
-        private final List<IPlayer> playersInOrder;
+        private final LinkedHashMap<String, IPlayer> playersInOrder;
         private Function<ITrainMap, List<Destination>> destinationProvider;
         private Supplier<List<RailCard>> deckProvider;
 
@@ -102,7 +104,7 @@ public class TrainsReferee implements IReferee {
          * @param map            the map for the game.
          * @param playersInOrder the players in their turn order.
          */
-        public RefereeBuilder(ITrainMap map, List<IPlayer> playersInOrder) {
+        public RefereeBuilder(ITrainMap map, LinkedHashMap<String, IPlayer> playersInOrder) {
             this.map = map;
             this.playersInOrder = playersInOrder;
             this.destinationProvider = RefereeBuilder::defaultDestinationProvider;
@@ -161,7 +163,7 @@ public class TrainsReferee implements IReferee {
             Objects.requireNonNull(this.deckProvider);
             Objects.requireNonNull(this.destinationProvider);
             Objects.requireNonNull(this.playersInOrder);
-            for (IPlayer player : this.playersInOrder) {
+            for (IPlayer player : this.playersInOrder.values()) {
                 Objects.requireNonNull(player);
             }
             return new TrainsReferee(
@@ -177,8 +179,8 @@ public class TrainsReferee implements IReferee {
 
     private void runGame() {
         int numConsecutiveInsignificantTurns = 0;
-        List<IPlayer> remainingPlayers = this.remainingPlayersInOrder();
-        Iterator<IPlayer> turnOrder = Iterables.cycle(remainingPlayers).iterator();
+        LinkedHashMap<String, IPlayer> remainingPlayers = this.remainingPlayersInOrder();
+        Iterator<Map.Entry<String, IPlayer>> turnOrder = Iterables.cycle(remainingPlayers.entrySet()).iterator();
 
         while (!this.isGameOver(numConsecutiveInsignificantTurns)) {
             boolean significantTurn = this.takePlayerTurn(turnOrder);
@@ -191,33 +193,32 @@ public class TrainsReferee implements IReferee {
     public GameEndReport calculateGameEndReport() {
         List<Integer> finalScoresInTurnOrder = this.refereeGameState.calculatePlayerScores();
         List<PlayerScore> gameReportScores = new ArrayList<>();
-        for (int index = 0; index < this.playersInOrder.size(); index += 1) {
-            if (!this.removedPlayersIndices.contains(index)) {
-                gameReportScores.add(new PlayerScore(index, finalScoresInTurnOrder.remove(0)));
+        for (Map.Entry<String, IPlayer> player : this.playersInOrder.entrySet()) {
+            if (!this.removedPlayerNames.contains(player.getKey())) {
+                gameReportScores.add(new PlayerScore(player.getKey(), finalScoresInTurnOrder.remove(0)));
             }
         }
         gameReportScores.sort(Comparator.comparingInt(s -> s.score));
-        return new GameEndReport(gameReportScores, new HashSet<>(this.removedPlayersIndices));
+        return new GameEndReport(gameReportScores, new HashSet<>(this.removedPlayerNames));
     }
 
-    private List<IPlayer> remainingPlayersInOrder() {
-        List<IPlayer> remainingPlayers = new ArrayList<>(this.playersInOrder);
-        remainingPlayers.removeAll(
-            this.removedPlayersIndices.stream()
-                .map(this.playersInOrder::get)
-                .collect(Collectors.toList()));
+    private LinkedHashMap<String, IPlayer> remainingPlayersInOrder() {
+        LinkedHashMap<String, IPlayer> remainingPlayers = new LinkedHashMap<>(this.playersInOrder);
+        for (String name : this.removedPlayerNames) {
+            remainingPlayers.remove(name);
+        }
         return remainingPlayers;
     }
 
     /**
      * @return boolean indicating whether turn was significant
      */
-    private boolean takePlayerTurn(Iterator<IPlayer> turnOrder) {
-        IPlayer activePlayer = turnOrder.next();
+    private boolean takePlayerTurn(Iterator<Map.Entry<String, IPlayer>> turnOrder) {
+        Map.Entry<String, IPlayer> activePlayer = turnOrder.next();
 
         try {
-            TurnAction turn = activePlayer.takeTurn(this.refereeGameState.getActivePlayerState());
-            TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer);
+            TurnAction turn = activePlayer.getValue().takeTurn(this.refereeGameState.getActivePlayerState());
+            TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer.getValue());
 
             if (turnApplyResult != TurnResult.INVALID) {
                 this.refereeGameState.advanceTurn();
@@ -227,7 +228,7 @@ public class TrainsReferee implements IReferee {
         catch (Exception ignored) {
             // If the player misbehaves, or performs an invalid action, the result id the same.
         }
-        this.removedPlayersIndices.add(this.playersInOrder.indexOf(activePlayer));
+        this.removedPlayerNames.add(activePlayer.getKey());
         turnOrder.remove();
         this.refereeGameState.removeActivePlayer();
         return true;
@@ -253,7 +254,7 @@ public class TrainsReferee implements IReferee {
     }
 
     private int numPlayersRemaining() {
-        return this.playersInOrder.size() - this.removedPlayersIndices.size();
+        return this.playersInOrder.size() - this.removedPlayerNames.size();
     }
 
     // region Initialization
@@ -263,13 +264,14 @@ public class TrainsReferee implements IReferee {
             new ArrayList<>(this.destinationProvider.apply(this.map));
         List<RailCard> deck = this.deckSupplier.get();
         List<IPlayerData> playerDataInTurnOrder = new ArrayList<>();
-        for (int ii = 0; ii < playersInOrder.size(); ii++) {
+
+        for (Map.Entry<String, IPlayer> player : this.playersInOrder.entrySet()) {
             Optional<IPlayerData> thisPlayersData =
-                this.setupPlayer(this.playersInOrder.get(ii), activeDestinationList, deck, map);
+                this.setupPlayer(player.getValue(), activeDestinationList, deck, map);
             if (thisPlayersData.isPresent()) {
                 playerDataInTurnOrder.add(thisPlayersData.get());
             } else {
-                this.removedPlayersIndices.add(ii);
+                this.removedPlayerNames.add(player.getKey());
             }
         }
 

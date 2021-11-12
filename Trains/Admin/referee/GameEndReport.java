@@ -16,26 +16,26 @@ public class GameEndReport {
   public List<PlayerScore> playerRanking;
 
   /** The indices of removed players. */
-  public Set<Integer> removedPlayerTurnOrderIndices;
+  public Set<String> removedPlayerNames;
 
   /**
    * Constructs this report directly from the given data - no defensive copies are made since this
    * is a simple value class.
    *
    * @param playerRanking the ranking of the players and their scores.
-   * @param removedPlayerTurnOrderIndices the indices of removed players.
+   * @param removedPlayerNames the names of removed players.
    */
   public GameEndReport(
-      List<PlayerScore> playerRanking, Set<Integer> removedPlayerTurnOrderIndices) {
+      List<PlayerScore> playerRanking, Set<String> removedPlayerNames) {
     this.playerRanking = playerRanking;
-    this.removedPlayerTurnOrderIndices = removedPlayerTurnOrderIndices;
+    this.removedPlayerNames = removedPlayerNames;
   }
 
   /** Value class for associating a score to a player (identified by an index). */
   public static class PlayerScore {
 
     /** The index identifying the player. */
-    public int playerTurnOrderIndex;
+    public String playerName;
 
     /** Score of the player. */
     public int score;
@@ -43,11 +43,11 @@ public class GameEndReport {
     /**
      * Constructs this from given inputs without validation.
      *
-     * @param playerTurnOrderIndex index of identifying player.
+     * @param playerName name of identifying player.
      * @param score score of the player.
      */
-    public PlayerScore(int playerTurnOrderIndex, int score) {
-      this.playerTurnOrderIndex = playerTurnOrderIndex;
+    public PlayerScore(String playerName, int score) {
+      this.playerName = playerName;
       this.score = score;
     }
   }
