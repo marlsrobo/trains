@@ -46,12 +46,12 @@ public class SingleElimTournamentManager implements ITournamentManager {
         while (!isTournamentOver()) {
             // if there are only enough players left for a single game, run the last game
             if (timeToRunLastRound()) {
-                TournamentResult roundReport = this.runOneRound(tournamentMap, this.remainingPlayers);
+                TournamentResult roundReport = this.runOneRound(tournamentMap);
                 this.updatePlayerStatusesAfterRound(players, roundReport);
                 break;
             }
             // else, keep running rounds of games
-            TournamentResult roundReport = this.runOneRound(tournamentMap, this.remainingPlayers);
+            TournamentResult roundReport = this.runOneRound(tournamentMap);
             this.updatePlayerStatusesAfterRound(players, roundReport);
         }
         TournamentResult result = new TournamentResult(this.remainingPlayers.keySet(), this.cheaters);
@@ -98,23 +98,24 @@ public class SingleElimTournamentManager implements ITournamentManager {
                 || this.remainingPlayers.size() < MIN_PLAYERS_PER_GAME;
     }
 
+    /**
+     * Determines if a final round of games (of a single game) should be played. Returns true
+     * when there are only enough players left in the tournament for a single game.
+     * @return whether the final round should begin in the tournament
+     */
     private boolean timeToRunLastRound() {
         return this.remainingPlayers.size() >= MIN_PLAYERS_PER_GAME
                 && this.remainingPlayers.size() <= MAX_PLAYERS_PER_GAME;
     }
 
     /**
-     * Run a single round of game(s) and report the winners and cheaters from the round.
+     * Run a single round of game(s) with the remaining players and report the winners and cheaters from the round.
      * @param map the map used for the round of games
-     * @param remainingPlayers the remaining players left in the tournament which will be split
-     *                         into individual games for the round
      * @return the TournamentResult of the round containing the names of the winner(s) and cheater(s)
      */
-    private TournamentResult runOneRound(ITrainMap map,
-        LinkedHashMap<String, IPlayer> remainingPlayers) {
+    private TournamentResult runOneRound(ITrainMap map) {
 
-        List<LinkedHashMap<String, IPlayer>> gameAllocation = allocatePlayersToGames(
-            remainingPlayers);
+        List<LinkedHashMap<String, IPlayer>> gameAllocation = allocatePlayersToGames();
         Set<String> winnerNames = new HashSet<>();
         Set<String> cheaterNames = new HashSet<>();
 
@@ -126,27 +127,61 @@ public class SingleElimTournamentManager implements ITournamentManager {
             winnerNames.addAll(report.getWinners());
             cheaterNames.addAll(report.removedPlayerNames);
         }
-
         return new TournamentResult(winnerNames, cheaterNames);
     }
 
     /**
-     * Allocated the given players into a set of games for a single round of games
-     * @param remainingPlayers the players to be divided into games
+     * Allocated the remaining players into a set of games for a single round of games
      * @return the players divided into games (each item in the list represents a single game's players)
      */
-    private List<LinkedHashMap<String, IPlayer>> allocatePlayersToGames(
-            LinkedHashMap<String, IPlayer> remainingPlayers) {
+    private List<LinkedHashMap<String, IPlayer>> allocatePlayersToGames() {
+
+//        List<LinkedHashMap<String, IPlayer>> result = new ArrayList<>();
+
+        int numFullGames = numGamesWithMaxPlayers();
+
+        Iterator<Entry<String, IPlayer>> playersInAgeOrder = this.remainingPlayers.entrySet().iterator();
+
+        List<LinkedHashMap<String, IPlayer>> result = addPlayersToFullGames(numFullGames, playersInAgeOrder);
+        // if every game didn't have a max number of players, make an additional game for the round
+        if (playersInAgeOrder.hasNext()) {
+            result.add(addPlayersInFinalGame(playersInAgeOrder));
+        }
+        return result;
+
+
+
+//        for (int ii = 0; ii < numFullGames; ii++) {
+//            LinkedHashMap<String, IPlayer> playersInGame = new LinkedHashMap<>();
+//            for (int jj = 0; jj < MAX_PLAYERS_PER_GAME; jj++) {
+//                Entry<String, IPlayer> player = playersInAgeOrder.next();
+//                playersInGame.put(player.getKey(), player.getValue());
+//            }
+//            result.add(playersInGame);
+//        }
+
+//        LinkedHashMap<String, IPlayer> playersInFinalGame = new LinkedHashMap<>();
+//        while (playersInAgeOrder.hasNext()) {
+//            Entry<String, IPlayer> player = playersInAgeOrder.next();
+//
+//            playersInFinalGame.put(player.getKey(), player.getValue());
+//        }
+//        result.add(playersInFinalGame);
+//
+//        return result;
+    }
+
+    /**
+     * Allocates the given players into #numFullGames games of MAX_PLAYERS_PER_GAME size
+     * @param numFullGames the number of full games to create
+     * @param playersInAgeOrder the players to allocate into the games (provided in the desired order)
+     * @return the players split into individual games
+     */
+    private List<LinkedHashMap<String, IPlayer>> addPlayersToFullGames(
+            int numFullGames,
+            Iterator<Entry<String, IPlayer>> playersInAgeOrder) {
 
         List<LinkedHashMap<String, IPlayer>> result = new ArrayList<>();
-
-        int leftoverPlayers = remainingPlayers.size() % MAX_PLAYERS_PER_GAME;
-        int numFullGames = remainingPlayers.size() / MAX_PLAYERS_PER_GAME;
-        if (leftoverPlayers < MIN_PLAYERS_PER_GAME && leftoverPlayers != 0) {
-            numFullGames -= 1;
-        }
-
-        Iterator<Entry<String, IPlayer>> playersInAgeOrder = remainingPlayers.entrySet().iterator();
         for (int ii = 0; ii < numFullGames; ii++) {
             LinkedHashMap<String, IPlayer> playersInGame = new LinkedHashMap<>();
             for (int jj = 0; jj < MAX_PLAYERS_PER_GAME; jj++) {
@@ -155,16 +190,36 @@ public class SingleElimTournamentManager implements ITournamentManager {
             }
             result.add(playersInGame);
         }
+        return result;
+    }
 
+    /**
+     * Create a final game for a round of games with the remaining players left over after
+     * allocating the previous players into full games
+     * @param playersInAgeOrder the remaining players to be allocated
+     * @return the final game for the round of games containing the players in the game
+     */
+    private LinkedHashMap<String, IPlayer> addPlayersInFinalGame(Iterator<Entry<String, IPlayer>> playersInAgeOrder) {
         LinkedHashMap<String, IPlayer> playersInFinalGame = new LinkedHashMap<>();
         while (playersInAgeOrder.hasNext()) {
             Entry<String, IPlayer> player = playersInAgeOrder.next();
 
             playersInFinalGame.put(player.getKey(), player.getValue());
         }
-        result.add(playersInFinalGame);
+        return playersInFinalGame;
+    }
 
-        return result;
+    /**
+     * Calculates the number of games that have the maximum number of players for a round of Trains
+     * @return the number of games with max number of players
+     */
+    private int numGamesWithMaxPlayers() {
+        int leftoverPlayers = this.remainingPlayers.size() % MAX_PLAYERS_PER_GAME;
+        int numFullGames = this.remainingPlayers.size() / MAX_PLAYERS_PER_GAME;
+        if (leftoverPlayers < MIN_PLAYERS_PER_GAME && leftoverPlayers != 0) {
+            numFullGames -= 1;
+        }
+        return numFullGames;
     }
 
     /**
