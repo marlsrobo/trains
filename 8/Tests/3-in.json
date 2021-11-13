@@ -1,77 +1,12 @@
 {
   "width": 800,
   "height": 800,
-  "cities": [
-    ["Boston", [700, 200]],
-    ["NYC", [600, 250]],
-    ["LA", [50, 700]],
-    ["Houston", [400, 700]],
-    ["Miami", [700, 700]],
-    ["Seattle", [100, 100]],
-    ["DC", [600, 350]],
-    ["San Francisco", [50, 400]],
-    ["Philadelphia", [600, 300]],
-    ["Phoenix", [250, 500]],
-    ["Las Vegas", [200, 400]],
-    ["Salt Lake City", [250, 300]],
-    ["Chicago", [500, 225]],
-    ["Detroit", [550, 250]]
-  ],
-  "connections": {
-    "LA": {
-      "San Francisco": {
-        "red": 4
-      },
-      "Phoenix": {
-        "red": 5
-      },
-      "Las Vegas": {
-        "red": 3
-      }
-    },
-    "Chicago": {
-      "Detroit": {
-        "red": 3
-      }
-    },
-    "Detroit": {
-      "Philadelphia": {
-        "red": 5
-      },
-      "Houston": {
-        "red": 4
-      }
-    },
-    "NYC": {
-      "Philadelphia": {
-        "red": 3
-      }
-    },
-    "Boston": {
-      "NYC": {
-        "red": 4
-      }
-    },
-    "DC": {
-      "NYC": {
-        "red": 4
-      }
-    },
-    "Miami": {
-      "NYC": {
-        "red": 5
-      }
-    },
-    "Salt Lake City": {
-      "Seattle": {
-        "red": 5
-      }
-    }
-  }
+  "cities": [],
+  "connections": {}
 }
 
-[["marley", "Cheat"], ["Ronan", "Cheat"], ["bob", "Cheat"], ["joe", "Cheat"],
-  ["alex", "Cheat"], ["katie", "Cheat"], ["rebecca", "Cheat"], ["DEBORAH", "Cheat"]
+[["marley", "Cheat"], ["Ronan", "Buy-Now"], ["bob", "Hold-10"], ["joe", "Cheat"],
+  ["alex", "Buy-Now"], ["katie", "Cheat"], ["rebecca", "Hold-10"], ["deborah", "Hold-10"]
 ]
 
 ["white", "blue", "green", "white",

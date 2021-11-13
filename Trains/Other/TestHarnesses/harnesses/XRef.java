@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import action.TurnAction;
-import game_state.IPlayerGameState;
 import game_state.RailCard;
 import map.Destination;
 import map.ITrainMap;
@@ -29,11 +27,9 @@ import player.Player;
 import referee.GameEndReport;
 import referee.IReferee;
 import referee.TrainsReferee;
-import strategy.Hold10;
 import utils.ComparatorUtils;
 import utils.RailCardUtils;
 
-import static harnesses.XLegal.playerStateFromJson;
 import static harnesses.XMap.trainMapFromJson;
 
 public class XRef {
@@ -96,8 +92,10 @@ public class XRef {
   }
 
   private static JsonArray rankToJson(List<String> rank) {
+    List<String> sortedRank = new ArrayList<>(rank);
+    Collections.sort(sortedRank);
     JsonArray rankJson = new JsonArray();
-    for (String name : rank) {
+    for (String name : sortedRank) {
       rankJson.add(new JsonPrimitive(name));
     }
     return rankJson;

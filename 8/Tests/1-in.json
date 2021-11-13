@@ -20,16 +20,13 @@
   "connections": {
     "LA": {
       "San Francisco": {
-        "red": 4,
-        "blue": 3
+        "red": 4
       },
       "Phoenix": {
-        "white": 5
+        "red": 5
       },
       "Las Vegas": {
-        "green": 3,
-        "red": 3,
-        "blue": 4
+        "red": 3
       }
     },
     "Chicago": {
@@ -39,106 +36,105 @@
     },
     "Detroit": {
       "Philadelphia": {
-        "blue": 5
+        "red": 5
       },
       "Houston": {
-        "white": 4,
-        "green": 5
+        "red": 4
       }
     },
     "NYC": {
       "Philadelphia": {
-        "white": 3,
-        "green": 4
+        "red": 3
       }
     },
     "Boston": {
       "NYC": {
-        "red": 4,
-        "blue": 4
+        "red": 4
       }
     },
     "DC": {
       "NYC": {
-        "green": 4
+        "red": 4
       }
     },
     "Miami": {
       "NYC": {
-        "blue": 5
+        "red": 5
       }
     },
     "Salt Lake City": {
       "Seattle": {
-        "white": 5
+        "red": 5
       }
     }
   }
 }
 
-[["marley", "Hold-10"], ["Ronan", "Buy-Now"]]
+[["marley", "Cheat"], ["Ronan", "Buy-Now"], ["bob", "Hold-10"], ["joe", "Cheat"],
+  ["alex", "Buy-Now"], ["katie", "Cheat"], ["rebecca", "Hold-10"], ["deborah", "Hold-10"]
+]
 
-["red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-  "red", "blue", "green", "white",
-"red", "blue"]
+["white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue", "green", "white",
+  "white", "blue"]
