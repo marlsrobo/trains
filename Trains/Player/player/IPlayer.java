@@ -50,4 +50,8 @@ public interface IPlayer {
    * @param thisPlayerWon true if this player won, false otherwise.
    */
   void winNotification(boolean thisPlayerWon);
+
+  ITrainMap startTournament(boolean inTournament);
+
+  void tournamentResult(boolean thisPlayerWon);
 }
