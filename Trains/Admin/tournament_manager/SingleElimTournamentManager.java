@@ -13,13 +13,23 @@ import map.TrainMap;
 import player.IPlayer;
 import referee.GameEndReport;
 import referee.IReferee;
-import referee.TrainsReferee;
 import referee.TrainsReferee.RefereeBuilder;
 
+/**
+ * Representation of a tournament manager for a game of Trains that uses single elimination for
+ * tournament rounds. Handles notifying Players that they have been chosen for a tournament,
+ * allocating Players and Referees to games, deciding which map to use for the tournament, running
+ * the tournament, getting the results of rounds of games, and reporting the result of the entire
+ * tournament.
+ */
 public class SingleElimTournamentManager implements ITournamentManager {
 
     private final static int MIN_PLAYERS_PER_GAME = 2;
     private final static int MAX_PLAYERS_PER_GAME = 8;
+
+    private LinkedHashMap<String, IPlayer> remainingPlayers;
+    private LinkedHashMap<String, IPlayer> previousRemainingPlayers = new LinkedHashMap<>();
+    private Set<String> cheaters = new HashSet<>();
 
 
     /**
@@ -31,31 +41,38 @@ public class SingleElimTournamentManager implements ITournamentManager {
     @Override
     public TournamentResult runTournament(LinkedHashMap<String, IPlayer> players) {
         ITrainMap tournamentMap = startTournament(players);
-        Set<String> cheaters = new HashSet<>();
-        LinkedHashMap<String, IPlayer> remainingPlayers = new LinkedHashMap<>(players);
-        LinkedHashMap<String, IPlayer> previousRemainingPlayers = new LinkedHashMap<>();
+        this.remainingPlayers = new LinkedHashMap<>(players);
 
-        while (!isTournamentOver(remainingPlayers, previousRemainingPlayers)) {
-            TournamentResult roundReport = this.runOneRound(tournamentMap, remainingPlayers);
-            previousRemainingPlayers = remainingPlayers;
-            remainingPlayers = new LinkedHashMap<>();
-            for (String winnerName : roundReport.winners) {
-                remainingPlayers.put(winnerName, players.get(winnerName));
+        while (!isTournamentOver()) {
+            // if there are only enough players left for a single game, run the last game
+            if (timeToRunLastRound()) {
+                TournamentResult roundReport = this.runOneRound(tournamentMap, this.remainingPlayers);
+                this.updatePlayerStatusesAfterRound(players, roundReport);
+                break;
             }
-            cheaters.addAll(roundReport.cheaters);
+            // else, keep running rounds of games
+            TournamentResult roundReport = this.runOneRound(tournamentMap, this.remainingPlayers);
+            this.updatePlayerStatusesAfterRound(players, roundReport);
         }
-        if (remainingPlayers.size() >= MIN_PLAYERS_PER_GAME
-            && remainingPlayers.size() <= MAX_PLAYERS_PER_GAME) {
-            TournamentResult roundReport = this.runOneRound(tournamentMap, remainingPlayers);
-            remainingPlayers = new LinkedHashMap<>();
-            for (String winnerName : roundReport.winners) {
-                remainingPlayers.put(winnerName, players.get(winnerName));
-            }
-            cheaters.addAll(roundReport.cheaters);
-        }
-        TournamentResult result = new TournamentResult(remainingPlayers.keySet(), cheaters);
+        TournamentResult result = new TournamentResult(this.remainingPlayers.keySet(), this.cheaters);
         reportTournamentResultToPlayers(result, players);
         return result;
+    }
+
+    /**
+     * After a round of games has finished, updates the remaining players in the tournament as the
+     * winners of the last round, and adds any cheaters to the aggregate list of cheating players
+     * @param players the initial list of players who were selected for the tournament
+     * @param roundReport the report of winners and cheaters from the round of games just played
+     */
+    private void updatePlayerStatusesAfterRound(LinkedHashMap<String, IPlayer> players,
+                                                TournamentResult roundReport) {
+        this.previousRemainingPlayers = this.remainingPlayers;
+        this.remainingPlayers = new LinkedHashMap<>();
+        for (String winnerName : roundReport.getWinners()) {
+            this.remainingPlayers.put(winnerName, players.get(winnerName));
+        }
+        this.cheaters.addAll(roundReport.getCheaters());
     }
 
     /**
@@ -65,46 +82,62 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * @return the chosen map for the tournament
      */
     private ITrainMap startTournament(LinkedHashMap<String, IPlayer> players) {
+        // TODO IMPLEMENT
         Set<ITrainMap> submittedMaps;
         return new TrainMap(new HashSet<>(), new HashSet<>());
     }
 
     /**
-     * Determines if the tournament is over
-     *
-     * @param remainingPlayers
-     * @param previousRemainingPlayers
-     * @return
+     * Determines if the tournament is over. The tournament is over when two tournament rounds
+     * of games in a row produce the exact same winners, or when there are too few players for
+     * a single game.
+     * @return whether the tournament should end
      */
-    private boolean isTournamentOver(LinkedHashMap<String, IPlayer> remainingPlayers,
-        LinkedHashMap<String, IPlayer> previousRemainingPlayers) {
-        return remainingPlayers == previousRemainingPlayers
-            || remainingPlayers.size() < MIN_PLAYERS_PER_GAME
-            || remainingPlayers.size() <= MAX_PLAYERS_PER_GAME;
+    private boolean isTournamentOver() {
+        return this.remainingPlayers == this.previousRemainingPlayers
+                || this.remainingPlayers.size() < MIN_PLAYERS_PER_GAME;
     }
 
+    private boolean timeToRunLastRound() {
+        return this.remainingPlayers.size() >= MIN_PLAYERS_PER_GAME
+                && this.remainingPlayers.size() <= MAX_PLAYERS_PER_GAME;
+    }
+
+    /**
+     * Run a single round of game(s) and report the winners and cheaters from the round.
+     * @param map the map used for the round of games
+     * @param remainingPlayers the remaining players left in the tournament which will be split
+     *                         into individual games for the round
+     * @return the TournamentResult of the round containing the names of the winner(s) and cheater(s)
+     */
     private TournamentResult runOneRound(ITrainMap map,
         LinkedHashMap<String, IPlayer> remainingPlayers) {
 
         List<LinkedHashMap<String, IPlayer>> gameAllocation = allocatePlayersToGames(
             remainingPlayers);
-        TournamentResult roundResult = new TournamentResult();
+        Set<String> winnerNames = new HashSet<>();
+        Set<String> cheaterNames = new HashSet<>();
 
         for (LinkedHashMap<String, IPlayer> game : gameAllocation) {
             // TODO: pass in methods to shuffle destinations and return deck to ref here
             IReferee ref = new RefereeBuilder(map, game).build();
-
             ref.playGame();
             GameEndReport report = ref.calculateGameEndReport();
-            roundResult.winners.addAll(report.getWinners());
-            roundResult.cheaters.addAll(report.removedPlayerNames);
+            winnerNames.addAll(report.getWinners());
+            cheaterNames.addAll(report.removedPlayerNames);
         }
 
-        return roundResult;
+        return new TournamentResult(winnerNames, cheaterNames);
     }
 
+    /**
+     * Allocated the given players into a set of games for a single round of games
+     * @param remainingPlayers the players to be divided into games
+     * @return the players divided into games (each item in the list represents a single game's players)
+     */
     private List<LinkedHashMap<String, IPlayer>> allocatePlayersToGames(
-        LinkedHashMap<String, IPlayer> remainingPlayers) {
+            LinkedHashMap<String, IPlayer> remainingPlayers) {
+
         List<LinkedHashMap<String, IPlayer>> result = new ArrayList<>();
 
         int leftoverPlayers = remainingPlayers.size() % MAX_PLAYERS_PER_GAME;
@@ -124,7 +157,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
         }
 
         LinkedHashMap<String, IPlayer> playersInFinalGame = new LinkedHashMap<>();
-        for (; playersInAgeOrder.hasNext(); ) {
+        while (playersInAgeOrder.hasNext()) {
             Entry<String, IPlayer> player = playersInAgeOrder.next();
 
             playersInFinalGame.put(player.getKey(), player.getValue());
@@ -134,11 +167,16 @@ public class SingleElimTournamentManager implements ITournamentManager {
         return result;
     }
 
+    /**
+     * Informs each of the given players if they won or lost the tournament
+     * @param result the TournamentResult containing the names of the winner(s) and cheater(s)
+     *               of the tournament
+     * @param players the players who participated in the tournament
+     */
     private void reportTournamentResultToPlayers(TournamentResult result,
-        LinkedHashMap<String, IPlayer> players) {
-
+                                                 LinkedHashMap<String, IPlayer> players) {
         for (Entry<String, IPlayer> player : players.entrySet()) {
-            player.getValue().tournamentResult(result.winners.contains(player.getKey()));
+            player.getValue().resultOfTournament(result.getWinners().contains(player.getKey()));
         }
     }
 }

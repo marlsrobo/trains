@@ -51,7 +51,18 @@ public interface IPlayer {
    */
   void winNotification(boolean thisPlayerWon);
 
+  /**
+   * Alerts the player that they have been chosen to participate in a tournament and that it is
+   * about to begin. Asks for the player to return an ITrainsMap to be considered to be used for
+   * the tournament.
+   * @param inTournament whether the player has been chosen for the tournament
+   * @return an implementation of a map to possibly be used for the entire tournament
+   */
   ITrainMap startTournament(boolean inTournament);
 
-  void tournamentResult(boolean thisPlayerWon);
+  /**
+   * Tells this player if they won the tournament that they participated in
+   * @param thisPlayerWon whether they won the tournament (true = won, false = lost)
+   */
+  void resultOfTournament(boolean thisPlayerWon);
 }

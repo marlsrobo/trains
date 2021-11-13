@@ -87,4 +87,7 @@ public class Player implements IPlayer {
 
   @Override
   public void winNotification(boolean thisPlayerWon) {}
+
+  @Override
+  public void resultOfTournament(boolean thisPlayerWon) {}
 }
