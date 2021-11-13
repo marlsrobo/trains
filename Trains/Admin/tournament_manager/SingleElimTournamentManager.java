@@ -91,6 +91,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
         TournamentResult roundResult = new TournamentResult();
 
         for (LinkedHashMap<String, IPlayer> game : gameAllocation) {
+            // TODO: pass in methods to shuffle destinations and return deck to ref here
             IReferee ref = new RefereeBuilder(map, game).build();
 
             ref.playGame();
@@ -123,8 +124,8 @@ public class SingleElimTournamentManager implements ITournamentManager {
         }
 
         LinkedHashMap<String, IPlayer> playersInFinalGame = new LinkedHashMap<>();
-        for (Iterator<Entry<String, IPlayer>> it = playersInAgeOrder; it.hasNext(); ) {
-            Entry<String, IPlayer> player = it.next();
+        for (; playersInAgeOrder.hasNext(); ) {
+            Entry<String, IPlayer> player = playersInAgeOrder.next();
 
             playersInFinalGame.put(player.getKey(), player.getValue());
         }
