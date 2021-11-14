@@ -1,18 +1,28 @@
 package tournament_manager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import game_state.RailCard;
+import map.Destination;
 import map.ITrainMap;
 import map.TrainMap;
 import player.IPlayer;
 import referee.GameEndReport;
 import referee.IReferee;
+import referee.TrainsReferee;
 import referee.TrainsReferee.RefereeBuilder;
 
 /**
@@ -30,6 +40,119 @@ public class SingleElimTournamentManager implements ITournamentManager {
     private LinkedHashMap<String, IPlayer> remainingPlayers;
     private LinkedHashMap<String, IPlayer> previousRemainingPlayers = new LinkedHashMap<>();
     private Set<String> cheaters = new HashSet<>();
+
+    private final Function<ITrainMap, List<Destination>> destinationProvider;
+    private final Supplier<List<RailCard>> deckSupplier;
+    private final Function<List<ITrainMap>, ITrainMap> mapSelector;
+
+    private SingleElimTournamentManager(Function<ITrainMap, List<Destination>> destinationProvider,
+                                        Supplier<List<RailCard>> deckSupplier,
+                                        Function<List<ITrainMap>, ITrainMap> mapSelector) {
+        this.destinationProvider = destinationProvider;
+        this.deckSupplier = deckSupplier;
+        this.mapSelector = mapSelector;
+
+    }
+
+    /**
+     * To construct instances of this referee, requiring a map and initial number of players, and
+     * optionally a means of ordering potential destinations and creating a deck.
+     */
+    public static class SingleElimTournamentManagerBuilder {
+
+        private static final int NUM_CARDS_IN_DECK = 250;
+
+        private Function<ITrainMap, List<Destination>> destinationProvider;
+        private Supplier<List<RailCard>> deckProvider;
+        private Function<List<ITrainMap>, ITrainMap> mapSelector;
+
+
+        /**
+         * Constructs this builder from the required map and players.
+         *
+         * @param map            the map for the game.
+         * @param playersInOrder the players in their turn order.
+         */
+        public SingleElimTournamentManagerBuilder() {
+            this.destinationProvider = SingleElimTournamentManagerBuilder::defaultDestinationProvider;
+            this.deckProvider = SingleElimTournamentManagerBuilder::defaultDeckSupplier;
+            this.mapSelector = SingleElimTournamentManagerBuilder::defaultMapSelector;
+        }
+
+        private static List<Destination> defaultDestinationProvider(ITrainMap map) {
+            List<Destination> result =
+                    map.getAllPossibleDestinations().stream()
+                            .map((pair) -> new Destination(pair))
+                            .collect(Collectors.toList());
+            Collections.shuffle(result);
+            return result;
+        }
+
+        private static List<RailCard> defaultDeckSupplier() {
+            List<RailCard> result = new ArrayList<>();
+            Random cardSelector = new Random();
+            RailCard[] railCardOptions = RailCard.values();
+            for (int cardNumber = 0; cardNumber < NUM_CARDS_IN_DECK; cardNumber += 1) {
+                result.add(railCardOptions[cardSelector.nextInt(railCardOptions.length)]);
+            }
+            return result;
+        }
+
+        private static ITrainMap defaultMapSelector(List<ITrainMap> maps) {
+            if (maps.isEmpty()) {
+                throw new IllegalArgumentException("Must be given at least 1 map to select");
+            }
+            return maps.get(0);
+        }
+
+        /**
+         * Updates the destination provider.
+         *
+         * @param destinationProvider new destination provider.
+         * @return the updated builder for chaining.
+         */
+        public SingleElimTournamentManagerBuilder destinationProvider(
+                Function<ITrainMap, List<Destination>> destinationProvider) {
+            this.destinationProvider = destinationProvider;
+            return this;
+        }
+
+        /**
+         * Updates teh deck provider.
+         *
+         * @param deckProvider new deck provider.
+         * @return the updated builder for chaining.
+         */
+        public SingleElimTournamentManagerBuilder deckProvider(Supplier<List<RailCard>> deckProvider) {
+            this.deckProvider = deckProvider;
+            return this;
+        }
+
+        /**
+         * Updates teh deck provider.
+         *
+         * @param deckProvider new deck provider.
+         * @return the updated builder for chaining.
+         */
+        public SingleElimTournamentManagerBuilder mapSelector(Function<List<ITrainMap>, ITrainMap> mapSelector) {
+            this.mapSelector = mapSelector;
+            return this;
+        }
+
+        /**
+         * Builds the referee, throwing exceptions if any inputs are null.
+         *
+         * @return the constructed referee, ready to play a game.
+         */
+        public SingleElimTournamentManager build() {
+            Objects.requireNonNull(this.deckProvider);
+            Objects.requireNonNull(this.destinationProvider);
+            Objects.requireNonNull(this.mapSelector);
+
+            return new SingleElimTournamentManager(
+                    this.destinationProvider, this.deckProvider, this.mapSelector);
+        }
+    }
 
 
     /**
@@ -121,7 +244,10 @@ public class SingleElimTournamentManager implements ITournamentManager {
 
         for (LinkedHashMap<String, IPlayer> game : gameAllocation) {
             // TODO: pass in methods to shuffle destinations and return deck to ref here
-            IReferee ref = new RefereeBuilder(map, game).build();
+            IReferee ref = new RefereeBuilder(map, game)
+                    .deckProvider(this.deckSupplier)
+                    .destinationProvider(this.destinationProvider)
+                    .build();
             ref.playGame();
             GameEndReport report = ref.calculateGameEndReport();
             winnerNames.addAll(report.getWinners());
@@ -135,92 +261,45 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * @return the players divided into games (each item in the list represents a single game's players)
      */
     private List<LinkedHashMap<String, IPlayer>> allocatePlayersToGames() {
-
-//        List<LinkedHashMap<String, IPlayer>> result = new ArrayList<>();
-
-        int numFullGames = numGamesWithMaxPlayers();
-
-        Iterator<Entry<String, IPlayer>> playersInAgeOrder = this.remainingPlayers.entrySet().iterator();
-
-        List<LinkedHashMap<String, IPlayer>> result = addPlayersToFullGames(numFullGames, playersInAgeOrder);
-        // if every game didn't have a max number of players, make an additional game for the round
-        if (playersInAgeOrder.hasNext()) {
-            result.add(addPlayersInFinalGame(playersInAgeOrder));
+        try {
+            return allocatePlayersAcc(this.remainingPlayers, MAX_PLAYERS_PER_GAME);
         }
-        return result;
-
-
-
-//        for (int ii = 0; ii < numFullGames; ii++) {
-//            LinkedHashMap<String, IPlayer> playersInGame = new LinkedHashMap<>();
-//            for (int jj = 0; jj < MAX_PLAYERS_PER_GAME; jj++) {
-//                Entry<String, IPlayer> player = playersInAgeOrder.next();
-//                playersInGame.put(player.getKey(), player.getValue());
-//            }
-//            result.add(playersInGame);
-//        }
-
-//        LinkedHashMap<String, IPlayer> playersInFinalGame = new LinkedHashMap<>();
-//        while (playersInAgeOrder.hasNext()) {
-//            Entry<String, IPlayer> player = playersInAgeOrder.next();
-//
-//            playersInFinalGame.put(player.getKey(), player.getValue());
-//        }
-//        result.add(playersInFinalGame);
-//
-//        return result;
+        catch (NotEnoughPlayersException e) {
+            throw new IllegalStateException("Min and max players per game are invalid");
+        }
     }
 
-    /**
-     * Allocates the given players into #numFullGames games of MAX_PLAYERS_PER_GAME size
-     * @param numFullGames the number of full games to create
-     * @param playersInAgeOrder the players to allocate into the games (provided in the desired order)
-     * @return the players split into individual games
-     */
-    private List<LinkedHashMap<String, IPlayer>> addPlayersToFullGames(
-            int numFullGames,
-            Iterator<Entry<String, IPlayer>> playersInAgeOrder) {
+    private List<LinkedHashMap<String, IPlayer>> allocatePlayersAcc(LinkedHashMap<String, IPlayer> playersToAllocate,
+                                                                    int playersPerGame) throws NotEnoughPlayersException {
 
-        List<LinkedHashMap<String, IPlayer>> result = new ArrayList<>();
-        for (int ii = 0; ii < numFullGames; ii++) {
-            LinkedHashMap<String, IPlayer> playersInGame = new LinkedHashMap<>();
-            for (int jj = 0; jj < MAX_PLAYERS_PER_GAME; jj++) {
-                Entry<String, IPlayer> player = playersInAgeOrder.next();
-                playersInGame.put(player.getKey(), player.getValue());
-            }
-            result.add(playersInGame);
+        if (playersToAllocate.size() == 0) {
+            return new ArrayList<>();
         }
+        if (playersToAllocate.size() < MIN_PLAYERS_PER_GAME) {
+            throw new NotEnoughPlayersException();
+        }
+
+        LinkedHashMap<String, IPlayer> playersForThisGame = new LinkedHashMap<>();
+        LinkedHashMap<String, IPlayer> remainingPlayers = new LinkedHashMap<>(playersToAllocate);
+        Iterator<Entry<String, IPlayer>> remainingPlayersInOrder = remainingPlayers.entrySet().iterator();
+
+        for (int i = 0; i < playersPerGame && remainingPlayersInOrder.hasNext(); i++) {
+            Entry<String, IPlayer> nextPlayer = remainingPlayersInOrder.next();
+            remainingPlayers.remove(nextPlayer.getKey());
+            playersForThisGame.put(nextPlayer.getKey(), nextPlayer.getValue());
+        }
+        List<LinkedHashMap<String, IPlayer>> result;
+        try {
+            result = allocatePlayersAcc(remainingPlayers, playersPerGame);
+        }
+        catch (NotEnoughPlayersException e) {
+            result = allocatePlayersAcc(playersToAllocate, playersPerGame - 1);
+        }
+        result.add(playersForThisGame);
         return result;
     }
 
-    /**
-     * Create a final game for a round of games with the remaining players left over after
-     * allocating the previous players into full games
-     * @param playersInAgeOrder the remaining players to be allocated
-     * @return the final game for the round of games containing the players in the game
-     */
-    private LinkedHashMap<String, IPlayer> addPlayersInFinalGame(Iterator<Entry<String, IPlayer>> playersInAgeOrder) {
-        LinkedHashMap<String, IPlayer> playersInFinalGame = new LinkedHashMap<>();
-        while (playersInAgeOrder.hasNext()) {
-            Entry<String, IPlayer> player = playersInAgeOrder.next();
-
-            playersInFinalGame.put(player.getKey(), player.getValue());
-        }
-        return playersInFinalGame;
-    }
-
-    /**
-     * Calculates the number of games that have the maximum number of players for a round of Trains
-     * @return the number of games with max number of players
-     */
-    private int numGamesWithMaxPlayers() {
-        int leftoverPlayers = this.remainingPlayers.size() % MAX_PLAYERS_PER_GAME;
-        int numFullGames = this.remainingPlayers.size() / MAX_PLAYERS_PER_GAME;
-        if (leftoverPlayers < MIN_PLAYERS_PER_GAME && leftoverPlayers != 0) {
-            numFullGames -= 1;
-        }
-        return numFullGames;
-    }
+    private static class NotEnoughPlayersException extends Exception {}
 
     /**
      * Informs each of the given players if they won or lost the tournament
