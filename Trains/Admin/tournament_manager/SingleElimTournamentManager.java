@@ -54,10 +54,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
 
     }
 
-    /**
-     * To construct instances of this referee, requiring a map and initial number of players, and
-     * optionally a means of ordering potential destinations and creating a deck.
-     */
+
     public static class SingleElimTournamentManagerBuilder {
 
         private static final int NUM_CARDS_IN_DECK = 250;
@@ -67,12 +64,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
         private Function<List<ITrainMap>, ITrainMap> mapSelector;
 
 
-        /**
-         * Constructs this builder from the required map and players.
-         *
-         * @param map            the map for the game.
-         * @param playersInOrder the players in their turn order.
-         */
+
         public SingleElimTournamentManagerBuilder() {
             this.destinationProvider = SingleElimTournamentManagerBuilder::defaultDestinationProvider;
             this.deckProvider = SingleElimTournamentManagerBuilder::defaultDeckSupplier;
@@ -105,45 +97,26 @@ public class SingleElimTournamentManager implements ITournamentManager {
             return maps.get(0);
         }
 
-        /**
-         * Updates the destination provider.
-         *
-         * @param destinationProvider new destination provider.
-         * @return the updated builder for chaining.
-         */
+
         public SingleElimTournamentManagerBuilder destinationProvider(
                 Function<ITrainMap, List<Destination>> destinationProvider) {
             this.destinationProvider = destinationProvider;
             return this;
         }
 
-        /**
-         * Updates teh deck provider.
-         *
-         * @param deckProvider new deck provider.
-         * @return the updated builder for chaining.
-         */
+
         public SingleElimTournamentManagerBuilder deckProvider(Supplier<List<RailCard>> deckProvider) {
             this.deckProvider = deckProvider;
             return this;
         }
 
-        /**
-         * Updates teh deck provider.
-         *
-         * @param deckProvider new deck provider.
-         * @return the updated builder for chaining.
-         */
+
         public SingleElimTournamentManagerBuilder mapSelector(Function<List<ITrainMap>, ITrainMap> mapSelector) {
             this.mapSelector = mapSelector;
             return this;
         }
 
-        /**
-         * Builds the referee, throwing exceptions if any inputs are null.
-         *
-         * @return the constructed referee, ready to play a game.
-         */
+
         public SingleElimTournamentManager build() {
             Objects.requireNonNull(this.deckProvider);
             Objects.requireNonNull(this.destinationProvider);
@@ -205,9 +178,11 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * @return the chosen map for the tournament
      */
     private ITrainMap startTournament(LinkedHashMap<String, IPlayer> players) {
-        // TODO IMPLEMENT
-        Set<ITrainMap> submittedMaps;
-        return new TrainMap(new HashSet<>(), new HashSet<>());
+        List<ITrainMap> submittedMaps = new ArrayList<>();
+        for (IPlayer player : players.values()) {
+            submittedMaps.add(player.startTournament(true));
+        }
+        return this.mapSelector.apply(submittedMaps);
     }
 
     /**
