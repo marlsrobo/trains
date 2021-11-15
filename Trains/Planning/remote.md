@@ -2,6 +2,9 @@
 
 ![Remote Collaboration Protocol](remote-collaboration-protocol.jpeg)
 
+Arrows in the above diagram with empty arrow heads represent communication over the connection that
+was established at the start.
+
 ## JSON Formats
 The JSON messages passed between the client and server, and client and ProxyPlayer are sent using the following formats.
 ### Player Name as JSON
@@ -120,8 +123,18 @@ A Tournament Result is a Boolean.
 ## Explanation
 The new components in this diagram are the ProxyPlayer, the Client, and the Server.  
 
-The Client is a customer of our company, and has implemented a player that they would like to 
+The Client is a customer of our company, and has implemented a player that they would like to have 
+participate in a tournament. They are responsible for initiating the connection with the server, 
+and should respond to all further communication according to the above diagram and JSON formats. If
+they do not, they will be removed from the tournament.
 
-The Server
+The Server is responsible for accepting connections from Clients, and starting the tournament when
+it is appropriate.
 
-The ProxyPlayer is responsible for sending and re
+The ProxyPlayer is responsible for sending and receiving messages between the Tournament Manager and
+Client, and Referee and Client. It will implement the Player interface defined in player-interface.md
+and manager-player-interface.md, as well as the Remote-Proxy pattern with the connection to the 
+Client. Each method in the ProxyPlayer will send and receive data to the Client in the JSON format 
+defined above. The ProxyPlayer is responsible for reporting a timeout if the Client takes too long 
+to respond to a message. It is also responsible for checking that the JSON responses from the Client
+are well-formed, but not that they are valid.
