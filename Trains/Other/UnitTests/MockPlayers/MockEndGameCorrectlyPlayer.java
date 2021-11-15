@@ -11,6 +11,7 @@ import player.IPlayer;
 import player.Player;
 import strategy.Hold10;
 import action.TurnAction;
+import test_utils.MapUtils;
 
 public class MockEndGameCorrectlyPlayer implements IPlayer {
     private Player underlyingPlayer;
@@ -44,4 +45,12 @@ public class MockEndGameCorrectlyPlayer implements IPlayer {
     public void winNotification(boolean thisPlayerWon) {
         this.underlyingPlayer.winNotification(thisPlayerWon);
     }
+
+    @Override
+    public ITrainMap startTournament(boolean inTournament) {
+        return MapUtils.createDefaultMap();
+    }
+
+    @Override
+    public void resultOfTournament(boolean thisPlayerWon) {}
 }

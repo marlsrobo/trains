@@ -11,6 +11,7 @@ import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
 import action.TurnAction;
+import test_utils.MapUtils;
 
 public class MockDrawCardsPlayer implements IPlayer {
     private int numCardsDrawn;
@@ -46,4 +47,12 @@ public class MockDrawCardsPlayer implements IPlayer {
     public void winNotification(boolean thisPlayerWon) {
 
     }
+
+    @Override
+    public ITrainMap startTournament(boolean inTournament) {
+        return MapUtils.createDefaultMap();
+    }
+
+    @Override
+    public void resultOfTournament(boolean thisPlayerWon) {}
 }
