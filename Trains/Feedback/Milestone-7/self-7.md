@@ -32,11 +32,11 @@ https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44
 
 Item 2 under functionality in our ToDo list related to the player game state, and was fixed in Milestone 5.  
 "add a method to determine all connections that can still be acquired for a specific Player"  
-https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/241b7024e6a05f2269044283804963bae3dee77b/Trains/Common/game_state/IPlayerGameState.java#L32-L38  
-https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/241b7024e6a05f2269044283804963bae3dee77b/Trains/Common/game_state/PlayerGameState.java#L35-L42  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/Trains/Common/game_state/IPlayerGameState.java#L32-L38  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/Trains/Common/game_state/PlayerGameState.java#L35-L42  
 
 Our data definition for player game state is located here:  
-https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/241b7024e6a05f2269044283804963bae3dee77b/Trains/Common/game_state/IPlayerGameState.java#L9-L21
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/Trains/Common/game_state/IPlayerGameState.java#L9-L21
 
 - a purpose statement for the "legality" functionality on states and connections 
 
@@ -92,12 +92,13 @@ and/or `reworked.md`).
 
 Our favorite "debt removal" activity was reworking our return type for a player's action on their turn to use the visitor pattern. It removed two places in our code where we performed a switch statement on the type of the action, both of which were very uncomfortable to look at when we wrote them the first time. After we were reminded of the visitor pattern in class, it was a relief to fix both of those areas and make our design more extensible at the same time.   
 The switches were located at:  
-https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/088f72af6af26443575807d7ad979da2ae093a47/Trains/Other/TestHarnesses/harnesses/XStrategy.java#L48-L56  
-https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/088f72af6af26443575807d7ad979da2ae093a47/Trains/Admin/referee/TrainsReferee.java#L229-L240  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/Trains/Other/TestHarnesses/harnesses/XStrategy.java#L48-L56  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/Trains/Admin/referee/TrainsReferee.java#L229-L240  
 Our visitor to apply the action to the game state is now located at:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/Trains/Player/action/ActionVisitor.java
 We mentioned this change in item 1 in our `reworked.md` here:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/f10d768adb25a25de0f976ad44c1f8aa18ffd03e/7/reworked.md
+
 
 
 
