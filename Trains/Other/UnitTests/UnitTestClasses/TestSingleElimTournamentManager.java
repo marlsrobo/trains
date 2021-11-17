@@ -83,7 +83,7 @@ public class TestSingleElimTournamentManager {
         Assertions.assertTrue(tournamentResultsEquals(actualResult, expectedResult));
     }
 
-/*    @Test
+    @Test
     public void testRunTournamentOnePlayerGivesNullMap() {
         ITournamentManager manager = new SingleElimTournamentManager
                 .SingleElimTournamentManagerBuilder().build();
@@ -95,7 +95,7 @@ public class TestSingleElimTournamentManager {
         cheaters.add("marley");
         TournamentResult expectedResult = new TournamentResult(new HashSet<>(), cheaters);
         Assertions.assertTrue(tournamentResultsEquals(actualResult, expectedResult));
-    }*/
+    }
 
     @Test
     public void testRunTournamentOnePlayerCheatingStrategy() {
