@@ -60,9 +60,6 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * customizable features to be set.
      */
     public static class SingleElimTournamentManagerBuilder {
-
-        private static final int NUM_CARDS_IN_DECK = 250;
-
         private Function<ITrainMap, List<Destination>> destinationProvider;
         private Supplier<List<RailCard>> deckProvider;
         private Function<List<ITrainMap>, ITrainMap> mapSelector;
@@ -71,35 +68,9 @@ public class SingleElimTournamentManager implements ITournamentManager {
          * Construct the default builder for instances of SingleElimTournamentManager.
          */
         public SingleElimTournamentManagerBuilder() {
-            this.destinationProvider = SingleElimTournamentManagerBuilder::defaultDestinationProvider;
-            this.deckProvider = SingleElimTournamentManagerBuilder::defaultDeckSupplier;
-            this.mapSelector = SingleElimTournamentManagerBuilder::defaultMapSelector;
-        }
-
-        private static List<Destination> defaultDestinationProvider(ITrainMap map) {
-            List<Destination> result =
-                map.getAllPossibleDestinations().stream()
-                    .map((pair) -> new Destination(pair))
-                    .collect(Collectors.toList());
-            Collections.shuffle(result);
-            return result;
-        }
-
-        private static List<RailCard> defaultDeckSupplier() {
-            List<RailCard> result = new ArrayList<>();
-            Random cardSelector = new Random();
-            RailCard[] railCardOptions = RailCard.values();
-            for (int cardNumber = 0; cardNumber < NUM_CARDS_IN_DECK; cardNumber += 1) {
-                result.add(railCardOptions[cardSelector.nextInt(railCardOptions.length)]);
-            }
-            return result;
-        }
-
-        private static ITrainMap defaultMapSelector(List<ITrainMap> maps) {
-            if (maps.isEmpty()) {
-                throw new IllegalArgumentException("Must be given at least 1 map to select");
-            }
-            return maps.get(0);
+            this.destinationProvider = TrainsMapUtils::defaultDestinationProvider;
+            this.deckProvider = TrainsMapUtils::defaultDeckSupplier;
+            this.mapSelector = TrainsMapUtils::defaultMapSelector;
         }
 
         /**
@@ -184,6 +155,10 @@ public class SingleElimTournamentManager implements ITournamentManager {
     @Override
     public TournamentResult runTournament(LinkedHashMap<String, IPlayer> players) {
         Objects.requireNonNull(players);
+        for (Entry<String, IPlayer> player : players.entrySet()) {
+            Objects.requireNonNull(player.getKey());
+            Objects.requireNonNull(player.getValue());
+        }
 
         this.remainingPlayers = new LinkedHashMap<>(players);
         ITrainMap tournamentMap = getMapToStartTournament(players);

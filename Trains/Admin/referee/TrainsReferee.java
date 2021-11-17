@@ -29,6 +29,7 @@ import referee.game_state.RefereeGameState;
 import referee.game_state.TrainsPlayerHand;
 import action.ActionVisitor;
 import action.TurnAction;
+import test_utils.TrainsMapUtils;
 
 /**
  * This Referee runs games of Trains on a given map and list of players, constructed through the
@@ -107,27 +108,8 @@ public class TrainsReferee implements IReferee {
         public RefereeBuilder(ITrainMap map, LinkedHashMap<String, IPlayer> playersInOrder) {
             this.map = map;
             this.playersInOrder = playersInOrder;
-            this.destinationProvider = RefereeBuilder::defaultDestinationProvider;
-            this.deckProvider = RefereeBuilder::defaultDeckSupplier;
-        }
-
-        private static List<Destination> defaultDestinationProvider(ITrainMap map) {
-            List<Destination> result =
-                map.getAllPossibleDestinations().stream()
-                    .map((pair) -> new Destination(pair))
-                    .collect(Collectors.toList());
-            Collections.shuffle(result);
-            return result;
-        }
-
-        private static List<RailCard> defaultDeckSupplier() {
-            List<RailCard> result = new ArrayList<>();
-            Random cardSelector = new Random();
-            RailCard[] railCardOptions = RailCard.values();
-            for (int cardNumber = 0; cardNumber < NUM_CARDS_IN_DECK; cardNumber += 1) {
-                result.add(railCardOptions[cardSelector.nextInt(railCardOptions.length)]);
-            }
-            return result;
+            this.destinationProvider = TrainsMapUtils::defaultDestinationProvider;
+            this.deckProvider = TrainsMapUtils::defaultDeckSupplier;
         }
 
         /**
