@@ -185,13 +185,8 @@ public class SingleElimTournamentManager implements ITournamentManager {
      */
     private ITrainMap getMapToStartTournament(LinkedHashMap<String, IPlayer> players) {
         List<ITrainMap> submittedMaps = new ArrayList<>();
-        for (Entry<String, IPlayer> player : players.entrySet()) {
-            // remove player if they return an invalid TrainsMap
-            if (player.getValue().startTournament(true) == null) {
-                this.cheaters.add(player.getKey());
-                this.remainingPlayers.remove(player.getKey());
-            }
-            submittedMaps.add(player.getValue().startTournament(true));
+        for (IPlayer player : players.values()) {
+            submittedMaps.add(player.startTournament(true));
         }
         if (submittedMaps.isEmpty()) {
             return TrainsMapUtils.createDefaultMap();
