@@ -143,7 +143,7 @@ public class TrainsReferee implements IReferee {
         }
 
         /**
-         * Updates teh deck provider.
+         * Updates the deck provider.
          *
          * @param deckProvider new deck provider.
          * @return the updated builder for chaining.

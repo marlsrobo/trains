@@ -179,8 +179,8 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore("playerTwo", -20));
         expectedPlayerScores.add(new PlayerScore("playerOne", 3));
+        expectedPlayerScores.add(new PlayerScore("playerTwo", -20));
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores, new HashSet<>());
 
         referee.playGame();
@@ -203,8 +203,8 @@ public class TestTrainsReferee {
 
         // Construct expected game report
         List<PlayerScore> expectedPlayerScores = new ArrayList<>();
-        expectedPlayerScores.add(new PlayerScore("playerTwo", 39));
         expectedPlayerScores.add(new PlayerScore("playerOne", 65));
+        expectedPlayerScores.add(new PlayerScore("playerTwo", 39));
         GameEndReport expectedGameReport = new GameEndReport(expectedPlayerScores, new HashSet<>());
 
         referee.playGame();

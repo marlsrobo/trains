@@ -1,12 +1,12 @@
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-
 import map.ITrainMap;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import player.IPlayer;
 import player.Player;
 import strategy.BuyNow;
@@ -14,8 +14,6 @@ import strategy.Cheat;
 import tournament_manager.ITournamentManager;
 import tournament_manager.SingleElimTournamentManager;
 import tournament_manager.TournamentResult;
-
-import static org.junit.Assert.assertThrows;
 
 /**
  * Unit tests for a SingleElimTournamentManager

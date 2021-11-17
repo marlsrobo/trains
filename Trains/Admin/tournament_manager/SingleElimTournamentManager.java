@@ -27,11 +27,12 @@ import referee.TrainsReferee.RefereeBuilder;
 import test_utils.*;
 
 /**
- * Representation of a tournament manager for a game of Trains that uses single elimination for
- * tournament rounds. Handles notifying Players that they have been chosen for a tournament,
- * allocating Players and Referees to games, deciding which map to use for the tournament, running
- * the tournament, getting the results of rounds of games, and reporting the result of the entire
- * tournament.
+ * A Tournament Manager for the game Trains that uses single elimination bracket for tournament
+ * rounds.
+ * <p>
+ * Handles notifying Players that they have been chosen for a tournament, deciding which map to use
+ * for the tournament, allocating Players to games and creating Referees, running the tournament,
+ * and reporting the result of the entire tournament.
  */
 public class SingleElimTournamentManager implements ITournamentManager {
 
@@ -54,7 +55,10 @@ public class SingleElimTournamentManager implements ITournamentManager {
         this.mapSelector = mapSelector;
     }
 
-
+    /**
+     * Used to construct instances of SingleElimTournamentManager allowing any subset of its
+     * customizable features to be set.
+     */
     public static class SingleElimTournamentManagerBuilder {
 
         private static final int NUM_CARDS_IN_DECK = 250;
@@ -63,7 +67,9 @@ public class SingleElimTournamentManager implements ITournamentManager {
         private Supplier<List<RailCard>> deckProvider;
         private Function<List<ITrainMap>, ITrainMap> mapSelector;
 
-
+        /**
+         * Construct the default builder for instances of SingleElimTournamentManager.
+         */
         public SingleElimTournamentManagerBuilder() {
             this.destinationProvider = SingleElimTournamentManagerBuilder::defaultDestinationProvider;
             this.deckProvider = SingleElimTournamentManagerBuilder::defaultDeckSupplier;
@@ -96,28 +102,58 @@ public class SingleElimTournamentManager implements ITournamentManager {
             return maps.get(0);
         }
 
-
+        /**
+         * Sets the destination provider function that will be used in all games of this
+         * tournament.
+         * <p>
+         * A destination provider function accepts an ITrainMap, and returns the order to hand the
+         * destinations in that map to players.
+         *
+         * @param destinationProvider A valid destination provider function.
+         * @return This builder modified to use the provided destination provider function.
+         */
         public SingleElimTournamentManagerBuilder destinationProvider(
             Function<ITrainMap, List<Destination>> destinationProvider) {
             this.destinationProvider = destinationProvider;
             return this;
         }
 
-
+        /**
+         * Sets the deck provider function that will be used in all games of this tournament.
+         * <p>
+         * A deck provider function accepts no arguments, and returns a list of RailCards in the
+         * order that they should be provided to players when they draw from the deck.
+         *
+         * @param deckProvider A valid deck provider function.
+         * @return This builder modified to use the provided deck provider function.
+         */
         public SingleElimTournamentManagerBuilder deckProvider(
             Supplier<List<RailCard>> deckProvider) {
             this.deckProvider = deckProvider;
             return this;
         }
 
-
+        /**
+         * Sets the map selector function that will be used by this tournament manager.
+         * <p>
+         * A map selector function accepts a non-empty list of ITrainMaps, and returns the one that
+         * should be used for all games in this tournament.
+         *
+         * @param mapSelector A valid map selector function.
+         * @return This builder modified to use the provided map selector function.
+         */
         public SingleElimTournamentManagerBuilder mapSelector(
             Function<List<ITrainMap>, ITrainMap> mapSelector) {
             this.mapSelector = mapSelector;
             return this;
         }
 
-
+        /**
+         * Constructs a SingleElimTournamentManager from the optional arguments given to this
+         * builder.
+         *
+         * @return a SingleElimTournamentManager constructed with the given arguments.
+         */
         public SingleElimTournamentManager build() {
             Objects.requireNonNull(this.deckProvider);
             Objects.requireNonNull(this.destinationProvider);
@@ -130,7 +166,17 @@ public class SingleElimTournamentManager implements ITournamentManager {
 
 
     /**
-     * Begins the tournament with the given players with their corresponding names
+     * Runs a single elimination tournament with the given players. All players that do not place
+     * first in their game of Trains will be eliminated.
+     * <p>
+     * The tournament will end when:
+     * <ol>
+     *     <li>Two rounds produce the same winners</li>
+     *     <li>The number of remaining players is less than the number of players required to play
+     *     one game</li>
+     *     <li>If the number of players is less than the maximum number able to play one game, they
+     *     will play one game as the final round</li>
+     * </ol>
      *
      * @param players the players who have been selected for the tournament
      * @return the winner(s) of the tournament and a list of the misbehaving players
@@ -138,7 +184,6 @@ public class SingleElimTournamentManager implements ITournamentManager {
     @Override
     public TournamentResult runTournament(LinkedHashMap<String, IPlayer> players) {
         Objects.requireNonNull(players);
-        // TODO need to ensure player names are all valid?
 
         this.remainingPlayers = new LinkedHashMap<>(players);
         ITrainMap tournamentMap = getMapToStartTournament(players);
@@ -178,7 +223,8 @@ public class SingleElimTournamentManager implements ITournamentManager {
     }
 
     /**
-     * Calls start on each player and picks a TrainsMap to use for all the games in the tournament
+     * Calls start on each player and picks one of the reurned TrainsMaps to use for all the games
+     * in the tournament.
      *
      * @param players the players that will be playing in the tournament
      * @return the chosen map for the tournament
@@ -204,7 +250,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * games in a row produce the exact same winners, or when there are too few players for a single
      * game.
      *
-     * @return whether the tournament should end
+     * @return whether the tournament should end.
      */
     private boolean isTournamentOver() {
         return this.remainingPlayers == this.previousRemainingPlayers
@@ -215,7 +261,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * Determines if a final round of games (of a single game) should be played. Returns true when
      * there are only enough players left in the tournament for a single game.
      *
-     * @return whether the final round should begin in the tournament
+     * @return whether the final round should begin in the tournament.
      */
     private boolean timeToRunLastRound() {
         return this.remainingPlayers.size() >= MIN_PLAYERS_PER_GAME
@@ -226,9 +272,9 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * Run a single round of game(s) with the remaining players and report the winners and cheaters
      * from the round.
      *
-     * @param map the map used for the round of games
+     * @param map the map used for the round of games.
      * @return the TournamentResult of the round containing the names of the winner(s) and
-     * cheater(s)
+     * cheater(s).
      */
     private TournamentResult runOneRound(ITrainMap map) {
 
