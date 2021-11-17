@@ -62,6 +62,11 @@ public class GameEndReport {
             this.playerName = playerName;
             this.score = score;
         }
+
+        @Override
+        public String toString() {
+            return this.playerName + " " + this.score;
+        }
     }
 
     public Set<String> getWinners() {
@@ -79,5 +84,11 @@ public class GameEndReport {
             }
         }
         return winnerNames;
+    }
+
+    @Override
+    public String toString() {
+        return "ranking: " + this.playerRanking.toString() + "\n" +
+                "cheaters: " + this.removedPlayerNames.toString();
     }
 }

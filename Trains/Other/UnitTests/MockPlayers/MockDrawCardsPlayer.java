@@ -11,7 +11,7 @@ import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
 import action.TurnAction;
-import test_utils.MapUtils;
+import test_utils.TrainsMapUtils;
 
 public class MockDrawCardsPlayer implements IPlayer {
     private int numCardsDrawn;
@@ -50,7 +50,7 @@ public class MockDrawCardsPlayer implements IPlayer {
 
     @Override
     public ITrainMap startTournament(boolean inTournament) {
-        return MapUtils.createDefaultMap();
+        return TrainsMapUtils.createDefaultMap();
     }
 
     @Override

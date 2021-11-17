@@ -98,7 +98,7 @@ public class TestTrainsReferee {
         this.largeBlueMap = new TrainMap(cities, rails);
     }
 
-    private static List<Destination> destinationProvider(ITrainMap map) {
+    public static List<Destination> destinationProvider(ITrainMap map) {
         return map.getAllPossibleDestinations().stream()
             .map((pair) -> new Destination(pair)).sorted()
             .collect(Collectors.toList());

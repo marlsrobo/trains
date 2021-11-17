@@ -18,7 +18,7 @@ public interface IReferee {
   void playGame();
 
   /**
-   * Calculates the scores of each player in the game and ranks them by ascending order of score.
+   * Calculates the scores of each player in the game and ranks them by descending order of score.
    * Players that were removed from the game due to cheating are including separately in the game report.
    * @return a container for the game report
    */

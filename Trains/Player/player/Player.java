@@ -13,7 +13,7 @@ import map.ITrainMap;
 import referee.game_state.TrainsPlayerHand;
 import strategy.IStrategy;
 import action.TurnAction;
-import test_utils.MapUtils;
+import test_utils.*;
 
 /**
  * A player that only relies on one strategy, computes moves as they are requested, and otherwise
@@ -42,7 +42,7 @@ public class Player implements IPlayer {
      */
     public Player(IStrategy strategy) {
         this.playerStrategy = strategy;
-        this.mapToSubmit = MapUtils.createDefaultMap();
+        this.mapToSubmit = TrainsMapUtils.createDefaultMap();
     }
 
     /**
@@ -54,7 +54,7 @@ public class Player implements IPlayer {
      * @throws RuntimeException if there is any issue loading the strategy from the class file.
      */
     public Player(String strategyFilePath) throws RuntimeException {
-        this(strategyFilePath, MapUtils.createDefaultMap());
+        this(strategyFilePath, TrainsMapUtils.createDefaultMap());
     }
 
     public Player(String strategyFilePath, ITrainMap mapToSubmit) {
@@ -64,7 +64,7 @@ public class Player implements IPlayer {
         } catch (Exception e) {
             throw new RuntimeException("Could not instantiate strategy class: " + e.getMessage());
         }
-        Objects.requireNonNull(mapToSubmit);
+      //  Objects.requireNonNull(mapToSubmit);
         this.mapToSubmit = mapToSubmit;
     }
 

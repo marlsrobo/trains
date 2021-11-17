@@ -42,4 +42,5 @@ public class TournamentResult {
     public Set<String> getCheaters() {
         return new HashSet<>(this.cheaters);
     }
+
 }

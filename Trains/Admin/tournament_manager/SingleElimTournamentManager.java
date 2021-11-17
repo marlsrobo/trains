@@ -24,6 +24,8 @@ import referee.GameEndReport;
 import referee.IReferee;
 import referee.TrainsReferee.RefereeBuilder;
 
+import test_utils.*;
+
 /**
  * Representation of a tournament manager for a game of Trains that uses single elimination for
  * tournament rounds. Handles notifying Players that they have been chosen for a tournament,
@@ -135,8 +137,11 @@ public class SingleElimTournamentManager implements ITournamentManager {
      */
     @Override
     public TournamentResult runTournament(LinkedHashMap<String, IPlayer> players) {
-        ITrainMap tournamentMap = startTournament(players);
+        Objects.requireNonNull(players);
+        // TODO need to ensure player names are all valid?
+
         this.remainingPlayers = new LinkedHashMap<>(players);
+        ITrainMap tournamentMap = getMapToStartTournament(players);
 
         while (!isTournamentOver()) {
             // if there are only enough players left for a single game, run the last game
@@ -178,10 +183,18 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * @param players the players that will be playing in the tournament
      * @return the chosen map for the tournament
      */
-    private ITrainMap startTournament(LinkedHashMap<String, IPlayer> players) {
+    private ITrainMap getMapToStartTournament(LinkedHashMap<String, IPlayer> players) {
         List<ITrainMap> submittedMaps = new ArrayList<>();
-        for (IPlayer player : players.values()) {
-            submittedMaps.add(player.startTournament(true));
+        for (Entry<String, IPlayer> player : players.entrySet()) {
+            // remove player if they return an invalid TrainsMap
+            if (player.getValue().startTournament(true) == null) {
+                this.cheaters.add(player.getKey());
+                this.remainingPlayers.remove(player.getKey());
+            }
+            submittedMaps.add(player.getValue().startTournament(true));
+        }
+        if (submittedMaps.isEmpty()) {
+            return TrainsMapUtils.createDefaultMap();
         }
         return this.mapSelector.apply(submittedMaps);
     }

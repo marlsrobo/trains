@@ -11,7 +11,7 @@ import map.RailConnection;
 import map.TrainMap;
 import utils.UnorderedPair;
 
-public class MapUtils {
+public class TrainsMapUtils {
 
     /**
      * Mention that this only works for max 8 players when writing comment

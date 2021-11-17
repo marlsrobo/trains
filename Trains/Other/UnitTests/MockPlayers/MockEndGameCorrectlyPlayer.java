@@ -11,7 +11,7 @@ import player.IPlayer;
 import player.Player;
 import strategy.Hold10;
 import action.TurnAction;
-import test_utils.MapUtils;
+import test_utils.TrainsMapUtils;
 
 public class MockEndGameCorrectlyPlayer implements IPlayer {
     private Player underlyingPlayer;
@@ -48,7 +48,7 @@ public class MockEndGameCorrectlyPlayer implements IPlayer {
 
     @Override
     public ITrainMap startTournament(boolean inTournament) {
-        return MapUtils.createDefaultMap();
+        return TrainsMapUtils.createDefaultMap();
     }
 
     @Override
