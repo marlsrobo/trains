@@ -64,8 +64,6 @@ public class XRef {
             }
 
             GameEndReport gameEndReport = ref.calculateGameEndReport();
-            output.println(gameEndReport.toString());
-
             // Calculate and output result
             output.println(gameReportToJson(gameEndReport));
         } catch (JsonIOException | IOException ignored) {
