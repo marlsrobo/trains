@@ -147,7 +147,7 @@ public class XRef {
     }
 
     public static String strategyNameToFilepath(String strategyName) {
-        String defaultStrategyLocation = "out/production/mark-twain/strategy/";
+        String defaultStrategyLocation = "../out/production/mark-twain/strategy/";
         return defaultStrategyLocation + strategyName.replace("-", "") + ".class";
     }
 

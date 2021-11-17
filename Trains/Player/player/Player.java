@@ -62,7 +62,7 @@ public class Player implements IPlayer {
             Class<IStrategy> strategyClass = loadStrategyClass(strategyFilePath);
             playerStrategy = strategyClass.getConstructor().newInstance();
         } catch (Exception e) {
-            throw new RuntimeException("Could not instantiate strategy class: " + e.getMessage());
+            throw new RuntimeException("Could not instantiate strategy class: " + e.getMessage() + e.getClass());
         }
         this.mapToSubmit = mapToSubmit;
     }
