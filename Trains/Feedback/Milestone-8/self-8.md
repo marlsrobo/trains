@@ -16,7 +16,7 @@ The method to pick a map is called here:
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L220  
 We thought that how to pick a map was undefined, so we abstracted our tournament manager over this function. It can be provided in our builder for the tournament manager here:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L107-L120  
-If no map selecter is provided to the builder, the default is here:
+If no map selecter is provided to the builder, the default is here:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Other/UnitTests/TestUtils/test_utils/TrainsMapUtils.java#L118-L133
 
 
