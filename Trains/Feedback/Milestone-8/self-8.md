@@ -14,23 +14,26 @@ https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e8
 
 The method to pick a map is called here:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L220  
-We thought that how to pick a map was undefined, so we abstracted our tournament manager over this function. It can be provided in ou builder for the tournament manager here:  
+We thought that how to pick a map was undefined, so we abstracted our tournament manager over this function. It can be provided in our builder for the tournament manager here:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L107-L120  
-The default map selector if none is provided to the builder is defined here:  
+If no map selecter is provided to the builder, the default is here:
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Other/UnitTests/TestUtils/test_utils/TrainsMapUtils.java#L118-L133
 
 
 3. allocating players to a bunch of games per round  
 
+The method to allocate players is defined here:  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/PlayerAllocator.java#L15-L43
+It is called in the tournament manager here:  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L256-L257
 
 4. run the tournament and its two major pieces of functionality:
    - run a round of games
    - run all rounds, discover termination conditions  
 
-The method to run one round is here:  
-https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L246-L272
-The method runTournament() runs all rounds, and checks termination consitions. It is located here:  
+The method to run one round is here:    
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L246-L272  
+The method runTournament() runs all rounds, and checks termination consitions. It is located here:    
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Admin/tournament_manager/SingleElimTournamentManager.java#L139-L181
 
 5. inform survining players at the very end whether they won the tournament  
@@ -55,12 +58,12 @@ functionality:
 
 - point to the cheat strategy and how it partially reusess existing code
 
-The Cheat strategy extends BuyNow, and only overrides the one method where it behaves differently.
+The Cheat strategy extends BuyNow, and only overrides the one method where it behaves differently.  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Player/strategy/Cheat.java#L21
 
 - point to a unit test that makes sure the requested acquisition is impossible
 
-This test tests that both cheating players are in the cheaters part of the TournameneResult, which shows that they attempted to acquire invalid connections but couldn't.
+This test tests that both cheating players are in the cheaters part of the TournameneResult, which shows that they attempted to acquire invalid connections but couldn't.  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/e35cc5b2e34770610fcc2de7e89f7c1127cb32e2/Trains/Other/UnitTests/UnitTestClasses/TestSingleElimTournamentManager.java#L127-L141
 
 The ideal feedback for each of these three points is a GitHub
