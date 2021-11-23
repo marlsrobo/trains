@@ -86,7 +86,7 @@ public class XRef {
         return reportJson;
     }
 
-    private static JsonArray rankToJson(List<String> rank) {
+    public static JsonArray rankToJson(List<String> rank) {
         List<String> sortedRank = new ArrayList<>(rank);
         Collections.sort(sortedRank);
         JsonArray rankJson = new JsonArray();
@@ -117,7 +117,7 @@ public class XRef {
         return ranking;
     }
 
-    private static List<Destination> lexicographicOrderOfDestinations(ITrainMap map) {
+    public static List<Destination> lexicographicOrderOfDestinations(ITrainMap map) {
         List<Destination> result =
             map.getAllPossibleDestinations().stream()
                 .map((pair) -> new Destination(pair))
