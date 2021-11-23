@@ -103,13 +103,40 @@ public class ScoreCalculator {
         int numDestinationsTotal,
         boolean hasLongestPath) {
 
-        int ptsFromSegments = totalNumSegments * POINTS_PER_SEGMENT;
+        int ptsFromSegments = assignPointsForSegments(totalNumSegments);
         // Gain points for successful destinations, lose points for failed destinations
-        int ptsFromDestinations =
-            (POINTS_PER_DESTINATION * numDestinationsCompleted)
-                + (POINTS_PER_FAILED_DESTINATION * (numDestinationsTotal
-                - numDestinationsCompleted));
-        int ptsFromLongest = hasLongestPath ? POINTS_FOR_LONGEST_PATH : 0;
+        int ptsFromDestinations = assignPointsForDestinations(numDestinationsCompleted, numDestinationsTotal);
+        int ptsFromLongest = assignPointsForLongestPath(hasLongestPath);
         return ptsFromSegments + ptsFromDestinations + ptsFromLongest;
+    }
+
+    /**
+     * Calculates points earned for the number of connections a player has acquired (score based on length of connection)
+     * @param totalNumSegments the number of rail segments the player has acquired (sum of connection lengths)
+     * @return the points earned for acquiring the connections
+     */
+    private static int assignPointsForSegments(int totalNumSegments) {
+        return totalNumSegments * POINTS_PER_SEGMENT;
+    }
+
+    /**
+     * Calculates points earned for the player having connected their destinations
+     * @param numDestinationsCompleted the number of destinations the player has connected
+     * @param numDestinationsTotal the number of destinations the player has in total (including not connected)
+     * @return deducts POINTS_PER_FAILED_DESTINATION per destination not connected, adds POINTS_PER_DESTINATION if connected
+     */
+    private static int assignPointsForDestinations(int numDestinationsCompleted, int numDestinationsTotal) {
+        return (POINTS_PER_DESTINATION * numDestinationsCompleted)
+                        + (POINTS_PER_FAILED_DESTINATION * (numDestinationsTotal
+                        - numDestinationsCompleted));
+    }
+
+    /**
+     * Calculates the points earned for having the longest path (or not having gotten it)
+     * @param hasLongestPath boolean representing if the player has the longest path
+     * @return 0 if doesn't have longest path, POINTS_FOR_LONGEST_PATH points if they do
+     */
+    private static int assignPointsForLongestPath(boolean hasLongestPath) {
+        return hasLongestPath ? POINTS_FOR_LONGEST_PATH : 0;
     }
 }
