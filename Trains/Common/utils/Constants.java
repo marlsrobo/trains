@@ -23,4 +23,6 @@ public class Constants {
     public static final int POINTS_FOR_LONGEST_PATH = 20;
 
     public static final int NUM_DESTINATIONS_TO_CHOOSE = 2;
+
+    public static final int TIMEOUT_BETWEEN_INTERACTIONS_MILLISECONDS = 2000;
 }
