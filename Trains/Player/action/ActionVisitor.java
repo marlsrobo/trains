@@ -1,13 +1,12 @@
 package action;
 
-import static referee.TrainsReferee.PLAYER_NUM_CARDS_PER_DRAW;
-
 import game_state.RailCard;
 import java.util.ArrayList;
 import java.util.List;
 import player.IPlayer;
 import referee.TrainsReferee.TurnResult;
 import referee.game_state.IRefereeGameState;
+import utils.Constants;
 
 public class ActionVisitor implements IActionVisitor<TurnResult> {
 
@@ -22,7 +21,7 @@ public class ActionVisitor implements IActionVisitor<TurnResult> {
     @Override
     public TurnResult visitCardsAction(DrawCardsAction cardsAction) {
         List<RailCard> drawnCards = this.gameState
-            .drawCardsForActivePlayer(PLAYER_NUM_CARDS_PER_DRAW);
+            .drawCardsForActivePlayer(Constants.PLAYER_NUM_CARDS_PER_DRAW);
         this.activePlayer.receiveCards(new ArrayList<>(drawnCards));
         return drawnCards.isEmpty() ? TurnResult.INSIGNIFICANT : TurnResult.SIGNIFICANT;
     }

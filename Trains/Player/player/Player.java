@@ -14,14 +14,13 @@ import referee.game_state.TrainsPlayerHand;
 import strategy.IStrategy;
 import action.TurnAction;
 import test_utils.*;
+import utils.Constants;
 
 /**
  * A player that only relies on one strategy, computes moves as they are requested, and otherwise
  * stores the minimal amount of information necessary for the strategy to make decisions.
  */
 public class Player implements IPlayer {
-
-    private static final int NUM_DESTINATIONS_TO_CHOOSE = 2;
 
     private final IStrategy playerStrategy;
 
@@ -82,7 +81,7 @@ public class Player implements IPlayer {
     public Set<Destination> chooseDestinations(Set<Destination> options) {
         this.chosenDestinations =
             this.playerStrategy.chooseDestinations(
-                options, NUM_DESTINATIONS_TO_CHOOSE, this.mapInGame, this.numStartRails,
+                options, Constants.NUM_DESTINATIONS_TO_CHOOSE, this.mapInGame, this.numStartRails,
                 this.startingHand);
         return new HashSet<>(this.chosenDestinations);
     }

@@ -30,6 +30,7 @@ import referee.game_state.TrainsPlayerHand;
 import action.ActionVisitor;
 import action.TurnAction;
 import test_utils.TrainsMapUtils;
+import utils.Constants;
 
 /**
  * This Referee runs games of Trains on a given map and list of players, constructed through the
@@ -60,12 +61,7 @@ import test_utils.TrainsMapUtils;
  */
 public class TrainsReferee implements IReferee {
 
-    public static final int PLAYER_NUM_RAILS_START = 45;
-    public static final int PLAYER_NUM_CARDS_START = 4;
-    public static final int PLAYER_NUM_DEST_OPTIONS = 5;
-    public static final int PLAYER_NUM_DEST_TO_CHOOSE = 2;
-    public static final int PLAYER_NUM_RAILS_GAME_OVER = 2;
-    public static final int PLAYER_NUM_CARDS_PER_DRAW = 2;
+
 
     private final ITrainMap map;
     private final LinkedHashMap<String, IPlayer> playersInOrder;
@@ -91,8 +87,6 @@ public class TrainsReferee implements IReferee {
      * optionally a means of ordering potential destinations and creating a deck.
      */
     public static class RefereeBuilder {
-
-        private static final int NUM_CARDS_IN_DECK = 250;
 
         private final ITrainMap map;
         private final LinkedHashMap<String, IPlayer> playersInOrder;
@@ -232,7 +226,7 @@ public class TrainsReferee implements IReferee {
     private boolean isGameOver(int numConsecutiveInsignificantTurns) {
         return numConsecutiveInsignificantTurns == this.numPlayersRemaining()
             || this.refereeGameState.getActivePlayerState().getNumRails()
-            <= PLAYER_NUM_RAILS_GAME_OVER;
+            <= Constants.PLAYER_NUM_RAILS_GAME_OVER;
     }
 
     private int numPlayersRemaining() {
@@ -270,16 +264,16 @@ public class TrainsReferee implements IReferee {
         ITrainMap map) {
 
         // determine setup info
-        List<RailCard> playerStartingHand = activeDeck.subList(0, PLAYER_NUM_CARDS_START);
+        List<RailCard> playerStartingHand = activeDeck.subList(0, Constants.PLAYER_NUM_CARDS_START);
         IPlayerHand<RailCard> startingHand = new TrainsPlayerHand(playerStartingHand);
 
         // choosing destinations
         List<Destination> playerDestinationOptions =
-            activeDestinationList.subList(0, PLAYER_NUM_DEST_OPTIONS);
+            activeDestinationList.subList(0, Constants.PLAYER_NUM_DEST_OPTIONS);
 
         Set<Destination> chosenDestinations;
         try {
-            player.setup(map, PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
+            player.setup(map, Constants.PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
             chosenDestinations = player.chooseDestinations(new HashSet<>(playerDestinationOptions));
         } catch (Exception e) {
             return Optional.empty();
@@ -291,7 +285,7 @@ public class TrainsReferee implements IReferee {
         IPlayerData result =
             new PlayerData(
                 startingHand,
-                PLAYER_NUM_RAILS_START,
+                    Constants.PLAYER_NUM_RAILS_START,
                 chosenDestinations,
                 new HashSet<>());
         playerStartingHand.clear(); // once drawn, they're gone
@@ -301,7 +295,7 @@ public class TrainsReferee implements IReferee {
     }
 
     private boolean validDestinationChoice(Set<Destination> options, Set<Destination> chosen) {
-        return options.containsAll(chosen) && chosen.size() == PLAYER_NUM_DEST_TO_CHOOSE;
+        return options.containsAll(chosen) && chosen.size() == Constants.PLAYER_NUM_DEST_TO_CHOOSE;
     }
     // endregion
 }

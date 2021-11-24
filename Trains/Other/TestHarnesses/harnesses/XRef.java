@@ -29,6 +29,7 @@ import referee.IReferee;
 import referee.TrainsReferee;
 import utils.ComparatorUtils;
 import utils.RailCardUtils;
+import utils.Constants;
 
 import static harnesses.XMap.trainMapFromJson;
 
@@ -152,6 +153,9 @@ public class XRef {
     }
 
     public static List<RailCard> cardsFromJson(JsonArray cardsJson) {
+        if (cardsJson.size() != Constants.DECK_SIZE) {
+            throw new IllegalArgumentException("Deck size is not " + Constants.DECK_SIZE);
+        }
         List<RailCard> cards = new ArrayList<>();
         for (JsonElement jsonCard : cardsJson) {
             cards.add(RailCardUtils.railCardFromLowercaseCard(jsonCard.getAsString()));
