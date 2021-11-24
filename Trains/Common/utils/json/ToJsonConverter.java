@@ -1,10 +1,8 @@
 package utils.json;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import map.City;
 import map.ICity;
 import map.IRailConnection;
 import map.ITrainMap;
@@ -14,8 +12,16 @@ import utils.UnorderedPair;
 
 import java.util.Set;
 
+/**
+ * Util class to convert our data representations to their equivalent JSON representations.
+ */
 public class ToJsonConverter {
 
+    /**
+     * Converts an ITrainsMap to JSON
+     * @param map the ITrainsMap
+     * @return the JSON representation of the ITrainsMaps
+     */
     public static JsonObject mapToJson(ITrainMap map) {
         int width = map.getMapDimension().getWidth();
         int height = map.getMapDimension().getHeight();
@@ -38,6 +44,11 @@ public class ToJsonConverter {
         return jsonMap;
     }
 
+    /**
+     * Converts a set of IRailConnections to JSON
+     * @param connections the IRailConnections
+     * @return the JSON representation of the IRailConnections
+     */
     public static JsonObject connectionsToJson(Set<IRailConnection> connections) {
 
         JsonObject jsonConnections = new JsonObject();
@@ -71,10 +82,18 @@ public class ToJsonConverter {
         return jsonConnections;
     }
 
+    /**
+     * Converts an ICity to JSON
+     * @param city the ICity
+     * @param mapWidth the width of the ITrainsMap that the city is a part of
+     * @param mapHeight the height of the ITrainsMap that the city is a part of
+     * @return the JSON representation of the ICity
+     */
     public static JsonArray cityToJson(ICity city, int mapWidth, int mapHeight) {
         String name = city.getName();
         Double xCoord = city.getRelativePosition().first;
         Double yCoord = city.getRelativePosition().second;
+
         int xCoordAbsolute = (int) (xCoord * mapWidth);
         int yCoordAbsolute = (int) (yCoord * mapHeight);
 
