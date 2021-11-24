@@ -45,9 +45,30 @@ public class ToJsonConverter {
         for (IRailConnection connection : connections) {
             UnorderedPair<ICity> connectionCities = connection.getCities();
             OrderedPair<ICity> citiesOrdered = ComparatorUtils.fromUnordered(connectionCities);
+            String sourceName = citiesOrdered.first.getName();
+            String targetName = citiesOrdered.second.getName();
 
+            JsonObject segment = new JsonObject();
+            segment
+                .add(connection.getColor().toString(), new JsonPrimitive(connection.getLength()));
+
+            if (jsonConnections.keySet().contains(sourceName)) {
+                if (jsonConnections.getAsJsonObject(sourceName).keySet().contains(targetName)) {
+                    jsonConnections.getAsJsonObject(sourceName).getAsJsonObject(targetName)
+                        .add(connection.getColor().toString(),
+                            new JsonPrimitive(connection.getLength()));
+                } else {
+                    jsonConnections.getAsJsonObject(sourceName).add(targetName, segment);
+                }
+            } else {
+                JsonObject target = new JsonObject();
+                target.add(targetName, segment);
+
+                jsonConnections.add(sourceName, target);
+            }
         }
 
+        return jsonConnections;
     }
 
     public static JsonArray cityToJson(ICity city, int mapWidth, int mapHeight) {
