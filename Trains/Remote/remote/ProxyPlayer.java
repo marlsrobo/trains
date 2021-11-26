@@ -6,13 +6,18 @@ import com.google.gson.JsonStreamParser;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
 import map.Destination;
+import map.ICity;
 import map.ITrainMap;
 import player.IPlayer;
 import utils.Constants;
+import utils.UnorderedPair;
+import utils.json.FromJsonConverter;
+import utils.json.ToJsonConverter;
 
 import java.io.*;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -22,6 +27,8 @@ public class ProxyPlayer implements IPlayer {
 
     private final BufferedReader input;
     private final PrintWriter output;
+
+    private ITrainMap map;
 
     public ProxyPlayer(Socket client) throws IOException {
         this.input = new BufferedReader(new InputStreamReader(client.getInputStream()));
@@ -55,8 +62,12 @@ public class ProxyPlayer implements IPlayer {
      */
     @Override
     public void setup(ITrainMap map, int numRails, List<RailCard> cards) {
-
-
+        this.map = map;
+        StringBuilder message = new StringBuilder();
+        message.append(ToJsonConverter.mapToJson(map));
+        message.append(numRails);
+        message.append(ToJsonConverter.railCardsToJson(cards));
+        this.sendMessageToPlayer(message.toString());
     }
 
     /**
@@ -66,8 +77,46 @@ public class ProxyPlayer implements IPlayer {
      * @return the chosen destinations as a set.
      */
     @Override
-    public Set<Destination> chooseDestinations(Set<Destination> options) {
-        return null;
+    public Set<Destination> chooseDestinations(Set<Destination> options) throws TimeoutException {
+        // send the destination options to the player
+        this.sendMessageToPlayer(ToJsonConverter.destinationsToJson(options).toString());
+
+        // get the destinations back from the player
+        JsonElement destinationsFromClient = getMessageFromPlayer();
+        Set<UnorderedPair<String>> destinationsNamePairs = FromJsonConverter
+                .fromJsonToUnvalidatedSetOfDestinations(destinationsFromClient);
+        return convertDestinationNamesToDestinations(destinationsNamePairs);
+    }
+
+    /**
+     * Converts a set of pairs of city names to a set of Destinations that exist in this TrainsMap.
+     * @param destinationsNamePairs the set of pairs of names corresponding to city names
+     * @return the Set of Destination
+     */
+    private Set<Destination> convertDestinationNamesToDestinations(Set<UnorderedPair<String>> destinationsNamePairs) {
+        Set<Destination> destinations = new HashSet<>();
+        for (UnorderedPair<String> destinationNames : destinationsNamePairs) {
+            destinations.add(convertDestinationNamesToDestination(destinationNames));
+        }
+        return destinations;
+    }
+
+    /**
+     * Converts the given pair of city names to a Destination if the names exist within this TrainsMap as a Destination.
+     * Throws an exception if the names don't exist as a destination in this map
+     * @param destinationCityNames the pair of names for a destination
+     * @return the Destination corresponding to the same pair of names given
+     */
+    private Destination convertDestinationNamesToDestination(UnorderedPair<String> destinationCityNames) {
+        Set<UnorderedPair<ICity>> mapDestinations = this.map.getAllPossibleDestinations();
+        for (UnorderedPair<ICity> mapDestination : mapDestinations) {
+            UnorderedPair<String> mapDestinationNames =
+                    new UnorderedPair<>(mapDestination.left.getName(), mapDestination.right.getName());
+            if (destinationCityNames.equals(mapDestinationNames)) {
+                return new Destination(mapDestination);
+            }
+        }
+        throw new IllegalArgumentException("Destination doesn't exist in the map");
     }
 
     /**

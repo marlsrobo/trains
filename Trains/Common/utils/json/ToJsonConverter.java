@@ -3,6 +3,8 @@ package utils.json;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import game_state.RailCard;
+import map.Destination;
 import map.ICity;
 import map.IRailConnection;
 import map.ITrainMap;
@@ -10,6 +12,8 @@ import utils.ComparatorUtils;
 import utils.OrderedPair;
 import utils.UnorderedPair;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -64,14 +68,19 @@ public class ToJsonConverter {
                 .add(connection.getColor().toString(), new JsonPrimitive(connection.getLength()));
 
             if (jsonConnections.keySet().contains(sourceName)) {
+                // the source and target already exist
                 if (jsonConnections.getAsJsonObject(sourceName).keySet().contains(targetName)) {
                     jsonConnections.getAsJsonObject(sourceName).getAsJsonObject(targetName)
                         .add(connection.getColor().toString(),
                             new JsonPrimitive(connection.getLength()));
-                } else {
+                }
+                // the source already exists, but the target doesn't yet
+                else {
                     jsonConnections.getAsJsonObject(sourceName).add(targetName, segment);
                 }
-            } else {
+            }
+            // neither the source nor target exist yet
+            else {
                 JsonObject target = new JsonObject();
                 target.add(targetName, segment);
 
@@ -106,5 +115,33 @@ public class ToJsonConverter {
         jsonCity.add(coords);
 
         return jsonCity;
+    }
+
+    /**
+     * Converts a list of RailCards to their JSON representation
+     * @param cards the List of RailCard
+     * @return the JSON representation of the list of RailCard ([Card, ..., Card])
+     */
+    public static JsonArray railCardsToJson(List<RailCard> cards) {
+        JsonArray jsonCards = new JsonArray();
+        for (RailCard card : cards) {
+            jsonCards.add(card.name().toLowerCase());
+        }
+        return jsonCards;
+    }
+
+    public static JsonArray destinationsToJson(Set<Destination> destinations) {
+        JsonArray jsonDestinations = new JsonArray();
+        for (Destination destination : destinations) {
+            jsonDestinations.add(destinationToJson(destination));
+        }
+        return jsonDestinations;
+    }
+
+    public static JsonArray destinationToJson(Destination destination) {
+        JsonArray jsonDestination = new JsonArray();
+        jsonDestination.add(destination.left.getName());
+        jsonDestination.add(destination.right.getName());
+        return jsonDestination;
     }
 }

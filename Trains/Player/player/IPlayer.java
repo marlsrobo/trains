@@ -4,6 +4,8 @@ import game_state.IPlayerGameState;
 import game_state.RailCard;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
+
 import map.Destination;
 import map.ITrainMap;
 import action.TurnAction;
@@ -29,7 +31,7 @@ public interface IPlayer {
    * @param options the possible destinations to choose from.
    * @return the chosen destinations as a set.
    */
-  Set<Destination> chooseDestinations(Set<Destination> options);
+  Set<Destination> chooseDestinations(Set<Destination> options) throws TimeoutException;
 
   /**
    * Returns the action this player would like to take when this method is called to signal it is this player's turn.
