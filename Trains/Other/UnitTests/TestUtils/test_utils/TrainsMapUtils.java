@@ -16,14 +16,13 @@ import map.ITrainMap;
 import map.RailColor;
 import map.RailConnection;
 import map.TrainMap;
+import utils.Constants;
 import utils.UnorderedPair;
 
 /**
  * Contains useful default values for the abstracted setup functions for a game of Trains.
  */
 public class TrainsMapUtils {
-
-    private static final int NUM_CARDS_IN_DECK = 250;
 
     /**
      * Creates a reasonable default map for a game of Trains. Contains enough destinations for games
@@ -109,7 +108,7 @@ public class TrainsMapUtils {
         List<RailCard> result = new ArrayList<>();
         Random cardSelector = new Random();
         RailCard[] railCardOptions = RailCard.values();
-        for (int cardNumber = 0; cardNumber < NUM_CARDS_IN_DECK; cardNumber += 1) {
+        for (int cardNumber = 0; cardNumber < Constants.DECK_SIZE; cardNumber += 1) {
             result.add(railCardOptions[cardSelector.nextInt(railCardOptions.length)]);
         }
         return result;

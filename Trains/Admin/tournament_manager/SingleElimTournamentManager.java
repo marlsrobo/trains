@@ -25,6 +25,7 @@ import referee.IReferee;
 import referee.TrainsReferee.RefereeBuilder;
 
 import test_utils.*;
+import utils.Constants;
 
 /**
  * A Tournament Manager for the game Trains that uses single elimination bracket for tournament
@@ -35,9 +36,6 @@ import test_utils.*;
  * and reporting the result of the entire tournament.
  */
 public class SingleElimTournamentManager implements ITournamentManager {
-
-    private final static int MIN_PLAYERS_PER_GAME = 2;
-    private final static int MAX_PLAYERS_PER_GAME = 8;
 
     private LinkedHashMap<String, IPlayer> remainingPlayers;
     private LinkedHashMap<String, IPlayer> previousRemainingPlayers = new LinkedHashMap<>();
@@ -229,7 +227,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
      */
     private boolean isTournamentOver() {
         return this.remainingPlayers == this.previousRemainingPlayers
-            || this.remainingPlayers.size() < MIN_PLAYERS_PER_GAME;
+            || this.remainingPlayers.size() < Constants.MIN_PLAYERS_PER_GAME;
     }
 
     /**
@@ -239,8 +237,8 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * @return whether the final round should begin in the tournament.
      */
     private boolean timeToRunLastRound() {
-        return this.remainingPlayers.size() >= MIN_PLAYERS_PER_GAME
-            && this.remainingPlayers.size() <= MAX_PLAYERS_PER_GAME;
+        return this.remainingPlayers.size() >= Constants.MIN_PLAYERS_PER_GAME
+            && this.remainingPlayers.size() <= Constants.MAX_PLAYERS_PER_GAME;
     }
 
     /**
@@ -254,7 +252,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
     private TournamentResult runOneRound(ITrainMap map) {
 
         List<LinkedHashMap<String, IPlayer>> gameAllocation = allocatePlayersToGames(
-            this.remainingPlayers, MAX_PLAYERS_PER_GAME, MIN_PLAYERS_PER_GAME);
+            this.remainingPlayers, Constants.MAX_PLAYERS_PER_GAME, Constants.MIN_PLAYERS_PER_GAME);
         Set<String> winnerNames = new HashSet<>();
         Set<String> cheaterNames = new HashSet<>();
 

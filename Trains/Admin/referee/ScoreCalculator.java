@@ -8,16 +8,12 @@ import map.IRailConnection;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import referee.game_state.IPlayerData;
+import utils.Constants;
 
 /**
  * To calculate scores of players in Trains.
  */
 public class ScoreCalculator {
-
-    private static final int POINTS_PER_DESTINATION = 10;
-    private static final int POINTS_PER_FAILED_DESTINATION = -10;
-    private static final int POINTS_PER_SEGMENT = 1;
-    private static final int POINTS_FOR_LONGEST_PATH = 20;
 
     /**
      * Calculates the scores of each player, accounting for each segment, destinations
@@ -116,7 +112,7 @@ public class ScoreCalculator {
      * @return the points earned for acquiring the connections
      */
     private static int assignPointsForSegments(int totalNumSegments) {
-        return totalNumSegments * POINTS_PER_SEGMENT;
+        return totalNumSegments * Constants.POINTS_PER_SEGMENT;
     }
 
     /**
@@ -126,8 +122,8 @@ public class ScoreCalculator {
      * @return deducts POINTS_PER_FAILED_DESTINATION per destination not connected, adds POINTS_PER_DESTINATION if connected
      */
     private static int assignPointsForDestinations(int numDestinationsCompleted, int numDestinationsTotal) {
-        return (POINTS_PER_DESTINATION * numDestinationsCompleted)
-                        + (POINTS_PER_FAILED_DESTINATION * (numDestinationsTotal
+        return (Constants.POINTS_PER_DESTINATION * numDestinationsCompleted)
+                        + (Constants.POINTS_PER_FAILED_DESTINATION * (numDestinationsTotal
                         - numDestinationsCompleted));
     }
 
@@ -137,6 +133,6 @@ public class ScoreCalculator {
      * @return 0 if doesn't have longest path, POINTS_FOR_LONGEST_PATH points if they do
      */
     private static int assignPointsForLongestPath(boolean hasLongestPath) {
-        return hasLongestPath ? POINTS_FOR_LONGEST_PATH : 0;
+        return hasLongestPath ? Constants.POINTS_FOR_LONGEST_PATH : 0;
     }
 }
