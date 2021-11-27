@@ -1,6 +1,6 @@
 (testing /vagrant/canonical/8/xref)
 (testing /home/vagrant/new-repos/mark-twain/8/Tests-0/1-in.json /home/vagrant/new-repos/mark-twain/8/Tests-0/1-out.json)
-xtest: /vagrant/canonical/8/xref runs as 26548
+xtest: /vagrant/canonical/8/xref runs as 23642
 xref: invalid JSON:  JSON Colors: '("white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "wh...
   context...:
    body of top-level
@@ -317,7 +317,7 @@ xref: invalid JSON:  JSON Colors: '("white" "blue" "green" "white" "white" "blue
 ((passed 0) (total 1) (partial-score 0))
 (testing /vagrant/canonical/8/xref)
 (testing /home/vagrant/new-repos/mark-twain/8/Tests-1/2-in.json /home/vagrant/new-repos/mark-twain/8/Tests-1/2-out.json)
-xtest: /vagrant/canonical/8/xref runs as 26559
+xtest: /vagrant/canonical/8/xref runs as 23647
 xref: invalid JSON:  JSON Colors: '("white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "wh...
   context...:
    body of top-level
@@ -634,7 +634,7 @@ xref: invalid JSON:  JSON Colors: '("white" "blue" "green" "white" "white" "blue
 ((passed 0) (total 1) (partial-score 0))
 (testing /vagrant/canonical/8/xref)
 (testing /home/vagrant/new-repos/mark-twain/8/Tests-2/3-in.json /home/vagrant/new-repos/mark-twain/8/Tests-2/3-out.json)
-xtest: /vagrant/canonical/8/xref runs as 26569
+xtest: /vagrant/canonical/8/xref runs as 23650
 xref: invalid JSON:  JSON Colors: '("white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "white" "blue" "green" "white" "wh...
   context...:
    body of top-level

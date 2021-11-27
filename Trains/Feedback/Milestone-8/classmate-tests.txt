@@ -1,306 +1,24 @@
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/clearwater/Tests/1-in.json /home/vagrant/new-repos/8/clearwater/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23438
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31130
 (testing /home/vagrant/new-repos/8/clearwater/Tests/3-in.json /home/vagrant/new-repos/8/clearwater/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23453
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31145
 ((/home/vagrant/new-repos/8/clearwater/Tests/1-in.json /home/vagrant/new-repos/8/clearwater/Tests/1-out.json) (/home/vagrant/new-repos/8/clearwater/Tests/3-in.json /home/vagrant/new-repos/8/clearwater/Tests/3-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/franklin/Tests/1-in.json /home/vagrant/new-repos/8/franklin/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23470
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31162
 (testing /home/vagrant/new-repos/8/franklin/Tests/2-in.json /home/vagrant/new-repos/8/franklin/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23485
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31177
 (testing /home/vagrant/new-repos/8/franklin/Tests/3-in.json /home/vagrant/new-repos/8/franklin/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23500
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31192
 ((/home/vagrant/new-repos/8/franklin/Tests/1-in.json /home/vagrant/new-repos/8/franklin/Tests/1-out.json) (/home/vagrant/new-repos/8/franklin/Tests/2-in.json /home/vagrant/new-repos/8/franklin/Tests/2-out.json) (/home/vagrant/new-repos/8/franklin/Tests/3-in.json /home/vagrant/new-repos/8/franklin/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/gateway-arch/Tests/1-in.json /home/vagrant/new-repos/8/gateway-arch/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23517
-(testing /home/vagrant/new-repos/8/gateway-arch/Tests/2-in.json /home/vagrant/new-repos/8/gateway-arch/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23532
----------------------------------
-(*** score 0)
-(*** on)
-'(#hasheq((cities
-           .
-           (("Alpha" (250 100))
-            ("Beta" (100 250))
-            ("Chi" (400 250))
-            ("Delta" (250 400))
-            ("Omega" (20 40))))
-          (connections
-           .
-           #hasheq((Alpha
-                    .
-                    #hasheq((Chi . #hasheq((red . 3)))
-                            (Delta . #hasheq((blue . 3)))
-                            (Omega . #hasheq((blue . 3)))))
-                   (Beta
-                    .
-                    #hasheq((Chi . #hasheq((white . 4)))
-                            (Delta . #hasheq((green . 5)))))))
-          (height . 500)
-          (width . 500))
-  (("Matt" "Buy-Now") ("Ben" "Hold-10"))
-  ("green"
-   "green"
-   "red"
-   "blue"
-   "white"
-   "green"
-   "green"
-   "red"
-   "white"
-   "blue"
-   "red"
-   "white"
-   "red"
-   "blue"
-   "green"
-   "white"
-   "red"
-   "green"
-   "blue"
-   "green"
-   "red"
-   "blue"
-   "green"
-   "red"
-   "white"
-   "green"
-   "green"
-   "white"
-   "blue"
-   "green"
-   "red"
-   "red"
-   "green"
-   "white"
-   "red"
-   "red"
-   "blue"
-   "green"
-   "red"
-   "green"
-   "white"
-   "white"
-   "green"
-   "white"
-   "red"
-   "red"
-   "red"
-   "green"
-   "white"
-   "green"
-   "green"
-   "red"
-   "blue"
-   "green"
-   "red"
-   "white"
-   "green"
-   "blue"
-   "red"
-   "blue"
-   "red"
-   "white"
-   "green"
-   "white"
-   "white"
-   "red"
-   "blue"
-   "blue"
-   "white"
-   "blue"
-   "white"
-   "blue"
-   "blue"
-   "green"
-   "white"
-   "red"
-   "green"
-   "blue"
-   "blue"
-   "blue"
-   "white"
-   "white"
-   "green"
-   "red"
-   "green"
-   "red"
-   "red"
-   "white"
-   "red"
-   "green"
-   "blue"
-   "green"
-   "white"
-   "red"
-   "red"
-   "red"
-   "white"
-   "red"
-   "red"
-   "white"
-   "white"
-   "white"
-   "green"
-   "blue"
-   "white"
-   "green"
-   "red"
-   "white"
-   "green"
-   "green"
-   "green"
-   "blue"
-   "white"
-   "blue"
-   "blue"
-   "white"
-   "red"
-   "green"
-   "green"
-   "white"
-   "green"
-   "blue"
-   "white"
-   "red"
-   "red"
-   "white"
-   "blue"
-   "red"
-   "red"
-   "white"
-   "blue"
-   "white"
-   "red"
-   "red"
-   "red"
-   "red"
-   "white"
-   "green"
-   "blue"
-   "blue"
-   "white"
-   "red"
-   "green"
-   "white"
-   "green"
-   "green"
-   "red"
-   "blue"
-   "white"
-   "green"
-   "green"
-   "blue"
-   "blue"
-   "red"
-   "green"
-   "red"
-   "green"
-   "red"
-   "blue"
-   "red"
-   "blue"
-   "white"
-   "white"
-   "red"
-   "red"
-   "red"
-   "blue"
-   "green"
-   "white"
-   "blue"
-   "green"
-   "green"
-   "blue"
-   "blue"
-   "green"
-   "green"
-   "blue"
-   "red"
-   "white"
-   "red"
-   "white"
-   "white"
-   "red"
-   "white"
-   "green"
-   "green"
-   "blue"
-   "red"
-   "blue"
-   "green"
-   "blue"
-   "blue"
-   "blue"
-   "blue"
-   "white"
-   "red"
-   "blue"
-   "blue"
-   "red"
-   "white"
-   "green"
-   "white"
-   "green"
-   "red"
-   "green"
-   "white"
-   "green"
-   "blue"
-   "red"
-   "blue"
-   "white"
-   "blue"
-   "blue"
-   "red"
-   "white"
-   "blue"
-   "green"
-   "green"
-   "blue"
-   "white"
-   "white"
-   "blue"
-   "white"
-   "white"
-   "green"
-   "red"
-   "blue"
-   "red"
-   "white"
-   "blue"
-   "blue"
-   "white"
-   "green"
-   "blue"
-   "green"
-   "white"
-   "red"
-   "blue"
-   "white"
-   "green"
-   "red"
-   "blue"
-   "blue"
-   "green"
-   "white"
-   "blue"
-   "blue"
-   "blue"
-   "blue"
-   "white"))
-(*** expected)
-'(((("Ben") ("Matt")) ()))
-(*** but received)
-'(((plain fast with-newline plain-unicode) (((("Matt") ("Ben")) ()))))
-
-
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31209
 (testing /home/vagrant/new-repos/8/gateway-arch/Tests/3-in.json /home/vagrant/new-repos/8/gateway-arch/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23547
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31224
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -582,14 +300,14 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23547
 
 
 ((/home/vagrant/new-repos/8/gateway-arch/Tests/1-in.json /home/vagrant/new-repos/8/gateway-arch/Tests/1-out.json))
-((passed 1) (total 3) (partial-score 1))
+((passed 1) (total 2) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/grand-mesa/Tests/1-in.json /home/vagrant/new-repos/8/grand-mesa/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23564
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31241
 (testing /home/vagrant/new-repos/8/grand-mesa/Tests/2-in.json /home/vagrant/new-repos/8/grand-mesa/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23579
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31256
 (testing /home/vagrant/new-repos/8/grand-mesa/Tests/3-in.json /home/vagrant/new-repos/8/grand-mesa/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23594
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31271
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -884,326 +602,35 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23594
 ((/home/vagrant/new-repos/8/grand-mesa/Tests/1-in.json /home/vagrant/new-repos/8/grand-mesa/Tests/1-out.json) (/home/vagrant/new-repos/8/grand-mesa/Tests/2-in.json /home/vagrant/new-repos/8/grand-mesa/Tests/2-out.json))
 ((passed 2) (total 3) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
-(testing /home/vagrant/new-repos/8/granville/Tests/2-in.json /home/vagrant/new-repos/8/granville/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23611
-(testing /home/vagrant/new-repos/8/granville/Tests/3-in.json /home/vagrant/new-repos/8/granville/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23626
-((/home/vagrant/new-repos/8/granville/Tests/2-in.json /home/vagrant/new-repos/8/granville/Tests/2-out.json) (/home/vagrant/new-repos/8/granville/Tests/3-in.json /home/vagrant/new-repos/8/granville/Tests/3-out.json))
+(testing /home/vagrant/new-repos/8/great-basin/Tests/2-in.json /home/vagrant/new-repos/8/great-basin/Tests/2-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31288
+(testing /home/vagrant/new-repos/8/great-basin/Tests/3-in.json /home/vagrant/new-repos/8/great-basin/Tests/3-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31303
+((/home/vagrant/new-repos/8/great-basin/Tests/2-in.json /home/vagrant/new-repos/8/great-basin/Tests/2-out.json) (/home/vagrant/new-repos/8/great-basin/Tests/3-in.json /home/vagrant/new-repos/8/great-basin/Tests/3-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
-(testing /home/vagrant/new-repos/8/great-basin/Tests/1-in.json /home/vagrant/new-repos/8/great-basin/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23643
----------------------------------
-(*** score 0)
-(*** on)
-'(#hasheq((cities
-           .
-           (("Albany" (200 200))
-            ("Boston" (100 50))
-            ("Chicago" (250 100))
-            ("Detroit" (20 20))
-            ("Elon" (15 55))
-            ("Flint" (0 300))))
-          (connections
-           .
-           #hasheq((Albany
-                    .
-                    #hasheq((Boston . #hasheq((blue . 3)))
-                            (Chicago . #hasheq((red . 4)))
-                            (Detroit . #hasheq((white . 4)))))
-                   (Boston
-                    .
-                    #hasheq((Chicago . #hasheq((green . 3)))
-                            (Elon . #hasheq((red . 5)))))
-                   (Elon . #hasheq((Flint . #hasheq((green . 3)))))))
-          (height . 400)
-          (width . 300))
-  (("Jack" "Hold-10") ("Jill" "Buy-Now"))
-  ("blue"
-   "green"
-   "green"
-   "blue"
-   "green"
-   "blue"
-   "red"
-   "red"
-   "green"
-   "white"
-   "green"
-   "green"
-   "blue"
-   "red"
-   "red"
-   "green"
-   "green"
-   "blue"
-   "red"
-   "white"
-   "green"
-   "red"
-   "white"
-   "green"
-   "white"
-   "blue"
-   "blue"
-   "red"
-   "green"
-   "green"
-   "blue"
-   "blue"
-   "red"
-   "white"
-   "green"
-   "blue"
-   "white"
-   "blue"
-   "green"
-   "white"
-   "green"
-   "red"
-   "green"
-   "blue"
-   "white"
-   "blue"
-   "white"
-   "green"
-   "red"
-   "red"
-   "blue"
-   "white"
-   "white"
-   "blue"
-   "blue"
-   "blue"
-   "white"
-   "red"
-   "green"
-   "blue"
-   "green"
-   "red"
-   "red"
-   "red"
-   "white"
-   "blue"
-   "red"
-   "white"
-   "red"
-   "red"
-   "green"
-   "red"
-   "white"
-   "blue"
-   "green"
-   "green"
-   "blue"
-   "green"
-   "red"
-   "blue"
-   "blue"
-   "white"
-   "white"
-   "white"
-   "blue"
-   "blue"
-   "blue"
-   "white"
-   "green"
-   "red"
-   "green"
-   "white"
-   "green"
-   "white"
-   "white"
-   "white"
-   "white"
-   "green"
-   "blue"
-   "white"
-   "blue"
-   "green"
-   "red"
-   "white"
-   "red"
-   "blue"
-   "blue"
-   "white"
-   "green"
-   "white"
-   "white"
-   "white"
-   "green"
-   "red"
-   "blue"
-   "white"
-   "blue"
-   "green"
-   "green"
-   "red"
-   "blue"
-   "red"
-   "white"
-   "green"
-   "red"
-   "red"
-   "red"
-   "green"
-   "red"
-   "blue"
-   "red"
-   "green"
-   "red"
-   "blue"
-   "white"
-   "red"
-   "blue"
-   "blue"
-   "blue"
-   "green"
-   "white"
-   "green"
-   "red"
-   "red"
-   "red"
-   "blue"
-   "red"
-   "white"
-   "blue"
-   "blue"
-   "blue"
-   "blue"
-   "white"
-   "red"
-   "blue"
-   "green"
-   "blue"
-   "red"
-   "blue"
-   "red"
-   "white"
-   "red"
-   "green"
-   "green"
-   "blue"
-   "blue"
-   "green"
-   "blue"
-   "green"
-   "white"
-   "red"
-   "blue"
-   "red"
-   "blue"
-   "red"
-   "white"
-   "red"
-   "white"
-   "green"
-   "green"
-   "green"
-   "blue"
-   "blue"
-   "green"
-   "red"
-   "blue"
-   "white"
-   "green"
-   "white"
-   "white"
-   "white"
-   "blue"
-   "green"
-   "white"
-   "red"
-   "white"
-   "red"
-   "green"
-   "blue"
-   "green"
-   "blue"
-   "red"
-   "green"
-   "red"
-   "white"
-   "red"
-   "blue"
-   "blue"
-   "green"
-   "blue"
-   "red"
-   "green"
-   "white"
-   "white"
-   "green"
-   "white"
-   "green"
-   "green"
-   "white"
-   "white"
-   "white"
-   "white"
-   "green"
-   "red"
-   "red"
-   "red"
-   "red"
-   "red"
-   "green"
-   "blue"
-   "red"
-   "white"
-   "green"
-   "red"
-   "green"
-   "white"
-   "white"
-   "white"
-   "blue"
-   "white"
-   "red"
-   "blue"
-   "green"
-   "white"
-   "green"
-   "red"
-   "red"
-   "white"
-   "white"
-   "red"))
-(*** expected)
-'(((("Jack") ("Jill")) ()))
-(*** but received)
-'(((plain fast with-newline plain-unicode) (((("Jack" "Jill")) ()))))
-
-
-(testing /home/vagrant/new-repos/8/great-basin/Tests/2-in.json /home/vagrant/new-repos/8/great-basin/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23658
-(testing /home/vagrant/new-repos/8/great-basin/Tests/3-in.json /home/vagrant/new-repos/8/great-basin/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23673
-((/home/vagrant/new-repos/8/great-basin/Tests/2-in.json /home/vagrant/new-repos/8/great-basin/Tests/2-out.json) (/home/vagrant/new-repos/8/great-basin/Tests/3-in.json /home/vagrant/new-repos/8/great-basin/Tests/3-out.json))
-((passed 2) (total 3) (partial-score 2))
-(testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/great-falls/Tests/1-in.json /home/vagrant/new-repos/8/great-falls/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23690
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31320
 (testing /home/vagrant/new-repos/8/great-falls/Tests/2-in.json /home/vagrant/new-repos/8/great-falls/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23705
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31335
 (testing /home/vagrant/new-repos/8/great-falls/Tests/3-in.json /home/vagrant/new-repos/8/great-falls/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23720
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31350
 ((/home/vagrant/new-repos/8/great-falls/Tests/1-in.json /home/vagrant/new-repos/8/great-falls/Tests/1-out.json) (/home/vagrant/new-repos/8/great-falls/Tests/2-in.json /home/vagrant/new-repos/8/great-falls/Tests/2-out.json) (/home/vagrant/new-repos/8/great-falls/Tests/3-in.json /home/vagrant/new-repos/8/great-falls/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/gunnison/Tests/1-in.json /home/vagrant/new-repos/8/gunnison/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23737
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31367
 (testing /home/vagrant/new-repos/8/gunnison/Tests/2-in.json /home/vagrant/new-repos/8/gunnison/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23752
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31382
 (testing /home/vagrant/new-repos/8/gunnison/Tests/3-in.json /home/vagrant/new-repos/8/gunnison/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23767
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31397
 ((/home/vagrant/new-repos/8/gunnison/Tests/1-in.json /home/vagrant/new-repos/8/gunnison/Tests/1-out.json) (/home/vagrant/new-repos/8/gunnison/Tests/2-in.json /home/vagrant/new-repos/8/gunnison/Tests/2-out.json) (/home/vagrant/new-repos/8/gunnison/Tests/3-in.json /home/vagrant/new-repos/8/gunnison/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/haleakal/Tests/1-in.json /home/vagrant/new-repos/8/haleakal/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23784
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31414
 (testing /home/vagrant/new-repos/8/haleakal/Tests/3-in.json /home/vagrant/new-repos/8/haleakal/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23799
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31429
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -1501,46 +928,48 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23799
 ((passed 1) (total 2) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/hammond-pond/Tests/1-in.json /home/vagrant/new-repos/8/hammond-pond/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23816
-((/home/vagrant/new-repos/8/hammond-pond/Tests/1-in.json /home/vagrant/new-repos/8/hammond-pond/Tests/1-out.json))
-((passed 1) (total 1) (partial-score 1))
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31446
+(testing /home/vagrant/new-repos/8/hammond-pond/Tests/3-in.json /home/vagrant/new-repos/8/hammond-pond/Tests/3-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31461
+((/home/vagrant/new-repos/8/hammond-pond/Tests/1-in.json /home/vagrant/new-repos/8/hammond-pond/Tests/1-out.json) (/home/vagrant/new-repos/8/hammond-pond/Tests/3-in.json /home/vagrant/new-repos/8/hammond-pond/Tests/3-out.json))
+((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/hampton-ponds/Tests/1-in.json /home/vagrant/new-repos/8/hampton-ponds/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23833
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31478
 (testing /home/vagrant/new-repos/8/hampton-ponds/Tests/2-in.json /home/vagrant/new-repos/8/hampton-ponds/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23848
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31493
 (testing /home/vagrant/new-repos/8/hampton-ponds/Tests/3-in.json /home/vagrant/new-repos/8/hampton-ponds/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23863
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31508
 ((/home/vagrant/new-repos/8/hampton-ponds/Tests/1-in.json /home/vagrant/new-repos/8/hampton-ponds/Tests/1-out.json) (/home/vagrant/new-repos/8/hampton-ponds/Tests/2-in.json /home/vagrant/new-repos/8/hampton-ponds/Tests/2-out.json) (/home/vagrant/new-repos/8/hampton-ponds/Tests/3-in.json /home/vagrant/new-repos/8/hampton-ponds/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/harold-parker/Tests/1-in.json /home/vagrant/new-repos/8/harold-parker/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23880
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31525
 (testing /home/vagrant/new-repos/8/harold-parker/Tests/2-in.json /home/vagrant/new-repos/8/harold-parker/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23895
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31540
 (testing /home/vagrant/new-repos/8/harold-parker/Tests/3-in.json /home/vagrant/new-repos/8/harold-parker/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23910
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31555
 ((/home/vagrant/new-repos/8/harold-parker/Tests/1-in.json /home/vagrant/new-repos/8/harold-parker/Tests/1-out.json) (/home/vagrant/new-repos/8/harold-parker/Tests/2-in.json /home/vagrant/new-repos/8/harold-parker/Tests/2-out.json) (/home/vagrant/new-repos/8/harold-parker/Tests/3-in.json /home/vagrant/new-repos/8/harold-parker/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/helena/Tests/1-in.json /home/vagrant/new-repos/8/helena/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23927
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31572
 (testing /home/vagrant/new-repos/8/helena/Tests/2-in.json /home/vagrant/new-repos/8/helena/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23942
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31587
 ((/home/vagrant/new-repos/8/helena/Tests/1-in.json /home/vagrant/new-repos/8/helena/Tests/1-out.json) (/home/vagrant/new-repos/8/helena/Tests/2-in.json /home/vagrant/new-repos/8/helena/Tests/2-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/hemlock-gorge/Tests/3-in.json /home/vagrant/new-repos/8/hemlock-gorge/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23959
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31604
 ((/home/vagrant/new-repos/8/hemlock-gorge/Tests/3-in.json /home/vagrant/new-repos/8/hemlock-gorge/Tests/3-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/hiawatha/Tests/1-in.json /home/vagrant/new-repos/8/hiawatha/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23976
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31621
 (testing /home/vagrant/new-repos/8/hiawatha/Tests/2-in.json /home/vagrant/new-repos/8/hiawatha/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 23991
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31636
 (testing /home/vagrant/new-repos/8/hiawatha/Tests/3-in.json /home/vagrant/new-repos/8/hiawatha/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24006
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31651
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -1865,16 +1294,16 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24006
 ((passed 2) (total 3) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/humboldt/Tests/1-in.json /home/vagrant/new-repos/8/humboldt/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24023
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31668
 (testing /home/vagrant/new-repos/8/humboldt/Tests/2-in.json /home/vagrant/new-repos/8/humboldt/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24038
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31683
 (testing /home/vagrant/new-repos/8/humboldt/Tests/3-in.json /home/vagrant/new-repos/8/humboldt/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24053
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31698
 ((/home/vagrant/new-repos/8/humboldt/Tests/1-in.json /home/vagrant/new-repos/8/humboldt/Tests/1-out.json) (/home/vagrant/new-repos/8/humboldt/Tests/2-in.json /home/vagrant/new-repos/8/humboldt/Tests/2-out.json) (/home/vagrant/new-repos/8/humboldt/Tests/3-in.json /home/vagrant/new-repos/8/humboldt/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/huron/Tests/1-in.json /home/vagrant/new-repos/8/huron/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24070
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31715
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -2172,16 +1601,16 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24070
 
 
 (testing /home/vagrant/new-repos/8/huron/Tests/2-in.json /home/vagrant/new-repos/8/huron/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24085
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31730
 ((/home/vagrant/new-repos/8/huron/Tests/2-in.json /home/vagrant/new-repos/8/huron/Tests/2-out.json))
 ((passed 1) (total 2) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/indiana-dunes/Tests/1-in.json /home/vagrant/new-repos/8/indiana-dunes/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24102
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31747
 (testing /home/vagrant/new-repos/8/indiana-dunes/Tests/2-in.json /home/vagrant/new-repos/8/indiana-dunes/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24117
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31762
 (testing /home/vagrant/new-repos/8/indiana-dunes/Tests/3-in.json /home/vagrant/new-repos/8/indiana-dunes/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24132
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31777
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -2483,38 +1912,40 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24132
 ((passed 2) (total 3) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/inyo/Tests/1-in.json /home/vagrant/new-repos/8/inyo/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24149
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31794
 ((/home/vagrant/new-repos/8/inyo/Tests/1-in.json /home/vagrant/new-repos/8/inyo/Tests/1-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/joshua-tree/Tests/1-in.json /home/vagrant/new-repos/8/joshua-tree/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24166
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31811
 (testing /home/vagrant/new-repos/8/joshua-tree/Tests/3-in.json /home/vagrant/new-repos/8/joshua-tree/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24181
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31826
 ((/home/vagrant/new-repos/8/joshua-tree/Tests/1-in.json /home/vagrant/new-repos/8/joshua-tree/Tests/1-out.json) (/home/vagrant/new-repos/8/joshua-tree/Tests/3-in.json /home/vagrant/new-repos/8/joshua-tree/Tests/3-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/kaibab/Tests/1-in.json /home/vagrant/new-repos/8/kaibab/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24198
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31843
 ((/home/vagrant/new-repos/8/kaibab/Tests/1-in.json /home/vagrant/new-repos/8/kaibab/Tests/1-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/kenai-fjords/Tests/1-in.json /home/vagrant/new-repos/8/kenai-fjords/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24215
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31860
 (testing /home/vagrant/new-repos/8/kenai-fjords/Tests/2-in.json /home/vagrant/new-repos/8/kenai-fjords/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24230
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31875
 ((/home/vagrant/new-repos/8/kenai-fjords/Tests/1-in.json /home/vagrant/new-repos/8/kenai-fjords/Tests/1-out.json) (/home/vagrant/new-repos/8/kenai-fjords/Tests/2-in.json /home/vagrant/new-repos/8/kenai-fjords/Tests/2-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/kings-canyon/Tests/1-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24247
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31892
+(testing /home/vagrant/new-repos/8/kings-canyon/Tests/2-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/2-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31907
 (testing /home/vagrant/new-repos/8/kings-canyon/Tests/3-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24262
-((/home/vagrant/new-repos/8/kings-canyon/Tests/1-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/1-out.json) (/home/vagrant/new-repos/8/kings-canyon/Tests/3-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/3-out.json))
-((passed 2) (total 2) (partial-score 2))
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31922
+((/home/vagrant/new-repos/8/kings-canyon/Tests/1-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/1-out.json) (/home/vagrant/new-repos/8/kings-canyon/Tests/2-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/2-out.json) (/home/vagrant/new-repos/8/kings-canyon/Tests/3-in.json /home/vagrant/new-repos/8/kings-canyon/Tests/3-out.json))
+((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/kisatchie/Tests/1-in.json /home/vagrant/new-repos/8/kisatchie/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24279
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31939
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -2807,37 +2238,41 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24279
 '(((plain fast with-newline plain-unicode) (((()) ("CheaterA" "CheaterB")))))
 
 
+(testing /home/vagrant/new-repos/8/kisatchie/Tests/2-in.json /home/vagrant/new-repos/8/kisatchie/Tests/2-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31954
 (testing /home/vagrant/new-repos/8/kisatchie/Tests/3-in.json /home/vagrant/new-repos/8/kisatchie/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24294
-((/home/vagrant/new-repos/8/kisatchie/Tests/3-in.json /home/vagrant/new-repos/8/kisatchie/Tests/3-out.json))
-((passed 1) (total 2) (partial-score 1))
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31969
+((/home/vagrant/new-repos/8/kisatchie/Tests/2-in.json /home/vagrant/new-repos/8/kisatchie/Tests/2-out.json) (/home/vagrant/new-repos/8/kisatchie/Tests/3-in.json /home/vagrant/new-repos/8/kisatchie/Tests/3-out.json))
+((passed 2) (total 3) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/klamath/Tests/1-in.json /home/vagrant/new-repos/8/klamath/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24311
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 31987
 ((/home/vagrant/new-repos/8/klamath/Tests/1-in.json /home/vagrant/new-repos/8/klamath/Tests/1-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/kobuk-valley/Tests/1-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24328
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32004
+(testing /home/vagrant/new-repos/8/kobuk-valley/Tests/2-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/2-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32019
 (testing /home/vagrant/new-repos/8/kobuk-valley/Tests/3-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24343
-((/home/vagrant/new-repos/8/kobuk-valley/Tests/1-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/1-out.json) (/home/vagrant/new-repos/8/kobuk-valley/Tests/3-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/3-out.json))
-((passed 2) (total 2) (partial-score 2))
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32034
+((/home/vagrant/new-repos/8/kobuk-valley/Tests/1-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/1-out.json) (/home/vagrant/new-repos/8/kobuk-valley/Tests/2-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/2-out.json) (/home/vagrant/new-repos/8/kobuk-valley/Tests/3-in.json /home/vagrant/new-repos/8/kobuk-valley/Tests/3-out.json))
+((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/kootenai/Tests/2-in.json /home/vagrant/new-repos/8/kootenai/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24360
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32051
 (testing /home/vagrant/new-repos/8/kootenai/Tests/3-in.json /home/vagrant/new-repos/8/kootenai/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24375
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32066
 ((/home/vagrant/new-repos/8/kootenai/Tests/2-in.json /home/vagrant/new-repos/8/kootenai/Tests/2-out.json) (/home/vagrant/new-repos/8/kootenai/Tests/3-in.json /home/vagrant/new-repos/8/kootenai/Tests/3-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/lake-clark/Tests/2-in.json /home/vagrant/new-repos/8/lake-clark/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24392
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32083
 ((/home/vagrant/new-repos/8/lake-clark/Tests/2-in.json /home/vagrant/new-repos/8/lake-clark/Tests/2-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/lassen/Tests/1-in.json /home/vagrant/new-repos/8/lassen/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24409
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32100
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -3140,79 +2575,81 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24409
 
 
 (testing /home/vagrant/new-repos/8/lassen/Tests/2-in.json /home/vagrant/new-repos/8/lassen/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24424
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32115
 (testing /home/vagrant/new-repos/8/lassen/Tests/3-in.json /home/vagrant/new-repos/8/lassen/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24439
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32130
 ((/home/vagrant/new-repos/8/lassen/Tests/2-in.json /home/vagrant/new-repos/8/lassen/Tests/2-out.json) (/home/vagrant/new-repos/8/lassen/Tests/3-in.json /home/vagrant/new-repos/8/lassen/Tests/3-out.json))
 ((passed 2) (total 3) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/leominster/Tests/2-in.json /home/vagrant/new-repos/8/leominster/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24456
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32147
 ((/home/vagrant/new-repos/8/leominster/Tests/2-in.json /home/vagrant/new-repos/8/leominster/Tests/2-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/lincoln/Tests/1-in.json /home/vagrant/new-repos/8/lincoln/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24473
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32164
 (testing /home/vagrant/new-repos/8/lincoln/Tests/2-in.json /home/vagrant/new-repos/8/lincoln/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24488
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32179
 ((/home/vagrant/new-repos/8/lincoln/Tests/1-in.json /home/vagrant/new-repos/8/lincoln/Tests/1-out.json) (/home/vagrant/new-repos/8/lincoln/Tests/2-in.json /home/vagrant/new-repos/8/lincoln/Tests/2-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/los-padres/Tests/1-in.json /home/vagrant/new-repos/8/los-padres/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24505
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32196
 (testing /home/vagrant/new-repos/8/los-padres/Tests/2-in.json /home/vagrant/new-repos/8/los-padres/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24520
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32211
 (testing /home/vagrant/new-repos/8/los-padres/Tests/3-in.json /home/vagrant/new-repos/8/los-padres/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24535
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32226
 ((/home/vagrant/new-repos/8/los-padres/Tests/1-in.json /home/vagrant/new-repos/8/los-padres/Tests/1-out.json) (/home/vagrant/new-repos/8/los-padres/Tests/2-in.json /home/vagrant/new-repos/8/los-padres/Tests/2-out.json) (/home/vagrant/new-repos/8/los-padres/Tests/3-in.json /home/vagrant/new-repos/8/los-padres/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/malheur/Tests/1-in.json /home/vagrant/new-repos/8/malheur/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24552
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32243
 (testing /home/vagrant/new-repos/8/malheur/Tests/2-in.json /home/vagrant/new-repos/8/malheur/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24567
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32258
 (testing /home/vagrant/new-repos/8/malheur/Tests/3-in.json /home/vagrant/new-repos/8/malheur/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24582
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32273
 ((/home/vagrant/new-repos/8/malheur/Tests/1-in.json /home/vagrant/new-repos/8/malheur/Tests/1-out.json) (/home/vagrant/new-repos/8/malheur/Tests/2-in.json /home/vagrant/new-repos/8/malheur/Tests/2-out.json) (/home/vagrant/new-repos/8/malheur/Tests/3-in.json /home/vagrant/new-repos/8/malheur/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mammoth-cave/Tests/1-in.json /home/vagrant/new-repos/8/mammoth-cave/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24599
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32290
 (testing /home/vagrant/new-repos/8/mammoth-cave/Tests/2-in.json /home/vagrant/new-repos/8/mammoth-cave/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24614
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32305
 ((/home/vagrant/new-repos/8/mammoth-cave/Tests/1-in.json /home/vagrant/new-repos/8/mammoth-cave/Tests/1-out.json) (/home/vagrant/new-repos/8/mammoth-cave/Tests/2-in.json /home/vagrant/new-repos/8/mammoth-cave/Tests/2-out.json))
 ((passed 2) (total 2) (partial-score 2))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/massasoit/Tests/1-in.json /home/vagrant/new-repos/8/massasoit/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24631
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32322
 ((/home/vagrant/new-repos/8/massasoit/Tests/1-in.json /home/vagrant/new-repos/8/massasoit/Tests/1-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/maudslay/Tests/1-in.json /home/vagrant/new-repos/8/maudslay/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24648
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32339
 (testing /home/vagrant/new-repos/8/maudslay/Tests/2-in.json /home/vagrant/new-repos/8/maudslay/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24663
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32354
 (testing /home/vagrant/new-repos/8/maudslay/Tests/3-in.json /home/vagrant/new-repos/8/maudslay/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24678
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32369
 ((/home/vagrant/new-repos/8/maudslay/Tests/1-in.json /home/vagrant/new-repos/8/maudslay/Tests/1-out.json) (/home/vagrant/new-repos/8/maudslay/Tests/2-in.json /home/vagrant/new-repos/8/maudslay/Tests/2-out.json) (/home/vagrant/new-repos/8/maudslay/Tests/3-in.json /home/vagrant/new-repos/8/maudslay/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mendocino/Tests/1-in.json /home/vagrant/new-repos/8/mendocino/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24695
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32386
 ((/home/vagrant/new-repos/8/mendocino/Tests/1-in.json /home/vagrant/new-repos/8/mendocino/Tests/1-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
+(testing /home/vagrant/new-repos/8/mesa-verde/Tests/1-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/1-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32403
 (testing /home/vagrant/new-repos/8/mesa-verde/Tests/2-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24712
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32418
 (testing /home/vagrant/new-repos/8/mesa-verde/Tests/3-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24727
-((/home/vagrant/new-repos/8/mesa-verde/Tests/2-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/2-out.json) (/home/vagrant/new-repos/8/mesa-verde/Tests/3-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/3-out.json))
-((passed 2) (total 2) (partial-score 2))
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32433
+((/home/vagrant/new-repos/8/mesa-verde/Tests/1-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/1-out.json) (/home/vagrant/new-repos/8/mesa-verde/Tests/2-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/2-out.json) (/home/vagrant/new-repos/8/mesa-verde/Tests/3-in.json /home/vagrant/new-repos/8/mesa-verde/Tests/3-out.json))
+((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/modoc/Tests/1-in.json /home/vagrant/new-repos/8/modoc/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24744
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32450
 (testing /home/vagrant/new-repos/8/modoc/Tests/3-in.json /home/vagrant/new-repos/8/modoc/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24759
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32465
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -3546,21 +2983,21 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24759
 ((passed 1) (total 2) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mohawk-trail/Tests/2-in.json /home/vagrant/new-repos/8/mohawk-trail/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24776
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32482
 ((/home/vagrant/new-repos/8/mohawk-trail/Tests/2-in.json /home/vagrant/new-repos/8/mohawk-trail/Tests/2-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/monongahela/Tests/1-in.json /home/vagrant/new-repos/8/monongahela/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24793
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32499
 (testing /home/vagrant/new-repos/8/monongahela/Tests/2-in.json /home/vagrant/new-repos/8/monongahela/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24808
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32514
 (testing /home/vagrant/new-repos/8/monongahela/Tests/3-in.json /home/vagrant/new-repos/8/monongahela/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24823
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32529
 ((/home/vagrant/new-repos/8/monongahela/Tests/1-in.json /home/vagrant/new-repos/8/monongahela/Tests/1-out.json) (/home/vagrant/new-repos/8/monongahela/Tests/2-in.json /home/vagrant/new-repos/8/monongahela/Tests/2-out.json) (/home/vagrant/new-repos/8/monongahela/Tests/3-in.json /home/vagrant/new-repos/8/monongahela/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/monroe/Tests/2-in.json /home/vagrant/new-repos/8/monroe/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24840
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32546
 ---------------------------------
 (*** score 0)
 (*** on)
@@ -3857,27 +3294,32 @@ xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24840
 ((passed 0) (total 1) (partial-score 0))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mount-baker/Tests/1-in.json /home/vagrant/new-repos/8/mount-baker/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24857
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32563
 (testing /home/vagrant/new-repos/8/mount-baker/Tests/2-in.json /home/vagrant/new-repos/8/mount-baker/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24872
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32578
 (testing /home/vagrant/new-repos/8/mount-baker/Tests/3-in.json /home/vagrant/new-repos/8/mount-baker/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24887
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32593
 ((/home/vagrant/new-repos/8/mount-baker/Tests/1-in.json /home/vagrant/new-repos/8/mount-baker/Tests/1-out.json) (/home/vagrant/new-repos/8/mount-baker/Tests/2-in.json /home/vagrant/new-repos/8/mount-baker/Tests/2-out.json) (/home/vagrant/new-repos/8/mount-baker/Tests/3-in.json /home/vagrant/new-repos/8/mount-baker/Tests/3-out.json))
 ((passed 3) (total 3) (partial-score 3))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mount-grace/Tests/3-in.json /home/vagrant/new-repos/8/mount-grace/Tests/3-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24904
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32611
 ((/home/vagrant/new-repos/8/mount-grace/Tests/3-in.json /home/vagrant/new-repos/8/mount-grace/Tests/3-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mount-tom/Tests/2-in.json /home/vagrant/new-repos/8/mount-tom/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24921
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32628
 ((/home/vagrant/new-repos/8/mount-tom/Tests/2-in.json /home/vagrant/new-repos/8/mount-tom/Tests/2-out.json))
 ((passed 1) (total 1) (partial-score 1))
 (testing /home/vagrant/new-repos/mark-twain/8/xref)
 (testing /home/vagrant/new-repos/8/mystic-lakes/Tests/1-in.json /home/vagrant/new-repos/8/mystic-lakes/Tests/1-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24938
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32645
 (testing /home/vagrant/new-repos/8/mystic-lakes/Tests/2-in.json /home/vagrant/new-repos/8/mystic-lakes/Tests/2-out.json)
-xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 24953
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32660
 ((/home/vagrant/new-repos/8/mystic-lakes/Tests/1-in.json /home/vagrant/new-repos/8/mystic-lakes/Tests/1-out.json) (/home/vagrant/new-repos/8/mystic-lakes/Tests/2-in.json /home/vagrant/new-repos/8/mystic-lakes/Tests/2-out.json))
 ((passed 2) (total 2) (partial-score 2))
+(testing /home/vagrant/new-repos/mark-twain/8/xref)
+(testing /home/vagrant/new-repos/8/mystic-river/Tests/3-in.json /home/vagrant/new-repos/8/mystic-river/Tests/3-out.json)
+xtest: /home/vagrant/new-repos/mark-twain/8/xref runs as 32677
+((/home/vagrant/new-repos/8/mystic-river/Tests/3-in.json /home/vagrant/new-repos/8/mystic-river/Tests/3-out.json))
+((passed 1) (total 1) (partial-score 1))
