@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
@@ -25,6 +27,10 @@ public class Server {
     private static final int NAME_TIMEOUT_MILLIS = 3000;
     private static final int ONE_CONNECTION_WAITING_TIMEOUT = 1000;
     private static final int PLAYERS_CONNECTION_WAITING_TIMEOUT = 20000;
+    private static final int MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1 = 5;
+    private static final int MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_2 = 2;
+    private static final int MAX_CONNECTIONS_FOR_TOURNAMENT = 50;
+    private static final int BUFF_SIZE = 1024;
 
     private final int port;
 
@@ -129,14 +135,14 @@ public class Server {
 
         waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
 
-        if (signedUpPlayerHandlers.size() < 5) {
+        if (signedUpPlayerHandlers.size() < MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1) {
             waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
         }
 
         LinkedHashMap<String, IPlayer> players = getSignedUpPlayers(signedUpPlayerHandlers,
             signedUpPlayerThreads);
 
-        if (players.size() < 2) {
+        if (players.size() < MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_2) {
             return new TournamentResult(new HashSet<>(), new HashSet<>());
         }
 
@@ -174,15 +180,19 @@ public class Server {
         throws IOException {
 
         long startTime = System.currentTimeMillis();
-        while (signedUpPlayerHandlers.size() < 50
+        while (signedUpPlayerHandlers.size() < MAX_CONNECTIONS_FOR_TOURNAMENT
             && System.currentTimeMillis() - startTime > PLAYERS_CONNECTION_WAITING_TIMEOUT) {
 
-            Socket clientSocket = serverSocket.accept();
-            ClientHandler handler = new ClientHandler(clientSocket);
-            Thread clientHandlerThread = new Thread(handler);
-            clientHandlerThread.start();
-            signedUpPlayerHandlers.add(handler);
-            signedUpPlayerThreads.add(clientHandlerThread);
+            try {
+                Socket clientSocket = serverSocket.accept();
+                ClientHandler handler = new ClientHandler(clientSocket);
+                Thread clientHandlerThread = new Thread(handler);
+                clientHandlerThread.start();
+                signedUpPlayerHandlers.add(handler);
+                signedUpPlayerThreads.add(clientHandlerThread);
+            } catch (SocketTimeoutException ignored) {
+                // correct behavior after timeout on accept is to go to the next iteration of the loop
+            }
         }
     }
 
@@ -198,13 +208,14 @@ public class Server {
 
         @Override
         public void run() {
-            char[] name = new char[50];
+            char[] nameBuff = new char[BUFF_SIZE];
             try {
                 this.clientSocket.setSoTimeout(NAME_TIMEOUT_MILLIS);
-                int numRead = new InputStreamReader(this.clientSocket.getInputStream()).read(name);
+                int numRead = new InputStreamReader(this.clientSocket.getInputStream()).read(nameBuff);
 
-                if (numRead > 0) {
-                    this.name = String.valueOf(name);
+                String name = String.valueOf(nameBuff);
+                if (numRead > 0 && validateName(name)) {
+                    this.name = name;
                     this.respondedInTime = true;
                 }
             } catch (IOException e) {
@@ -222,6 +233,15 @@ public class Server {
 
         public Socket getClientSocket() {
             return this.clientSocket;
+        }
+
+        private static boolean validateName(String name) {
+            if (Objects.isNull(name)) {
+                return false;
+            }
+            boolean correct_length = name.length() > 0 && name.length() <= 50;
+            boolean correct_characters = Pattern.matches("[a-zA-Z]+", name);
+            return correct_length && correct_characters;
         }
     }
 }

@@ -1,6 +1,7 @@
 package remote;
 
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonStreamParser;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,6 +11,8 @@ import java.net.Socket;
 import player.IPlayer;
 
 public class ProxyServer {
+
+    private static final int DISCONNECT_TIMEOUT_MILLIS = 20000;
 
     private final Reader input;
     private final PrintWriter output;
@@ -23,12 +26,26 @@ public class ProxyServer {
 
     public void run() {
         JsonStreamParser parser = new JsonStreamParser(this.input);
-        while (!parser.hasNext()) {
-            // Do a better synchronization
+        long startTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - startTime > DISCONNECT_TIMEOUT_MILLIS) {
+            while (!parser.hasNext()) {
+                // Do a better synchronization
+            }
+
+            JsonElement element = parser.next();
+            JsonObject methodInfo = element.getAsJsonObject();
         }
-
-        JsonElement element = parser.next();
-        String methodName = element.getAsString();
-
     }
 }
+
+/**
+ *
+ *
+ {
+    "name" : "setup",
+    "args" : ["ITrainMap", "int", "List<RailCard>"]
+ }
+
+ *
+ *
+ */
