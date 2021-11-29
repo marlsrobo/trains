@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import map.Destination;
 import map.ITrainMap;
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +52,7 @@ public class TestPlayer {
   }
 
   @Test
-  public void TestSetUp() {
+  public void TestSetUp() throws TimeoutException {
     // Test what is passed to strategy in case a player is not set up
     IPlayer p = new Player(new MockStrategy(new HashSet<>(), 2, null, 0, null));
     p.chooseDestinations(new HashSet<>());
@@ -79,7 +80,7 @@ public class TestPlayer {
 
 
   @Test
-  public void TestPlayerIntegrations() {
+  public void TestPlayerIntegrations() throws TimeoutException {
     TestIntegration(this.buyNowFromFile, new BuyNow());
     TestIntegration(this.buyNowFromStrategy, new BuyNow());
 
@@ -87,7 +88,7 @@ public class TestPlayer {
     TestIntegration(this.hold10FromStrategy, new Hold10());
   }
 
-  private void TestIntegration(IPlayer player, IStrategy strategy) {
+  private void TestIntegration(IPlayer player, IStrategy strategy) throws TimeoutException {
     ITrainMap map = TestStrategy.readAndParseTestMap("bos-sea-red-white.json").getFirst();
     IPlayerGameState gameState =
         TestStrategy.readAndParseTestMap("bos-sea-red-white.json").getSecond();

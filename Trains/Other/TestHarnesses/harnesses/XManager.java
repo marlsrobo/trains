@@ -60,7 +60,7 @@ public class XManager {
         }
     }
 
-    private static JsonArray tournamentResultToJson(TournamentResult tournamentResult) {
+    public static JsonArray tournamentResultToJson(TournamentResult tournamentResult) {
         JsonArray reportJson = new JsonArray();
         List<String> winners = new ArrayList<>(tournamentResult.getWinners());
         List<String> cheaters = new ArrayList<>(tournamentResult.getCheaters());

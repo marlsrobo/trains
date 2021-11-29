@@ -16,22 +16,20 @@ import utils.json.ToJsonConverter;
 
 import java.io.*;
 import java.net.Socket;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class ProxyPlayer implements IPlayer {
 
-    private final BufferedReader input;
+    private final Reader input;
     private final PrintWriter output;
 
     private ITrainMap map;
 
     public ProxyPlayer(Socket client) throws IOException {
-        this.input = new BufferedReader(new InputStreamReader(client.getInputStream()));
+        this.input = new InputStreamReader(client.getInputStream());
         this.output = new PrintWriter(client.getOutputStream(), true);
     }
 
