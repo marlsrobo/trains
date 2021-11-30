@@ -1,6 +1,5 @@
 package harnesses;
 
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
@@ -28,10 +27,7 @@ import referee.GameEndReport;
 import referee.IReferee;
 import referee.TrainsReferee;
 import utils.ComparatorUtils;
-import utils.RailCardUtils;
-import utils.Constants;
-
-import static harnesses.XMap.trainMapFromJson;
+import utils.json.FromJsonConverter;
 
 public class XRef {
 
@@ -48,9 +44,9 @@ public class XRef {
             JsonElement cardsJson = parser.next();
 
             // Construct objects from JSON
-            ITrainMap map = trainMapFromJson(mapJson);
+            ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
             LinkedHashMap<String, IPlayer> players = playersFromJson(playersJson.getAsJsonArray());
-            List<RailCard> cards = cardsFromJson(cardsJson.getAsJsonArray());
+            List<RailCard> cards = FromJsonConverter.cardsFromJson(cardsJson);
 
             IReferee ref = new TrainsReferee.RefereeBuilder(map, players)
                 .deckProvider(() -> cards)
@@ -151,16 +147,4 @@ public class XRef {
         String defaultStrategyLocation = "./out/production/mark-twain/strategy/";
         return defaultStrategyLocation + strategyName.replace("-", "") + ".class";
     }
-
-    public static List<RailCard> cardsFromJson(JsonArray cardsJson) {
-        if (cardsJson.size() != Constants.DECK_SIZE) {
-            throw new IllegalArgumentException("Deck size is not " + Constants.DECK_SIZE);
-        }
-        List<RailCard> cards = new ArrayList<>();
-        for (JsonElement jsonCard : cardsJson) {
-            cards.add(RailCardUtils.railCardFromLowercaseCard(jsonCard.getAsString()));
-        }
-        return cards;
-    }
-
 }

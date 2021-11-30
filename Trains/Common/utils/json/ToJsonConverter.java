@@ -1,9 +1,14 @@
 package utils.json;
 
+import static utils.ComparatorUtils.fromUnordered;
+
+import action.TurnAction;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import game_state.RailCard;
+import harnesses.ActionToJSONVisitor;
 import map.Destination;
 import map.ICity;
 import map.IRailConnection;
@@ -143,5 +148,22 @@ public class ToJsonConverter {
         jsonDestination.add(destination.left.getName());
         jsonDestination.add(destination.right.getName());
         return jsonDestination;
+    }
+
+    public static JsonElement turnActionToJSON(TurnAction turnAction) {
+        return new ActionToJSONVisitor().apply(turnAction);
+    }
+
+    public static JsonElement railConnectionToJSON(IRailConnection railConnection) {
+        JsonArray acquired = new JsonArray();
+
+        OrderedPair<ICity> orderedCities = fromUnordered(railConnection.getCities());
+        acquired.add(orderedCities.first.getName());
+        acquired.add(orderedCities.second.getName());
+
+        acquired.add(railConnection.getColor().name().toLowerCase());
+        acquired.add(railConnection.getLength());
+
+        return acquired;
     }
 }

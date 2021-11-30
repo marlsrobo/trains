@@ -1,27 +1,20 @@
 package harnesses;
 
 import static harnesses.XManager.playersFromJson;
-import static harnesses.XMap.trainMapFromJson;
-import static harnesses.XRef.cardsFromJson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
-import game_state.RailCard;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import map.ITrainMap;
 import player.IPlayer;
 import remote.Client;
-import tournament_manager.ITournamentManager;
-import tournament_manager.SingleElimTournamentManager;
-import tournament_manager.TournamentResult;
+import utils.json.FromJsonConverter;
 
 public class XClients {
 
@@ -45,7 +38,7 @@ public class XClients {
             JsonElement _cardsJson = parser.next();
 
             // Construct objects from JSON
-            ITrainMap map = trainMapFromJson(mapJson);
+            ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
             LinkedHashMap<String, IPlayer> players = playersFromJson(playersJson.getAsJsonArray(),
                 map);
 

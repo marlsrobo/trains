@@ -1,7 +1,5 @@
 package harnesses;
 
-import static harnesses.XLegal.playerStateFromJson;
-import static harnesses.XMap.trainMapFromJson;
 import static utils.ComparatorUtils.fromUnordered;
 
 import com.google.gson.JsonArray;
@@ -19,9 +17,12 @@ import map.ITrainMap;
 import strategy.Hold10;
 import action.TurnAction;
 import utils.OrderedPair;
+import utils.json.FromJsonConverter;
+import utils.json.ToJsonConverter;
 
 public class XStrategy {
-    public  static void main(String[] args) {
+
+    public static void main(String[] args) {
         RunTest(new InputStreamReader(System.in), System.out);
     }
 
@@ -33,30 +34,14 @@ public class XStrategy {
             JsonElement playerStateJson = parser.next();
 
             // Construct objects from JSON
-            ITrainMap map = trainMapFromJson(mapJson);
-            IPlayerGameState playerGameState = playerStateFromJson(playerStateJson);
+            ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
+            IPlayerGameState playerGameState = FromJsonConverter
+                .playerStateFromJson(playerStateJson, map);
 
             // Calculate and output result
             TurnAction result = new Hold10().takeTurn(playerGameState, map, null);
-            output.println(turnActionToJSON(result).toString());
+            output.println(ToJsonConverter.turnActionToJSON(result).toString());
         } catch (JsonIOException | IOException ignored) {
         }
-    }
-
-    public static JsonElement turnActionToJSON(TurnAction turnAction) {
-        return new ActionToJSONVisitor().apply(turnAction);
-    }
-
-    public static JsonElement railConnectionToJSON(IRailConnection railConnection) {
-        JsonArray acquired = new JsonArray();
-
-        OrderedPair<ICity> orderedCities = fromUnordered(railConnection.getCities());
-        acquired.add(orderedCities.first.getName());
-        acquired.add(orderedCities.second.getName());
-
-        acquired.add(railConnection.getColor().name().toLowerCase());
-        acquired.add(railConnection.getLength());
-
-        return acquired;
     }
 }
