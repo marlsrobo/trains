@@ -9,7 +9,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
-import harnesses.ActionToJSONVisitor;
 import map.Destination;
 import map.ICity;
 import map.IRailConnection;
@@ -18,8 +17,10 @@ import utils.ComparatorUtils;
 import utils.OrderedPair;
 import utils.UnorderedPair;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -168,8 +169,30 @@ public class ToJsonConverter {
         return acquired;
     }
 
+    public static JsonElement acquiredConnectionsToJson(Set<IRailConnection> acquiredConnections) {
+        JsonArray acquireds = new JsonArray();
+        for (IRailConnection connection : acquiredConnections) {
+            acquireds.add(railConnectionToJSON(connection));
+        }
+        return acquireds;
+    }
+
     public static JsonElement playerGameStateToJson(IPlayerGameState gameState) {
         // TODO: Implement this method
-        return new JsonPrimitive("");
+        JsonObject jsonPlayerState = new JsonObject();
+        jsonPlayerState.add("destination1", destinationToJson(gameState.getDestination));
+        jsonPlayerState.add("destination2", destinationToJson(gameState.getDestination));
+        jsonPlayerState.add("rails", new JsonPrimitive(gameState.getNumRails()));
+        jsonPlayerState.add("cards", railCardsToJson(mapCardsToListCards(gameState.getCardsInHand())));
+        jsonPlayerState.add("acquired", acquiredConnectionsToJson(gameState.getOwnedConnections()));
+        return jsonPlayerState;
+    }
+
+    private static List<RailCard> mapCardsToListCards(Map<RailCard, Integer> mapCards) {
+        List<RailCard> playerCardsList = new ArrayList<>();
+        for (Map.Entry<RailCard, Integer> cardCount : mapCards.entrySet()) {
+            playerCardsList.addAll(Collections.nCopies(cardCount.getValue(), cardCount.getKey()));
+        }
+        return playerCardsList;
     }
 }

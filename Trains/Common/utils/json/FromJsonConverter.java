@@ -1,5 +1,6 @@
 package utils.json;
 
+import action.AcquireConnectionAction;
 import action.DrawCardsAction;
 import action.TurnAction;
 import com.google.gson.JsonArray;
@@ -315,7 +316,15 @@ public class FromJsonConverter {
     }
 
     public static TurnAction turnActionFromJson(JsonElement turnActionJson) {
-        // TODO: Implement this method
-        return new DrawCardsAction();
+        if (turnActionJson.isJsonArray()) {
+            IRailConnection acquired = acquiredConnectionFromJson(turnActionJson);
+            return new AcquireConnectionAction(acquired);
+        }
+        if (turnActionJson.getAsString().equals("more cards")) {
+            return new DrawCardsAction();
+        }
+        else {
+            throw new IllegalArgumentException("Action JSON is malformed");
+        }
     }
 }
