@@ -15,6 +15,7 @@ import referee.ActionChecker;
 import utils.json.FromJsonConverter;
 
 public class XLegal {
+
     public static void main(String[] args) {
         RunTest(new InputStreamReader(System.in), System.out);
     }
@@ -29,8 +30,10 @@ public class XLegal {
 
             // Construct objects from JSON
             ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
-            IRailConnection desiredConnection = FromJsonConverter.acquiredConnectionFromJson(desiredConnectionJson);
-            IPlayerGameState playerGameState = FromJsonConverter.playerStateFromJson(playerStateJson);
+            IRailConnection desiredConnection = FromJsonConverter
+                .acquiredConnectionFromJson(desiredConnectionJson);
+            IPlayerGameState playerGameState = FromJsonConverter
+                .playerStateFromJson(playerStateJson, map);
 
             // Calculate and output result
             boolean result = new ActionChecker()

@@ -1,7 +1,6 @@
 package harnesses;
 
 import static harnesses.XManager.tournamentResultToJson;
-import static harnesses.XRef.cardsFromJson;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
@@ -16,6 +15,7 @@ import java.util.List;
 import remote.Server;
 import remote.Server.ServerBuilder;
 import tournament_manager.TournamentResult;
+import utils.json.FromJsonConverter;
 
 public class XServer {
 
@@ -33,7 +33,7 @@ public class XServer {
             JsonElement cardsJson = parser.next();
 
             // Construct objects from JSON
-            List<RailCard> cards = cardsFromJson(cardsJson.getAsJsonArray());
+            List<RailCard> cards = FromJsonConverter.cardsFromJson(cardsJson.getAsJsonArray());
 
             Server trainsServer = new ServerBuilder(port)
                 .deckProvider(() -> cards)

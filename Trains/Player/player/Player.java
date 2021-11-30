@@ -83,7 +83,9 @@ public class Player implements IPlayer {
             this.playerStrategy.chooseDestinations(
                 options, Constants.NUM_DESTINATIONS_TO_CHOOSE, this.mapInGame, this.numStartRails,
                 this.startingHand);
-        return new HashSet<>(this.chosenDestinations);
+        Set<Destination> notChosenDestinations = new HashSet<>(options);
+        notChosenDestinations.removeAll(this.chosenDestinations);
+        return new HashSet<>(notChosenDestinations);
     }
 
     @Override

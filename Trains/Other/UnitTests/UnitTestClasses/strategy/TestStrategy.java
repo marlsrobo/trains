@@ -18,9 +18,8 @@ import org.apache.commons.math3.util.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import harnesses.XLegal;
-import harnesses.XMap;
 import utils.UnorderedPair;
+import utils.json.FromJsonConverter;
 
 public class TestStrategy {
     // TODO: Add unit tests for not having enough rail to buy a connection
@@ -39,9 +38,10 @@ public class TestStrategy {
             JsonStreamParser parser =
                 new JsonStreamParser(
                     new FileReader("Trains/Other/UnitTests/PlayerGameStateInput/" + jsonFileName));
-            JsonElement map = parser.next();
+            JsonElement mapJson = parser.next();
             JsonElement state = parser.next();
-            return new Pair<>(XMap.trainMapFromJson(map), XLegal.playerStateFromJson(state));
+            ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
+            return new Pair<>(map, FromJsonConverter.playerStateFromJson(state, map));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -94,11 +94,13 @@ public class TestStrategy {
         // Won't draw cards if > 10 total
         Pair<ITrainMap, IPlayerGameState> state = readAndParseTestMap("bos-sea-red-white.json");
         Assertions.assertFalse(
-            new Hold10().chooseDrawCards(state.getFirst().getRailConnections(), state.getSecond(), null));
+            new Hold10()
+                .chooseDrawCards(state.getFirst().getRailConnections(), state.getSecond(), null));
         // Will draw cards at 10 or fewer cards
         state = readAndParseTestMap("bos-sea-red-blue.json");
         Assertions.assertTrue(
-            new Hold10().chooseDrawCards(state.getFirst().getRailConnections(), state.getSecond(), null));
+            new Hold10()
+                .chooseDrawCards(state.getFirst().getRailConnections(), state.getSecond(), null));
     }
 
     @Test

@@ -3,6 +3,7 @@ package remote;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.TimeoutException;
 import player.IPlayer;
 
 public class Client implements Runnable {
@@ -31,7 +32,7 @@ public class Client implements Runnable {
             // into method calls on the player
             ProxyServer proxyServer = new ProxyServer(serverConnection, this.player);
             proxyServer.run();
-        } catch (IOException e) {
+        } catch (IOException | TimeoutException e) {
             e.printStackTrace();
         }
     }

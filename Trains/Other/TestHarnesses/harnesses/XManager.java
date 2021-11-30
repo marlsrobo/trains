@@ -2,28 +2,22 @@ package harnesses;
 
 import com.google.gson.*;
 import game_state.RailCard;
-import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
 import player.Player;
-import referee.GameEndReport;
-import referee.IReferee;
-import referee.TrainsReferee;
 import tournament_manager.ITournamentManager;
 import tournament_manager.SingleElimTournamentManager;
 import tournament_manager.TournamentResult;
-import utils.ComparatorUtils;
-import utils.RailCardUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.*;
-import java.util.stream.Collectors;
+import utils.json.FromJsonConverter;
 
-import static harnesses.XMap.trainMapFromJson;
 import static harnesses.XRef.*;
+
 
 public class XManager {
 
@@ -40,9 +34,9 @@ public class XManager {
             JsonElement cardsJson = parser.next();
 
             // Construct objects from JSON
-            ITrainMap map = trainMapFromJson(mapJson);
+            ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
             LinkedHashMap<String, IPlayer> players = playersFromJson(playersJson.getAsJsonArray(), map);
-            List<RailCard> cards = cardsFromJson(cardsJson.getAsJsonArray());
+            List<RailCard> cards = FromJsonConverter.cardsFromJson(cardsJson.getAsJsonArray());
 
             ITournamentManager manager = new SingleElimTournamentManager.SingleElimTournamentManagerBuilder()
                     .deckProvider(() -> cards)

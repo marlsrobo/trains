@@ -6,7 +6,6 @@ import com.google.gson.JsonStreamParser;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
 import map.Destination;
-import map.ICity;
 import map.ITrainMap;
 import player.IPlayer;
 import utils.Constants;
@@ -16,7 +15,6 @@ import utils.json.ToJsonConverter;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;

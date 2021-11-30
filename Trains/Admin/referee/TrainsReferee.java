@@ -62,7 +62,6 @@ import utils.Constants;
 public class TrainsReferee implements IReferee {
 
 
-
     private final ITrainMap map;
     private final LinkedHashMap<String, IPlayer> playersInOrder;
     private final Function<ITrainMap, List<Destination>> destinationProvider;
@@ -156,7 +155,8 @@ public class TrainsReferee implements IReferee {
     private void runGame() {
         int numConsecutiveInsignificantTurns = 0;
         LinkedHashMap<String, IPlayer> remainingPlayers = this.remainingPlayersInOrder();
-        Iterator<Map.Entry<String, IPlayer>> turnOrder = Iterables.cycle(remainingPlayers.entrySet()).iterator();
+        Iterator<Map.Entry<String, IPlayer>> turnOrder = Iterables
+            .cycle(remainingPlayers.entrySet()).iterator();
 
         while (!this.isGameOver(numConsecutiveInsignificantTurns)) {
             boolean significantTurn = this.takePlayerTurn(turnOrder);
@@ -171,7 +171,8 @@ public class TrainsReferee implements IReferee {
         List<PlayerScore> gameReportScores = new ArrayList<>();
         for (Map.Entry<String, IPlayer> player : this.playersInOrder.entrySet()) {
             if (!this.removedPlayerNames.contains(player.getKey())) {
-                gameReportScores.add(new PlayerScore(player.getKey(), finalScoresInTurnOrder.remove(0)));
+                gameReportScores
+                    .add(new PlayerScore(player.getKey(), finalScoresInTurnOrder.remove(0)));
             }
         }
         gameReportScores.sort(Comparator.comparingInt(s -> s.score * -1));
@@ -193,15 +194,15 @@ public class TrainsReferee implements IReferee {
         Map.Entry<String, IPlayer> activePlayer = turnOrder.next();
 
         try {
-            TurnAction turn = activePlayer.getValue().takeTurn(this.refereeGameState.getActivePlayerState());
+            TurnAction turn = activePlayer.getValue()
+                .takeTurn(this.refereeGameState.getActivePlayerState());
             TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer.getValue());
 
             if (turnApplyResult != TurnResult.INVALID) {
                 this.refereeGameState.advanceTurn();
                 return turnApplyResult == TurnResult.SIGNIFICANT;
             }
-        }
-        catch (Exception ignored) {
+        } catch (Exception ignored) {
             // If the player misbehaves, or performs an invalid action, the result id the same.
         }
         this.removedPlayerNames.add(activePlayer.getKey());
@@ -221,7 +222,9 @@ public class TrainsReferee implements IReferee {
         INVALID
     }
 
-    private static class PlayerMisbehaviorException extends Exception {}
+    private static class PlayerMisbehaviorException extends Exception {
+
+    }
 
     private boolean isGameOver(int numConsecutiveInsignificantTurns) {
         return numConsecutiveInsignificantTurns == this.numPlayersRemaining()
@@ -271,21 +274,27 @@ public class TrainsReferee implements IReferee {
         List<Destination> playerDestinationOptions =
             activeDestinationList.subList(0, Constants.PLAYER_NUM_DEST_OPTIONS);
 
-        Set<Destination> chosenDestinations;
+        Set<Destination> notChosenDestinations;
         try {
-            player.setup(map, Constants.PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
-            chosenDestinations = player.chooseDestinations(new HashSet<>(playerDestinationOptions));
+            player
+                .setup(map, Constants.PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
+            notChosenDestinations = player
+                .chooseDestinations(new HashSet<>(playerDestinationOptions));
         } catch (Exception e) {
             return Optional.empty();
         }
 
-        if (!validDestinationChoice(new HashSet<>(playerDestinationOptions), chosenDestinations)) {
+        if (!validDestinationChoice(new HashSet<>(playerDestinationOptions),
+            notChosenDestinations)) {
             return Optional.empty();
         }
+        Set<Destination> chosenDestinations = new HashSet<>(playerDestinationOptions);
+        chosenDestinations.removeAll(notChosenDestinations);
+
         IPlayerData result =
             new PlayerData(
                 startingHand,
-                    Constants.PLAYER_NUM_RAILS_START,
+                Constants.PLAYER_NUM_RAILS_START,
                 chosenDestinations,
                 new HashSet<>());
         playerStartingHand.clear(); // once drawn, they're gone
@@ -294,8 +303,9 @@ public class TrainsReferee implements IReferee {
         return Optional.of(result);
     }
 
-    private boolean validDestinationChoice(Set<Destination> options, Set<Destination> chosen) {
-        return options.containsAll(chosen) && chosen.size() == Constants.PLAYER_NUM_DEST_TO_CHOOSE;
+    private boolean validDestinationChoice(Set<Destination> options, Set<Destination> notChosen) {
+        return options.containsAll(notChosen) && notChosen.size()
+            == Constants.PLAYER_NUM_DEST_OPTIONS - Constants.PLAYER_NUM_DEST_TO_CHOOSE;
     }
     // endregion
 }

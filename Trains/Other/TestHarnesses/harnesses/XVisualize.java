@@ -1,7 +1,5 @@
 package harnesses;
 
-import static harnesses.XMap.trainMapFromJson;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonStreamParser;
@@ -15,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 import map.ITrainMap;
 import map_view.MapPanel;
+import utils.json.FromJsonConverter;
 
 /**
  * Performs an integration test on the visualization of a map for a game of trains by consuming a
@@ -58,7 +57,7 @@ public class XVisualize {
         JsonStreamParser parser = new JsonStreamParser(input);
         try (input) {
             JsonElement mapSpecification = parser.next();
-            ITrainMap map = trainMapFromJson(mapSpecification);
+            ITrainMap map = FromJsonConverter.trainMapFromJson(mapSpecification);
 
             JFrame mapFrame = BuildMapFrame(map);
             displayFrame(mapFrame, MILLIS_OPEN);

@@ -18,6 +18,7 @@ import map.ITrainMap;
 import map_view.MapRenderer;
 import org.junit.jupiter.api.Test;
 import harnesses.XMap;
+import utils.json.FromJsonConverter;
 
 //TODO:
 // - change current tests to pass
@@ -32,7 +33,7 @@ public class TestMapRenderer {
 
   public static ITrainMap readAndParseTestMap(String jsonFileName) {
     try {
-      return XMap.trainMapFromJson(
+      return FromJsonConverter.trainMapFromJson(
           new JsonStreamParser(
                   new FileReader("Trains/Other/UnitTests/MapRenderedJsonInput/" + jsonFileName))
               .next());
