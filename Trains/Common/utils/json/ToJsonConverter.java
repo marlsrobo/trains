@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import game_state.IPlayerGameState;
 import game_state.RailCard;
 import harnesses.ActionToJSONVisitor;
 import map.Destination;
@@ -165,5 +166,10 @@ public class ToJsonConverter {
         acquired.add(railConnection.getLength());
 
         return acquired;
+    }
+
+    public static JsonElement playerGameStateToJson(IPlayerGameState gameState) {
+        // TODO: Implement this method
+        return new JsonPrimitive("");
     }
 }

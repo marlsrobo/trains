@@ -1,7 +1,10 @@
 package remote;
 
 import action.TurnAction;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
@@ -32,7 +35,7 @@ public class ProxyPlayer implements IPlayer {
     }
 
     // sends message to a Player and returns their response
-    private void sendMessageToPlayer(String message) {
+    private void callMethodOnPlayer(JsonArray message) {
         this.output.print(message);
     }
 
@@ -59,13 +62,23 @@ public class ProxyPlayer implements IPlayer {
      * @param cards    the starting hand of rail cards.
      */
     @Override
-    public void setup(ITrainMap map, int numRails, List<RailCard> cards) {
+    public void setup(ITrainMap map, int numRails, List<RailCard> cards) throws TimeoutException {
         this.map = map;
-        StringBuilder message = new StringBuilder();
-        message.append(ToJsonConverter.mapToJson(map));
-        message.append(numRails);
-        message.append(ToJsonConverter.railCardsToJson(cards));
-        this.sendMessageToPlayer(message.toString());
+
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("setup");
+
+        JsonArray args = new JsonArray();
+        args.add(ToJsonConverter.mapToJson(map));
+        args.add(numRails);
+        args.add(ToJsonConverter.railCardsToJson(cards));
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
+
+        // ensure the player correctly returns "void"
+        JsonElement responseFromClient = getMessageFromPlayer();
+        assertIsVoid(responseFromClient);
     }
 
     /**
@@ -77,7 +90,14 @@ public class ProxyPlayer implements IPlayer {
     @Override
     public Set<Destination> chooseDestinations(Set<Destination> options) throws TimeoutException {
         // send the destination options to the player
-        this.sendMessageToPlayer(ToJsonConverter.destinationsToJson(options).toString());
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("pick");
+
+        JsonArray args = new JsonArray();
+        args.add(ToJsonConverter.destinationsToJson(options));
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
 
         // get the destinations back from the player
         JsonElement destinationsFromClient = getMessageFromPlayer();
@@ -96,8 +116,20 @@ public class ProxyPlayer implements IPlayer {
      * @return a TurnAction representing this player's desired action for this turn.
      */
     @Override
-    public TurnAction takeTurn(IPlayerGameState playerGameState) {
-        return null;
+    public TurnAction takeTurn(IPlayerGameState playerGameState) throws TimeoutException {
+        // send the game state to the player
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("play");
+
+        JsonArray args = new JsonArray();
+        args.add(ToJsonConverter.playerGameStateToJson(playerGameState));
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
+
+        // get the turn action back from the player
+        JsonElement turnAction = getMessageFromPlayer();
+        return FromJsonConverter.turnActionFromJson(turnAction);
     }
 
     /**
@@ -108,8 +140,19 @@ public class ProxyPlayer implements IPlayer {
      * @param drawnCards the list of cards drawn this turn.
      */
     @Override
-    public void receiveCards(List<RailCard> drawnCards) {
+    public void receiveCards(List<RailCard> drawnCards) throws TimeoutException {
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("more");
 
+        JsonArray args = new JsonArray();
+        args.add(ToJsonConverter.railCardsToJson(drawnCards));
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
+
+        // ensure the player correctly returns "void"
+        JsonElement responseFromClient = getMessageFromPlayer();
+        assertIsVoid(responseFromClient);
     }
 
     /**
@@ -118,8 +161,19 @@ public class ProxyPlayer implements IPlayer {
      * @param thisPlayerWon true if this player won, false otherwise.
      */
     @Override
-    public void winNotification(boolean thisPlayerWon) {
+    public void winNotification(boolean thisPlayerWon) throws TimeoutException {
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("win");
 
+        JsonArray args = new JsonArray();
+        args.add(thisPlayerWon);
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
+
+        // ensure the player correctly returns "void"
+        JsonElement responseFromClient = getMessageFromPlayer();
+        assertIsVoid(responseFromClient);
     }
 
     /**
@@ -131,8 +185,19 @@ public class ProxyPlayer implements IPlayer {
      * @return an implementation of a map to possibly be used for the entire tournament
      */
     @Override
-    public ITrainMap startTournament(boolean inTournament) {
-        return null;
+    public ITrainMap startTournament(boolean inTournament) throws TimeoutException {
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("start");
+
+        JsonArray args = new JsonArray();
+        args.add(inTournament);
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
+
+        // get the destinations back from the player
+        JsonElement mapJson = getMessageFromPlayer();
+        return FromJsonConverter.trainMapFromJson(mapJson);
     }
 
     /**
@@ -141,7 +206,26 @@ public class ProxyPlayer implements IPlayer {
      * @param thisPlayerWon whether they won the tournament (true = won, false = lost)
      */
     @Override
-    public void resultOfTournament(boolean thisPlayerWon) {
+    public void resultOfTournament(boolean thisPlayerWon) throws TimeoutException {
+        JsonArray methodMessage = new JsonArray();
+        methodMessage.add("end");
 
+        JsonArray args = new JsonArray();
+        args.add(thisPlayerWon);
+        methodMessage.add(args);
+
+        this.callMethodOnPlayer(methodMessage);
+
+        // ensure the player correctly returns "void"
+        JsonElement responseFromClient = getMessageFromPlayer();
+        assertIsVoid(responseFromClient);
+    }
+
+    // If the given JsonElement is not the string "void", throw an IllegalArgumentException
+    private static void assertIsVoid(JsonElement message) {
+        if (!(message.isJsonPrimitive() && message.getAsString().equals("void"))) {
+            throw new IllegalArgumentException(
+                "Player did not respond with \"void\" to method call expecting no response.");
+        }
     }
 }

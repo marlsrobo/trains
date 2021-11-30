@@ -1,5 +1,7 @@
 package utils.json;
 
+import action.DrawCardsAction;
+import action.TurnAction;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -310,5 +312,10 @@ public class FromJsonConverter {
         RailColor color = RailCardUtils.railColorFromLowercaseColor(jsonArray.get(2).getAsString());
         int length = jsonArray.get(3).getAsInt();
         return new RailConnection(new UnorderedPair<>(city1, city2), length, color);
+    }
+
+    public static TurnAction turnActionFromJson(JsonElement turnActionJson) {
+        // TODO: Implement this method
+        return new DrawCardsAction();
     }
 }

@@ -24,7 +24,7 @@ public interface IPlayer {
    * @param numRails the initial number of rails for this player.
    * @param cards the starting hand of rail cards.
    */
-  void setup(ITrainMap map, int numRails, List<RailCard> cards);
+  void setup(ITrainMap map, int numRails, List<RailCard> cards) throws TimeoutException;
 
   /**
    * Chooses 2 destinations of the given destination options.
@@ -38,20 +38,20 @@ public interface IPlayer {
    * @param playerGameState the state of the game from this player's perspective at the time the turn action is requested.
    * @return a TurnAction representing this player's desired action for this turn.
    */
-  TurnAction takeTurn(IPlayerGameState playerGameState);
+  TurnAction takeTurn(IPlayerGameState playerGameState) throws TimeoutException;
 
   /**
    * Informs the player of the cards drawn as a result of drawing cards on takeTurn(). The cards do
    * not need to be stored since they will appear in the next game state for the next call on takeTurn().
    * @param drawnCards the list of cards drawn this turn.
    */
-  void receiveCards(List<RailCard> drawnCards);
+  void receiveCards(List<RailCard> drawnCards) throws TimeoutException;
 
   /**
    * Alerts the player as to whether they have won (implying also that the game is over).
    * @param thisPlayerWon true if this player won, false otherwise.
    */
-  void winNotification(boolean thisPlayerWon);
+  void winNotification(boolean thisPlayerWon) throws TimeoutException;
 
   /**
    * Alerts the player that they have been chosen to participate in a tournament and that it is
@@ -60,11 +60,11 @@ public interface IPlayer {
    * @param inTournament whether the player has been chosen for the tournament
    * @return an implementation of a map to possibly be used for the entire tournament
    */
-  ITrainMap startTournament(boolean inTournament);
+  ITrainMap startTournament(boolean inTournament) throws TimeoutException;
 
   /**
    * Tells this player if they won the tournament that they participated in
    * @param thisPlayerWon whether they won the tournament (true = won, false = lost)
    */
-  void resultOfTournament(boolean thisPlayerWon);
+  void resultOfTournament(boolean thisPlayerWon) throws TimeoutException;
 }
