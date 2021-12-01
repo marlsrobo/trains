@@ -13,57 +13,58 @@ import map.ITrainMap;
 import referee.game_state.IPlayerData;
 
 public class PlayerGameState implements IPlayerGameState {
-  private final Set<IRailConnection> ownedConnections;
-  private final Map<RailCard, Integer> cardsInHand;
-  private final int numRails;
-  private final List<IOpponentInfo> opponentInfo;
-  private final Set<Destination> chosenDestinations;
 
-  public PlayerGameState(IPlayerData playerData, List<IOpponentInfo> opponentInfo) {
-    Objects.requireNonNull(playerData);
-    Objects.requireNonNull(opponentInfo);
+    private final Set<IRailConnection> ownedConnections;
+    private final Map<RailCard, Integer> cardsInHand;
+    private final int numRails;
+    private final List<IOpponentInfo> opponentInfo;
+    private final Set<Destination> chosenDestinations;
 
-    this.ownedConnections = new HashSet<>(playerData.getOwnedConnections());
-    this.cardsInHand = new HashMap<>(playerData.getPlayerHand().getHand());
-    this.numRails = playerData.getNumRails();
-    this.opponentInfo = new ArrayList<>(opponentInfo);
-    this.chosenDestinations = new HashSet<>(playerData.getDestinations());
-  }
+    public PlayerGameState(IPlayerData playerData, List<IOpponentInfo> opponentInfo) {
+        Objects.requireNonNull(playerData);
+        Objects.requireNonNull(opponentInfo);
 
-  @Override
-  public Set<IRailConnection> getOwnedConnections() {
-    return new HashSet<>(this.ownedConnections);
-  }
-
-  @Override
-  public Set<IRailConnection> calculateUnoccupiedConnections(ITrainMap map) {
-    Set<IRailConnection> unoccupiedConnections = map.getRailConnections();
-
-    unoccupiedConnections.removeAll(this.ownedConnections);
-    for (IOpponentInfo oneOpponentInfo : this.opponentInfo) {
-      unoccupiedConnections.removeAll(oneOpponentInfo.getOwnedConnections());
+        this.ownedConnections = new HashSet<>(playerData.getOwnedConnections());
+        this.cardsInHand = new HashMap<>(playerData.getPlayerHand().getHand());
+        this.numRails = playerData.getNumRails();
+        this.opponentInfo = new ArrayList<>(opponentInfo);
+        this.chosenDestinations = new HashSet<>(playerData.getDestinations());
     }
 
-    return unoccupiedConnections;
-  }
+    @Override
+    public Set<IRailConnection> getOwnedConnections() {
+        return new HashSet<>(this.ownedConnections);
+    }
 
-  @Override
-  public Map<RailCard, Integer> getCardsInHand() {
-    return new HashMap<>(this.cardsInHand);
-  }
+    @Override
+    public Set<IRailConnection> calculateUnoccupiedConnections(ITrainMap map) {
+        Set<IRailConnection> unoccupiedConnections = map.getRailConnections();
 
-  @Override
-  public int getNumRails() {
-    return this.numRails;
-  }
+        unoccupiedConnections.removeAll(this.ownedConnections);
+        for (IOpponentInfo oneOpponentInfo : this.opponentInfo) {
+            unoccupiedConnections.removeAll(oneOpponentInfo.getOwnedConnections());
+        }
 
-  @Override
-  public List<IOpponentInfo> getOpponentInfo() {
-    return new ArrayList<>(this.opponentInfo);
-  }
+        return unoccupiedConnections;
+    }
 
-  @Override
-  public Set<Destination> getDestinations() {
-    return new HashSet<>(this.chosenDestinations);
-  }
+    @Override
+    public Map<RailCard, Integer> getCardsInHand() {
+        return new HashMap<>(this.cardsInHand);
+    }
+
+    @Override
+    public int getNumRails() {
+        return this.numRails;
+    }
+
+    @Override
+    public List<IOpponentInfo> getOpponentInfo() {
+        return new ArrayList<>(this.opponentInfo);
+    }
+
+    @Override
+    public Set<Destination> getDestinations() {
+        return new HashSet<>(this.chosenDestinations);
+    }
 }

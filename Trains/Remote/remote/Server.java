@@ -3,6 +3,7 @@ package remote;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import game_state.RailCard;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
@@ -134,11 +135,9 @@ public class Server {
         List<ClientHandler> signedUpPlayerHandlers = new ArrayList<>();
         List<Thread> signedUpPlayerThreads = new ArrayList<>();
 
-        System.out.println("waiting for players");
         waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
 
         if (signedUpPlayerHandlers.size() < MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1) {
-            System.out.println("waiting for players a second time");
             waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
         }
 
@@ -155,7 +154,6 @@ public class Server {
             .mapSelector(mapSelector)
             .build();
 
-        System.out.println("Running the tournament");
         return manager.runTournament(players);
     }
 
@@ -169,14 +167,23 @@ public class Server {
         for (int ii = 0; ii < signedUpPlayerHandlers.size(); ii++) {
             ClientHandler handler = signedUpPlayerHandlers.get(ii);
             Thread handlerThread = signedUpPlayerThreads.get(ii);
-            System.out.println("Waiting for a player thread to join");
             handlerThread.join();
 
             if (handler.getRespondedInTime()) {
-                players.put(handler.name, new ProxyPlayer(handler.getClientSocket()));
+                String name = handler.getName();
+                boolean insertedPlayer = false;
+                while (!insertedPlayer) {
+                    if (!players.containsKey(name)) {
+                        players.put(name, new ProxyPlayer(handler.getClientSocket()));
+                        insertedPlayer = true;
+                    }
+                    else {
+                        name = name.concat("a");
+                    }
+                }
             }
         }
-
+        System.out.println(players);
         return players;
     }
 
@@ -213,28 +220,20 @@ public class Server {
 
         @Override
         public void run() {
-            System.out.println("Handling a player!");
             try {
                 JsonStreamParser parser = new JsonStreamParser(
-                    new InputStreamReader(this.clientSocket.getInputStream()));
+                    new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream())));
                 long startTime = System.currentTimeMillis();
-                System.out.println("starting to loop");
                 while (System.currentTimeMillis() - startTime < NAME_TIMEOUT_MILLIS) {
-                    System.out.println("weeeeeee");
-//                    Thread.sleep(100);
                     if (parser.hasNext()) {
-                        System.out.println("There is a next!");
                         JsonElement jsonName = parser.next();
                         if (validateName(jsonName)) {
                             this.name = jsonName.getAsString();
-                            System.out.println(String.format("Player %s is signed up!", this.name));
                             this.respondedInTime = true;
+                            return;
                         }
                     }
-                    System.out.println("I made it");
                 }
-                System.out.println("didnt respond in time");
-
             } catch (IOException e) {
                 e.printStackTrace();
             }

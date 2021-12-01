@@ -3,6 +3,7 @@ package harnesses;
 import com.google.gson.*;
 import game_state.RailCard;
 import map.ITrainMap;
+import org.apache.commons.math3.util.Pair;
 import player.IPlayer;
 import player.Player;
 import tournament_manager.ITournamentManager;
@@ -35,13 +36,14 @@ public class XManager {
 
             // Construct objects from JSON
             ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
-            LinkedHashMap<String, IPlayer> players = playersFromJson(playersJson.getAsJsonArray(), map);
+            List<Pair<String, IPlayer>> players = FromJsonConverter
+                .playersFromJson(playersJson.getAsJsonArray(), map);
             List<RailCard> cards = FromJsonConverter.cardsFromJson(cardsJson.getAsJsonArray());
 
             ITournamentManager manager = new SingleElimTournamentManager.SingleElimTournamentManagerBuilder()
-                    .deckProvider(() -> cards)
-                    .destinationProvider(XRef::lexicographicOrderOfDestinations)
-                    .build();
+                .deckProvider(() -> cards)
+                .destinationProvider(XRef::lexicographicOrderOfDestinations)
+                .build();
 
             try {
                 TournamentResult tournamentResult = manager.runTournament(players);
@@ -54,6 +56,11 @@ public class XManager {
         }
     }
 
+    private static LinkedHashMap<String, IPlayer> playerArrayToMap(
+        List<Pair<String, IPlayer>> playerList) {
+
+    }
+
     public static JsonArray tournamentResultToJson(TournamentResult tournamentResult) {
         JsonArray reportJson = new JsonArray();
         List<String> winners = new ArrayList<>(tournamentResult.getWinners());
@@ -61,26 +68,6 @@ public class XManager {
         reportJson.add(rankToJson(winners));
         reportJson.add(rankToJson(cheaters));
         return reportJson;
-    }
-
-    public static LinkedHashMap<String, IPlayer> playersFromJson(JsonArray jsonPlayers, ITrainMap map) {
-        LinkedHashMap<String, IPlayer> players = new LinkedHashMap<>();
-        for (JsonElement jsonPlayer : jsonPlayers) {
-            Map.Entry<String, IPlayer> player = playerFromJson(jsonPlayer, map);
-            players.put(player.getKey(), player.getValue());
-        }
-        return players;
-    }
-
-    public static Map.Entry<String, IPlayer> playerFromJson(JsonElement jsonPlayer, ITrainMap map) {
-        JsonArray playerInstance = jsonPlayer.getAsJsonArray();
-        String playerName = playerInstance.get(0).getAsString();
-        String playerStrategy = playerInstance.get(1).getAsString();
-        String strategyFilepath = strategyNameToFilepath(playerStrategy);
-
-        IPlayer player = new Player(strategyFilepath, map);
-
-        return new AbstractMap.SimpleEntry<>(playerName, player);
     }
 
 }

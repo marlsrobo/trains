@@ -3,8 +3,6 @@ package remote;
 import action.TurnAction;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonStreamParser;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
@@ -31,12 +29,13 @@ public class ProxyPlayer implements IPlayer {
 
     public ProxyPlayer(Socket client) throws IOException {
         this.input = new InputStreamReader(client.getInputStream());
-        this.output = new PrintWriter(client.getOutputStream(), true);
+        this.output = new PrintWriter(client.getOutputStream());
     }
 
     // sends message to a Player and returns their response
     private void callMethodOnPlayer(JsonArray message) {
         this.output.print(message);
+        this.output.flush();
     }
 
     private JsonElement getMessageFromPlayer() throws TimeoutException {

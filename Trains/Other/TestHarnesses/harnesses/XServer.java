@@ -46,7 +46,8 @@ public class XServer {
             } catch (IllegalArgumentException e) {
                 output.println(new JsonPrimitive(e.getMessage()));
             }
-        } catch (JsonIOException | IOException | InterruptedException ignored) {
+        } catch (JsonIOException | IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -26,7 +26,9 @@ public class Client implements Runnable {
         try {
             Socket serverConnection = new Socket(this.serverHost, this.serverPort);
             // Send this players name to the server
-            new PrintWriter(serverConnection.getOutputStream()).print(new JsonPrimitive(this.name));
+            PrintWriter writer = new PrintWriter(serverConnection.getOutputStream());
+            writer.print(new JsonPrimitive(this.name));
+            writer.flush();
 
             // The proxy server will read all further communication from the server, and translate
             // into method calls on the player

@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 import map.Destination;
-import map.ICity;
 import map.ITrainMap;
 import player.IPlayer;
 import utils.UnorderedPair;
@@ -25,7 +24,7 @@ import utils.json.ToJsonConverter;
 
 public class ProxyServer {
 
-    private static final int DISCONNECT_TIMEOUT_MILLIS = 20000;
+    private static final int DISCONNECT_TIMEOUT_MILLIS = 45000;
 
     private final Reader input;
     private final PrintWriter output;
@@ -35,15 +34,17 @@ public class ProxyServer {
 
     public ProxyServer(Socket server, IPlayer player) throws IOException {
         this.input = new InputStreamReader(server.getInputStream());
-        this.output = new PrintWriter(server.getOutputStream(), true);
+        this.output = new PrintWriter(server.getOutputStream());
         this.player = player;
     }
 
-    public void run() throws TimeoutException {
+    public void run() throws TimeoutException, IOException {
         JsonStreamParser parser = new JsonStreamParser(this.input);
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < DISCONNECT_TIMEOUT_MILLIS) {
-            if (parser.hasNext()) {
+            // Check both that there are bytes to be read, and that those bytes are valid JSON
+            // parser.hasNext() will block forever if given an empty but not closed stream
+            if (this.input.ready() && parser.hasNext()) {
                 JsonArray methodInfo = parser.next().getAsJsonArray();
                 String methodName = methodInfo.get(0).getAsString();
 
@@ -76,6 +77,7 @@ public class ProxyServer {
                             String.format("Requested method %s does not exist", methodName));
                 }
                 this.output.print(returnValue);
+                this.output.flush();
             }
         }
     }

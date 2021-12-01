@@ -1,5 +1,7 @@
 package utils.json;
 
+import static harnesses.XRef.strategyNameToFilepath;
+
 import action.AcquireConnectionAction;
 import action.DrawCardsAction;
 import action.TurnAction;
@@ -24,6 +26,9 @@ import map.MapDimensions;
 import map.RailColor;
 import map.RailConnection;
 import map.TrainMap;
+import org.apache.commons.math3.util.Pair;
+import player.IPlayer;
+import player.Player;
 import referee.game_state.PlayerData;
 import referee.game_state.TrainsPlayerHand;
 import utils.Constants;
@@ -231,9 +236,9 @@ public class FromJsonConverter {
      */
     public static List<RailCard> cardsFromJson(JsonElement cardsJson) {
         JsonArray cardsArray = cardsJson.getAsJsonArray();
-        if (cardsArray.size() != Constants.DECK_SIZE) {
-            throw new IllegalArgumentException("Deck size is not " + Constants.DECK_SIZE);
-        }
+//        if (cardsArray.size() != Constants.DECK_SIZE) {
+//            throw new IllegalArgumentException("Deck size is not " + Constants.DECK_SIZE);
+//        }
         List<RailCard> cards = new ArrayList<>();
         for (JsonElement jsonCard : cardsArray) {
             cards.add(RailCardUtils.railCardFromLowercaseCard(jsonCard.getAsString()));
@@ -269,7 +274,7 @@ public class FromJsonConverter {
         JsonObject playerObject = playerStateJson.getAsJsonObject();
         JsonObject thisPlayersData = playerObject.getAsJsonObject("this");
         Map<RailCard, Integer> cardsInHand =
-            cardsInHandFromJson(thisPlayersData.getAsJsonObject("cards"));
+            cardsInHandFromJson(thisPlayersData.getAsJsonArray("cards"));
 
         Set<Destination> destinations = selectedDestinationsFromPlayerState(thisPlayersData, map);
 
@@ -388,12 +393,16 @@ public class FromJsonConverter {
      * @return The cards in a hand as a map from the type of card to the number of that card in the
      * hand.
      */
-    private static Map<RailCard, Integer> cardsInHandFromJson(JsonObject cardsJson) {
+    private static Map<RailCard, Integer> cardsInHandFromJson(JsonArray cardsJson) {
         Map<RailCard, Integer> cardsInHand = new HashMap<>();
-        for (String cardString : cardsJson.keySet()) {
-            cardsInHand.put(
-                RailCardUtils.railCardFromLowercaseCard(cardString),
-                cardsJson.get(cardString).getAsInt());
+        for (JsonElement cardJson : cardsJson) {
+            RailCard card = RailCardUtils.railCardFromLowercaseCard(cardJson.getAsString());
+            if (cardsInHand.containsKey(card)) {
+                cardsInHand.put(card, cardsInHand.get(card) + 1);
+            }
+            else {
+                cardsInHand.put(card, 1);
+            }
         }
         return cardsInHand;
     }
@@ -468,5 +477,25 @@ public class FromJsonConverter {
         } else {
             throw new IllegalArgumentException("Action JSON is malformed");
         }
+    }
+
+    public static List<Pair<String, IPlayer>> playersFromJson(JsonArray jsonPlayers, ITrainMap map) {
+        List<Pair<String, IPlayer>> players = new ArrayList<>();
+        for (JsonElement jsonPlayer : jsonPlayers) {
+            Pair<String, IPlayer> player = playerFromJson(jsonPlayer, map);
+            players.add(player);
+        }
+        return players;
+    }
+
+    public static Pair<String, IPlayer> playerFromJson(JsonElement jsonPlayer, ITrainMap map) {
+        JsonArray playerInstance = jsonPlayer.getAsJsonArray();
+        String playerName = playerInstance.get(0).getAsString();
+        String playerStrategy = playerInstance.get(1).getAsString();
+        String strategyFilepath = strategyNameToFilepath(playerStrategy);
+
+        IPlayer player = new Player(strategyFilepath, map);
+
+        return new Pair<>(playerName, player);
     }
 }

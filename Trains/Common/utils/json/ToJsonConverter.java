@@ -7,6 +7,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import game_state.IOpponentInfo;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
 import java.util.Iterator;
@@ -59,6 +60,7 @@ public class ToJsonConverter {
 
     /**
      * Converts a set of IRailConnections to JSON
+     *
      * @param connections the IRailConnections
      * @return the JSON representation of the IRailConnections
      */
@@ -102,8 +104,9 @@ public class ToJsonConverter {
 
     /**
      * Converts an ICity to JSON
-     * @param city the ICity
-     * @param mapWidth the width of the ITrainsMap that the city is a part of
+     *
+     * @param city      the ICity
+     * @param mapWidth  the width of the ITrainsMap that the city is a part of
      * @param mapHeight the height of the ITrainsMap that the city is a part of
      * @return the JSON representation of the ICity
      */
@@ -128,6 +131,7 @@ public class ToJsonConverter {
 
     /**
      * Converts a list of RailCards to their JSON representation
+     *
      * @param cards the List of RailCard
      * @return the JSON representation of the list of RailCard ([Card, ..., Card])
      */
@@ -141,6 +145,7 @@ public class ToJsonConverter {
 
     /**
      * Converts a set of Destinations to their JSON representation.
+     *
      * @param destinations The Set of Destinations to convert.
      * @return The JSON representation of the destinations.
      */
@@ -215,9 +220,15 @@ public class ToJsonConverter {
         jsonPlayerState.add("destination1", destinationToJson(iterator.next()));
         jsonPlayerState.add("destination2", destinationToJson(iterator.next()));
         jsonPlayerState.add("rails", new JsonPrimitive(gameState.getNumRails()));
-        jsonPlayerState.add("cards", railCardsToJson(mapCardsToListCards(gameState.getCardsInHand())));
+        jsonPlayerState
+            .add("cards", railCardsToJson(mapCardsToListCards(gameState.getCardsInHand())));
         jsonPlayerState.add("acquired", acquiredConnectionsToJson(gameState.getOwnedConnections()));
-        return jsonPlayerState;
+
+        JsonObject jsonPlayerGameState = new JsonObject();
+        jsonPlayerGameState.add("this", jsonPlayerState);
+        jsonPlayerGameState
+            .add("acquired", opponentInfoToJson(gameState.getOpponentInfo()));
+        return jsonPlayerGameState;
     }
 
     private static List<RailCard> mapCardsToListCards(Map<RailCard, Integer> mapCards) {
@@ -226,5 +237,15 @@ public class ToJsonConverter {
             playerCardsList.addAll(Collections.nCopies(cardCount.getValue(), cardCount.getKey()));
         }
         return playerCardsList;
+    }
+
+    private static JsonElement opponentInfoToJson(List<IOpponentInfo> opponentInfo) {
+        JsonArray opponentInfoJson = new JsonArray();
+
+        for (IOpponentInfo oneOpponentInfo : opponentInfo) {
+            opponentInfoJson.add(acquiredConnectionsToJson(oneOpponentInfo.getOwnedConnections()));
+        }
+
+        return opponentInfoJson;
     }
 }
