@@ -234,7 +234,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * @return whether the tournament should end.
      */
     private boolean isTournamentOver() {
-        return this.remainingPlayers == this.previousRemainingPlayers
+        return this.remainingPlayers.equals(this.previousRemainingPlayers)
             || this.remainingPlayers.size() < Constants.MIN_PLAYERS_PER_GAME;
     }
 
@@ -258,7 +258,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * cheater(s).
      */
     private TournamentResult runOneRound(ITrainMap map) {
-
+        System.out.println("Starting a new round");
         List<LinkedHashMap<String, IPlayer>> gameAllocation = allocatePlayersToGames(
             this.remainingPlayers, Constants.MAX_PLAYERS_PER_GAME, Constants.MIN_PLAYERS_PER_GAME);
         Set<String> winnerNames = new HashSet<>();
@@ -269,6 +269,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
                 .deckProvider(this.deckSupplier)
                 .destinationProvider(this.destinationProvider)
                 .build();
+            System.out.println("Starting a new game");
             ref.playGame();
             GameEndReport report = ref.calculateGameEndReport();
             winnerNames.addAll(report.getWinners());

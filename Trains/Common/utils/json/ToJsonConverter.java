@@ -1,5 +1,6 @@
 package utils.json;
 
+import static harnesses.XRef.rankToJson;
 import static utils.ComparatorUtils.fromUnordered;
 
 import action.TurnAction;
@@ -15,6 +16,7 @@ import map.Destination;
 import map.ICity;
 import map.IRailConnection;
 import map.ITrainMap;
+import tournament_manager.TournamentResult;
 import utils.ComparatorUtils;
 import utils.OrderedPair;
 import utils.UnorderedPair;
@@ -247,5 +249,14 @@ public class ToJsonConverter {
         }
 
         return opponentInfoJson;
+    }
+
+    public static JsonArray tournamentResultToJson(TournamentResult tournamentResult) {
+        JsonArray reportJson = new JsonArray();
+        List<String> winners = new ArrayList<>(tournamentResult.getWinners());
+        List<String> cheaters = new ArrayList<>(tournamentResult.getCheaters());
+        reportJson.add(rankToJson(winners));
+        reportJson.add(rankToJson(cheaters));
+        return reportJson;
     }
 }

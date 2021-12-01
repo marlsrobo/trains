@@ -5,7 +5,6 @@ import game_state.RailCard;
 import map.ITrainMap;
 import org.apache.commons.math3.util.Pair;
 import player.IPlayer;
-import player.Player;
 import tournament_manager.ITournamentManager;
 import tournament_manager.SingleElimTournamentManager;
 import tournament_manager.TournamentResult;
@@ -16,8 +15,7 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.util.*;
 import utils.json.FromJsonConverter;
-
-import static harnesses.XRef.*;
+import utils.json.ToJsonConverter;
 
 
 public class XManager {
@@ -46,8 +44,9 @@ public class XManager {
                 .build();
 
             try {
-                TournamentResult tournamentResult = manager.runTournament(players);
-                output.println(tournamentResultToJson(tournamentResult));
+                TournamentResult tournamentResult = manager
+                    .runTournament(playerArrayToMap(players));
+                output.println(ToJsonConverter.tournamentResultToJson(tournamentResult));
             } catch (IllegalArgumentException e) {
                 output.println(new JsonPrimitive(e.getMessage()));
             }
@@ -56,18 +55,13 @@ public class XManager {
         }
     }
 
-    private static LinkedHashMap<String, IPlayer> playerArrayToMap(
+    public static LinkedHashMap<String, IPlayer> playerArrayToMap(
         List<Pair<String, IPlayer>> playerList) {
+        LinkedHashMap<String, IPlayer> playerMap = new LinkedHashMap<>();
+        for (Pair<String, IPlayer> player : playerList) {
+            playerMap.put(player.getFirst(), player.getSecond());
+        }
 
+        return playerMap;
     }
-
-    public static JsonArray tournamentResultToJson(TournamentResult tournamentResult) {
-        JsonArray reportJson = new JsonArray();
-        List<String> winners = new ArrayList<>(tournamentResult.getWinners());
-        List<String> cheaters = new ArrayList<>(tournamentResult.getCheaters());
-        reportJson.add(rankToJson(winners));
-        reportJson.add(rankToJson(cheaters));
-        return reportJson;
-    }
-
 }

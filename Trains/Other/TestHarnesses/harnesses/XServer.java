@@ -1,7 +1,5 @@
 package harnesses;
 
-import static harnesses.XManager.tournamentResultToJson;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonPrimitive;
@@ -11,11 +9,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.List;
 import remote.Server;
 import remote.Server.ServerBuilder;
 import tournament_manager.TournamentResult;
 import utils.json.FromJsonConverter;
+import utils.json.ToJsonConverter;
 
 public class XServer {
 
@@ -42,7 +42,7 @@ public class XServer {
 
             try {
                 TournamentResult tournamentResult = trainsServer.run();
-                output.println(tournamentResultToJson(tournamentResult));
+                output.println(ToJsonConverter.tournamentResultToJson(tournamentResult));
             } catch (IllegalArgumentException e) {
                 output.println(new JsonPrimitive(e.getMessage()));
             }

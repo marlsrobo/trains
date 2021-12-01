@@ -76,6 +76,7 @@ public class ProxyServer {
                         throw new IllegalArgumentException(
                             String.format("Requested method %s does not exist", methodName));
                 }
+                startTime = System.currentTimeMillis();
                 this.output.print(returnValue);
                 this.output.flush();
             }

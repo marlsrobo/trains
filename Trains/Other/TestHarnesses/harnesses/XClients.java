@@ -1,6 +1,6 @@
 package harnesses;
 
-import static harnesses.XManager.playersFromJson;
+import static harnesses.XManager.playerArrayToMap;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
@@ -10,8 +10,10 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import map.ITrainMap;
+import org.apache.commons.math3.util.Pair;
 import player.IPlayer;
 import remote.Client;
 import utils.json.FromJsonConverter;
@@ -39,10 +41,10 @@ public class XClients {
 
             // Construct objects from JSON
             ITrainMap map = FromJsonConverter.trainMapFromJson(mapJson);
-            LinkedHashMap<String, IPlayer> players = playersFromJson(playersJson.getAsJsonArray(),
-                map);
+            List<Pair<String, IPlayer>> players = FromJsonConverter
+                .playersFromJson(playersJson.getAsJsonArray(), map);
 
-            for (Map.Entry<String, IPlayer> playerEntry : players.entrySet()) {
+            for (Pair<String, IPlayer> playerEntry : players) {
                 Thread playerThread = new Thread(
                     new Client(host, port, playerEntry.getKey(), playerEntry.getValue()));
                 playerThread.start();

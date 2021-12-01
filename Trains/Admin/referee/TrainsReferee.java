@@ -244,7 +244,7 @@ public class TrainsReferee implements IReferee {
         if (activeDestinationList.size() < (playersInOrder.size() * 2) + 3) {
             throw new IllegalArgumentException("error: not enough destinations");
         }
-        List<RailCard> deck = this.deckSupplier.get();
+        List<RailCard> deck = new ArrayList<>(this.deckSupplier.get());
         List<IPlayerData> playerDataInTurnOrder = new ArrayList<>();
 
         for (Map.Entry<String, IPlayer> player : this.playersInOrder.entrySet()) {
