@@ -37,7 +37,7 @@ public class TestPlayer {
     }
 
     @Test
-    public void TestPlayers() {
+    public void TestPlayers() throws TimeoutException {
         // None of these boring methods should throw exceptions, etc
         TestBoringPlayerMethods(hold10FromStrategy);
         TestBoringPlayerMethods(hold10FromFile);
@@ -45,7 +45,7 @@ public class TestPlayer {
         TestBoringPlayerMethods(buyNowFromFile);
     }
 
-    public void TestBoringPlayerMethods(IPlayer player) {
+    public void TestBoringPlayerMethods(IPlayer player) throws TimeoutException {
         player.winNotification(true);
         player.winNotification(false);
         player.receiveCards(null);

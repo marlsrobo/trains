@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import map.Destination;
 import map.IRailConnection;
 import map.ITrainMap;
 import referee.game_state.IPlayerData;
@@ -16,6 +17,7 @@ public class PlayerGameState implements IPlayerGameState {
   private final Map<RailCard, Integer> cardsInHand;
   private final int numRails;
   private final List<IOpponentInfo> opponentInfo;
+  private final Set<Destination> chosenDestinations;
 
   public PlayerGameState(IPlayerData playerData, List<IOpponentInfo> opponentInfo) {
     Objects.requireNonNull(playerData);
@@ -25,6 +27,7 @@ public class PlayerGameState implements IPlayerGameState {
     this.cardsInHand = new HashMap<>(playerData.getPlayerHand().getHand());
     this.numRails = playerData.getNumRails();
     this.opponentInfo = new ArrayList<>(opponentInfo);
+    this.chosenDestinations = new HashSet<>(playerData.getDestinations());
   }
 
   @Override
@@ -57,5 +60,10 @@ public class PlayerGameState implements IPlayerGameState {
   @Override
   public List<IOpponentInfo> getOpponentInfo() {
     return new ArrayList<>(this.opponentInfo);
+  }
+
+  @Override
+  public Set<Destination> getDestinations() {
+    return new HashSet<>(this.chosenDestinations);
   }
 }

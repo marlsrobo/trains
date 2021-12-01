@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -206,11 +207,18 @@ public class SingleElimTournamentManager implements ITournamentManager {
         List<ITrainMap> submittedMaps = new ArrayList<>();
         for (Entry<String, IPlayer> player : players.entrySet()) {
             // remove player if they return an invalid TrainsMap
-            if (player.getValue().startTournament(true) == null) {
+            try {
+                // TODO: move method call on player to other location
+                if (player.getValue().startTournament(true) == null) {
+                    this.cheaters.add(player.getKey());
+                    this.remainingPlayers.remove(player.getKey());
+                }
+                submittedMaps.add(player.getValue().startTournament(true));
+            }
+            catch (TimeoutException e) {
                 this.cheaters.add(player.getKey());
                 this.remainingPlayers.remove(player.getKey());
             }
-            submittedMaps.add(player.getValue().startTournament(true));
         }
         if (submittedMaps.isEmpty()) {
             return TrainsMapUtils.createDefaultMap();
@@ -279,7 +287,14 @@ public class SingleElimTournamentManager implements ITournamentManager {
     private void reportTournamentResultToPlayers(TournamentResult result,
         LinkedHashMap<String, IPlayer> players) {
         for (Entry<String, IPlayer> player : players.entrySet()) {
-            player.getValue().resultOfTournament(result.getWinners().contains(player.getKey()));
+            try {
+                // TODO: move method call on player to other location
+                player.getValue().resultOfTournament(result.getWinners().contains(player.getKey()));
+            }
+            catch (TimeoutException e) {
+                // TODO: remove player from the ranking
+            }
+
         }
     }
 }

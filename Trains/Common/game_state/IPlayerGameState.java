@@ -3,6 +3,7 @@ package game_state;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import map.Destination;
 import map.IRailConnection;
 import map.ITrainMap;
 
@@ -52,6 +53,14 @@ public interface IPlayerGameState {
      * @return the number of rails.
      */
     int getNumRails();
+
+    /**
+     * Gets the set of Destinations that the IPlayerGameState corresponds to chose at the beginning
+     * of the game of Trains.
+     *
+     * @return The set of chosen Destinations.
+     */
+    Set<Destination> getDestinations();
 
     /**
      * Gets the public information about each other player that is known by the player that this

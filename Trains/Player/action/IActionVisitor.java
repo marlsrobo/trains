@@ -1,6 +1,4 @@
-package action;
-
-import referee.TrainsReferee.TurnResult;
+package action;;
 
 public interface IActionVisitor<T> {
 

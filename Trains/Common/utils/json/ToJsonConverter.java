@@ -9,6 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
+import java.util.Iterator;
 import map.Destination;
 import map.ICity;
 import map.IRailConnection;
@@ -208,10 +209,11 @@ public class ToJsonConverter {
     }
 
     public static JsonElement playerGameStateToJson(IPlayerGameState gameState) {
-        // TODO: Implement this method
         JsonObject jsonPlayerState = new JsonObject();
-        jsonPlayerState.add("destination1", destinationToJson(gameState.getDestination));
-        jsonPlayerState.add("destination2", destinationToJson(gameState.getDestination));
+        Set<Destination> chosenDestinations = gameState.getDestinations();
+        Iterator<Destination> iterator = chosenDestinations.iterator();
+        jsonPlayerState.add("destination1", destinationToJson(iterator.next()));
+        jsonPlayerState.add("destination2", destinationToJson(iterator.next()));
         jsonPlayerState.add("rails", new JsonPrimitive(gameState.getNumRails()));
         jsonPlayerState.add("cards", railCardsToJson(mapCardsToListCards(gameState.getCardsInHand())));
         jsonPlayerState.add("acquired", acquiredConnectionsToJson(gameState.getOwnedConnections()));

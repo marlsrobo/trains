@@ -1,5 +1,7 @@
 package remote;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonStreamParser;
 import game_state.RailCard;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,12 +27,11 @@ import tournament_manager.TournamentResult;
 public class Server {
 
     private static final int NAME_TIMEOUT_MILLIS = 3000;
-    private static final int ONE_CONNECTION_WAITING_TIMEOUT = 1000;
-    private static final int PLAYERS_CONNECTION_WAITING_TIMEOUT = 20000;
+    private static final int ONE_CONNECTION_WAITING_TIMEOUT_MILLIS = 1000;
+    private static final int PLAYERS_CONNECTION_WAITING_TIMEOUT_MILLIS = 20000;
     private static final int MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1 = 5;
     private static final int MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_2 = 2;
     private static final int MAX_CONNECTIONS_FOR_TOURNAMENT = 50;
-    private static final int BUFF_SIZE = 1024;
 
     private final int port;
 
@@ -129,13 +130,15 @@ public class Server {
 
     public TournamentResult run() throws IOException, InterruptedException {
         ServerSocket serverSocket = new ServerSocket(this.port);
-        serverSocket.setSoTimeout(ONE_CONNECTION_WAITING_TIMEOUT);
+        serverSocket.setSoTimeout(ONE_CONNECTION_WAITING_TIMEOUT_MILLIS);
         List<ClientHandler> signedUpPlayerHandlers = new ArrayList<>();
         List<Thread> signedUpPlayerThreads = new ArrayList<>();
 
+        System.out.println("waiting for players");
         waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
 
         if (signedUpPlayerHandlers.size() < MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1) {
+            System.out.println("waiting for players a second time");
             waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
         }
 
@@ -152,6 +155,7 @@ public class Server {
             .mapSelector(mapSelector)
             .build();
 
+        System.out.println("Running the tournament");
         return manager.runTournament(players);
     }
 
@@ -165,6 +169,7 @@ public class Server {
         for (int ii = 0; ii < signedUpPlayerHandlers.size(); ii++) {
             ClientHandler handler = signedUpPlayerHandlers.get(ii);
             Thread handlerThread = signedUpPlayerThreads.get(ii);
+            System.out.println("Waiting for a player thread to join");
             handlerThread.join();
 
             if (handler.getRespondedInTime()) {
@@ -181,7 +186,7 @@ public class Server {
 
         long startTime = System.currentTimeMillis();
         while (signedUpPlayerHandlers.size() < MAX_CONNECTIONS_FOR_TOURNAMENT
-            && System.currentTimeMillis() - startTime > PLAYERS_CONNECTION_WAITING_TIMEOUT) {
+            && System.currentTimeMillis() - startTime < PLAYERS_CONNECTION_WAITING_TIMEOUT_MILLIS) {
 
             try {
                 Socket clientSocket = serverSocket.accept();
@@ -208,16 +213,28 @@ public class Server {
 
         @Override
         public void run() {
-            char[] nameBuff = new char[BUFF_SIZE];
+            System.out.println("Handling a player!");
             try {
-                this.clientSocket.setSoTimeout(NAME_TIMEOUT_MILLIS);
-                int numRead = new InputStreamReader(this.clientSocket.getInputStream()).read(nameBuff);
-
-                String name = String.valueOf(nameBuff);
-                if (numRead > 0 && validateName(name)) {
-                    this.name = name;
-                    this.respondedInTime = true;
+                JsonStreamParser parser = new JsonStreamParser(
+                    new InputStreamReader(this.clientSocket.getInputStream()));
+                long startTime = System.currentTimeMillis();
+                System.out.println("starting to loop");
+                while (System.currentTimeMillis() - startTime < NAME_TIMEOUT_MILLIS) {
+                    System.out.println("weeeeeee");
+//                    Thread.sleep(100);
+                    if (parser.hasNext()) {
+                        System.out.println("There is a next!");
+                        JsonElement jsonName = parser.next();
+                        if (validateName(jsonName)) {
+                            this.name = jsonName.getAsString();
+                            System.out.println(String.format("Player %s is signed up!", this.name));
+                            this.respondedInTime = true;
+                        }
+                    }
+                    System.out.println("I made it");
                 }
+                System.out.println("didnt respond in time");
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -235,10 +252,11 @@ public class Server {
             return this.clientSocket;
         }
 
-        private static boolean validateName(String name) {
-            if (Objects.isNull(name)) {
+        private static boolean validateName(JsonElement jsonName) {
+            if (Objects.isNull(jsonName) || !jsonName.isJsonPrimitive()) {
                 return false;
             }
+            String name = jsonName.getAsString();
             boolean correct_length = name.length() > 0 && name.length() <= 50;
             boolean correct_characters = Pattern.matches("[a-zA-Z]+", name);
             return correct_length && correct_characters;

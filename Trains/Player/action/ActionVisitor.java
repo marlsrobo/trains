@@ -3,6 +3,7 @@ package action;
 import game_state.RailCard;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 import player.IPlayer;
 import referee.TrainsReferee.TurnResult;
 import referee.game_state.IRefereeGameState;
@@ -22,7 +23,12 @@ public class ActionVisitor implements IActionVisitor<TurnResult> {
     public TurnResult visitCardsAction(DrawCardsAction cardsAction) {
         List<RailCard> drawnCards = this.gameState
             .drawCardsForActivePlayer(Constants.PLAYER_NUM_CARDS_PER_DRAW);
-        this.activePlayer.receiveCards(new ArrayList<>(drawnCards));
+        try {
+            this.activePlayer.receiveCards(new ArrayList<>(drawnCards));
+        }
+        catch (TimeoutException e) {
+            return TurnResult.INVALID;
+        }
         return drawnCards.isEmpty() ? TurnResult.INSIGNIFICANT : TurnResult.SIGNIFICANT;
     }
 

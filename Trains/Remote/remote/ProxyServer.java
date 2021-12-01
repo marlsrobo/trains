@@ -42,7 +42,7 @@ public class ProxyServer {
     public void run() throws TimeoutException {
         JsonStreamParser parser = new JsonStreamParser(this.input);
         long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime > DISCONNECT_TIMEOUT_MILLIS) {
+        while (System.currentTimeMillis() - startTime < DISCONNECT_TIMEOUT_MILLIS) {
             if (parser.hasNext()) {
                 JsonArray methodInfo = parser.next().getAsJsonArray();
                 String methodName = methodInfo.get(0).getAsString();
@@ -80,7 +80,7 @@ public class ProxyServer {
         }
     }
 
-    private JsonElement parseAndRunStart(JsonArray args) {
+    private JsonElement parseAndRunStart(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of argument given for start");
         }
@@ -96,7 +96,7 @@ public class ProxyServer {
         return ToJsonConverter.mapToJson(map);
     }
 
-    private JsonElement parseAndRunSetup(JsonArray args) {
+    private JsonElement parseAndRunSetup(JsonArray args) throws TimeoutException {
         if (args.size() != 3) {
             throw new IllegalArgumentException("Incorrect number of arguments given for setup");
         }
@@ -136,7 +136,7 @@ public class ProxyServer {
         return ToJsonConverter.destinationsToJson(returnedDestinations);
     }
 
-    private JsonElement parseAndRunPlay(JsonArray args) {
+    private JsonElement parseAndRunPlay(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for play");
         }
@@ -152,7 +152,7 @@ public class ProxyServer {
         return ToJsonConverter.turnActionToJSON(action);
     }
 
-    private JsonElement parseAndRunMore(JsonArray args) {
+    private JsonElement parseAndRunMore(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for more");
         }
@@ -168,7 +168,7 @@ public class ProxyServer {
         return new JsonPrimitive("void");
     }
 
-    private JsonElement parseAndRunWin(JsonArray args) {
+    private JsonElement parseAndRunWin(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for win");
         }
@@ -184,7 +184,7 @@ public class ProxyServer {
         return new JsonPrimitive("void");
     }
 
-    private JsonElement parseAndRunEnd(JsonArray args) {
+    private JsonElement parseAndRunEnd(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for end");
         }
