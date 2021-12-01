@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 import map.City;
 import map.Destination;
 import map.ICity;
@@ -56,12 +57,17 @@ public class FromJsonConverter {
      */
     public static Set<UnorderedPair<String>> fromJsonToUnvalidatedSetOfDestinations(
         JsonElement json) {
-        JsonArray jsonAsArray = json.getAsJsonArray();
-        Set<UnorderedPair<String>> destinationsNames = new HashSet<>();
-        for (JsonElement jsonDestinationNames : jsonAsArray) {
-            destinationsNames.add(fromJsonToUnvalidatedDestination(jsonDestinationNames));
+        try {
+            JsonArray jsonAsArray = json.getAsJsonArray();
+            Set<UnorderedPair<String>> destinationsNames = new HashSet<>();
+            for (JsonElement jsonDestinationNames : jsonAsArray) {
+                destinationsNames.add(fromJsonToUnvalidatedDestination(jsonDestinationNames));
+            }
+            return destinationsNames;
         }
-        return destinationsNames;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -74,12 +80,17 @@ public class FromJsonConverter {
      * @return A pairs of strings representing the given destination.
      */
     public static UnorderedPair<String> fromJsonToUnvalidatedDestination(JsonElement json) {
-        JsonArray jsonAsArray = json.getAsJsonArray();
-        if (jsonAsArray.size() != 2) {
-            throw new IllegalArgumentException("Incorrect number of cities within a destination");
+        try {
+            JsonArray jsonAsArray = json.getAsJsonArray();
+            if (jsonAsArray.size() != 2) {
+                throw new IllegalArgumentException("Incorrect number of cities within a destination");
+            }
+            return new UnorderedPair<>(jsonAsArray.get(0).getAsString(),
+                jsonAsArray.get(1).getAsString());
         }
-        return new UnorderedPair<>(jsonAsArray.get(0).getAsString(),
-            jsonAsArray.get(1).getAsString());
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -93,19 +104,24 @@ public class FromJsonConverter {
      * @return An ITrainMap representing the game board specified in the JSON input
      */
     public static ITrainMap trainMapFromJson(JsonElement mapSpecification) {
-        JsonObject mapObject = mapSpecification.getAsJsonObject();
-        int width = mapObject.get("width").getAsInt();
-        int height = mapObject.get("height").getAsInt();
+        try {
+            JsonObject mapObject = mapSpecification.getAsJsonObject();
+            int width = mapObject.get("width").getAsInt();
+            int height = mapObject.get("height").getAsInt();
 
-        Map<String, ICity> cities =
-            getCitiesFromJson(width, height, mapObject.getAsJsonArray("cities"));
-        Set<ICity> citySet = new HashSet<>(cities.values());
+            Map<String, ICity> cities =
+                getCitiesFromJson(width, height, mapObject.getAsJsonArray("cities"));
+            Set<ICity> citySet = new HashSet<>(cities.values());
 
-        List<IRailConnection> railConnections =
-            getRailConnectionsFromJson(mapObject.getAsJsonObject("connections"), cities);
-        Set<IRailConnection> railConnectionSet = new HashSet<>(railConnections);
+            List<IRailConnection> railConnections =
+                getRailConnectionsFromJson(mapObject.getAsJsonObject("connections"), cities);
+            Set<IRailConnection> railConnectionSet = new HashSet<>(railConnections);
 
-        return new TrainMap(citySet, railConnectionSet, new MapDimensions(width, height));
+            return new TrainMap(citySet, railConnectionSet, new MapDimensions(width, height));
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -123,20 +139,24 @@ public class FromJsonConverter {
      */
     private static Map<String, ICity> getCitiesFromJson(int mapWidth, int mapHeight,
         JsonArray citiesSpecification) {
-
-        Map<String, ICity> cities = new HashMap<>();
-        for (JsonElement citySpecification : citiesSpecification) {
-            JsonArray cityArray = citySpecification.getAsJsonArray();
-            // Extract city information from nested array
-            String name = cityArray.get(0).getAsString();
-            JsonArray position = cityArray.get(1).getAsJsonArray();
-            int xPosition = position.get(0).getAsInt();
-            int yPosition = position.get(1).getAsInt();
-            // Calculate relative position while creating city
-            cities.put(name, new City(name, ((double) xPosition) / ((double) mapWidth),
-                ((double) yPosition) / ((double) mapHeight)));
+        try {
+            Map<String, ICity> cities = new HashMap<>();
+            for (JsonElement citySpecification : citiesSpecification) {
+                JsonArray cityArray = citySpecification.getAsJsonArray();
+                // Extract city information from nested array
+                String name = cityArray.get(0).getAsString();
+                JsonArray position = cityArray.get(1).getAsJsonArray();
+                int xPosition = position.get(0).getAsInt();
+                int yPosition = position.get(1).getAsInt();
+                // Calculate relative position while creating city
+                cities.put(name, new City(name, ((double) xPosition) / ((double) mapWidth),
+                    ((double) yPosition) / ((double) mapHeight)));
+            }
+            return cities;
         }
-        return cities;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -154,15 +174,20 @@ public class FromJsonConverter {
      */
     private static List<IRailConnection> getRailConnectionsFromJson(
         JsonObject connectionsSpecification, Map<String, ICity> cities) {
+        try {
+            List<IRailConnection> railConnections = new ArrayList<>();
+            for (Map.Entry<String, JsonElement> connectionEntry : connectionsSpecification
+                .entrySet()) {
+                ICity startCity = cities.get(connectionEntry.getKey());
+                JsonObject targets = connectionEntry.getValue().getAsJsonObject();
+                railConnections.addAll(parseConnectionsFromCity(targets, cities, startCity));
+            }
 
-        List<IRailConnection> railConnections = new ArrayList<>();
-        for (Map.Entry<String, JsonElement> connectionEntry : connectionsSpecification.entrySet()) {
-            ICity startCity = cities.get(connectionEntry.getKey());
-            JsonObject targets = connectionEntry.getValue().getAsJsonObject();
-            railConnections.addAll(parseConnectionsFromCity(targets, cities, startCity));
+            return railConnections;
         }
-
-        return railConnections;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -182,18 +207,23 @@ public class FromJsonConverter {
     private static List<IRailConnection> parseConnectionsFromCity(
         JsonObject targets, Map<String, ICity> cities, ICity startCity) {
 
-        List<IRailConnection> railConnections = new ArrayList<>();
+        try {
+            List<IRailConnection> railConnections = new ArrayList<>();
 
-        // For every city the startCity is connected to, add all associated connections to
-        // accumulator railConnections
-        for (Map.Entry<String, JsonElement> target : targets.entrySet()) {
-            ICity endCity = cities.get(target.getKey());
-            UnorderedPair<ICity> endPoints = new UnorderedPair<>(startCity, endCity);
-            JsonObject segment = target.getValue().getAsJsonObject();
-            railConnections.addAll(parseConnections(segment, endPoints));
+            // For every city the startCity is connected to, add all associated connections to
+            // accumulator railConnections
+            for (Map.Entry<String, JsonElement> target : targets.entrySet()) {
+                ICity endCity = cities.get(target.getKey());
+                UnorderedPair<ICity> endPoints = new UnorderedPair<>(startCity, endCity);
+                JsonObject segment = target.getValue().getAsJsonObject();
+                railConnections.addAll(parseConnections(segment, endPoints));
+            }
+
+            return railConnections;
         }
-
-        return railConnections;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -206,16 +236,21 @@ public class FromJsonConverter {
      */
     private static List<IRailConnection> parseConnections(JsonObject segment,
         UnorderedPair<ICity> endPoints) {
-        List<IRailConnection> railConnections = new ArrayList<>();
+        try {
+            List<IRailConnection> railConnections = new ArrayList<>();
 
-        // For every connection, parse color and length info, and add IRailConnection to accumulator
-        for (Map.Entry<String, JsonElement> connection : segment.entrySet()) {
-            String color = connection.getKey();
-            int length = connection.getValue().getAsInt();
-            RailColor railColor = RailColor.valueOf(color.toUpperCase());
-            railConnections.add(new RailConnection(endPoints, length, railColor));
+            // For every connection, parse color and length info, and add IRailConnection to accumulator
+            for (Map.Entry<String, JsonElement> connection : segment.entrySet()) {
+                String color = connection.getKey();
+                int length = connection.getValue().getAsInt();
+                RailColor railColor = RailColor.valueOf(color.toUpperCase());
+                railConnections.add(new RailConnection(endPoints, length, railColor));
+            }
+            return railConnections;
         }
-        return railConnections;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -235,15 +270,17 @@ public class FromJsonConverter {
      *      array.
      */
     public static List<RailCard> cardsFromJson(JsonElement cardsJson) {
-        JsonArray cardsArray = cardsJson.getAsJsonArray();
-//        if (cardsArray.size() != Constants.DECK_SIZE) {
-//            throw new IllegalArgumentException("Deck size is not " + Constants.DECK_SIZE);
-//        }
-        List<RailCard> cards = new ArrayList<>();
-        for (JsonElement jsonCard : cardsArray) {
-            cards.add(RailCardUtils.railCardFromLowercaseCard(jsonCard.getAsString()));
+        try {
+            JsonArray cardsArray = cardsJson.getAsJsonArray();
+            List<RailCard> cards = new ArrayList<>();
+            for (JsonElement jsonCard : cardsArray) {
+                cards.add(RailCardUtils.railCardFromLowercaseCard(jsonCard.getAsString()));
+            }
+            return cards;
         }
-        return cards;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -271,24 +308,30 @@ public class FromJsonConverter {
      * @return The player game state parsed from the given Json.
      */
     public static IPlayerGameState playerStateFromJson(JsonElement playerStateJson, ITrainMap map) {
-        JsonObject playerObject = playerStateJson.getAsJsonObject();
-        JsonObject thisPlayersData = playerObject.getAsJsonObject("this");
-        Map<RailCard, Integer> cardsInHand =
-            cardsInHandFromJson(thisPlayersData.getAsJsonArray("cards"));
+        try {
+            JsonObject playerObject = playerStateJson.getAsJsonObject();
+            JsonObject thisPlayersData = playerObject.getAsJsonObject("this");
+            Map<RailCard, Integer> cardsInHand =
+                cardsInHandFromJson(thisPlayersData.getAsJsonArray("cards"));
 
-        Set<Destination> destinations = selectedDestinationsFromPlayerState(thisPlayersData, map);
+            Set<Destination> destinations = selectedDestinationsFromPlayerState(thisPlayersData,
+                map);
 
-        Set<IRailConnection> occupiedConnections = occupiedConnectionsFromJson(playerObject);
-        List<IOpponentInfo> opponentConnections = opponentConnectionsFromJson(
-            playerObject.get("acquired"));
+            Set<IRailConnection> occupiedConnections = occupiedConnectionsFromJson(playerObject);
+            List<IOpponentInfo> opponentConnections = opponentConnectionsFromJson(
+                playerObject.get("acquired"));
 
-        return new PlayerGameState(
-            new PlayerData(
-                new TrainsPlayerHand(cardsInHand),
-                thisPlayersData.get("rails").getAsInt(),
-                destinations,
-                occupiedConnections),
-            opponentConnections);
+            return new PlayerGameState(
+                new PlayerData(
+                    new TrainsPlayerHand(cardsInHand),
+                    thisPlayersData.get("rails").getAsInt(),
+                    destinations,
+                    occupiedConnections),
+                opponentConnections);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -305,11 +348,16 @@ public class FromJsonConverter {
      * @return The known information about opponents in a player game state as a list.
      */
     private static List<IOpponentInfo> opponentConnectionsFromJson(JsonElement opponentJson) {
-        List<IOpponentInfo> opponentConnections = new ArrayList<>();
-        for (JsonElement player : opponentJson.getAsJsonArray()) {
-            opponentConnections.add(new OpponentInfo(occupiedConnectionForPlayer(player)));
+        try {
+            List<IOpponentInfo> opponentConnections = new ArrayList<>();
+            for (JsonElement player : opponentJson.getAsJsonArray()) {
+                opponentConnections.add(new OpponentInfo(occupiedConnectionForPlayer(player)));
+            }
+            return opponentConnections;
         }
-        return opponentConnections;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -334,16 +382,21 @@ public class FromJsonConverter {
      */
     private static Set<Destination> selectedDestinationsFromPlayerState(JsonObject playerDataJson,
         ITrainMap map) {
-        UnorderedPair<String> unvalidatedDestination1 = fromJsonToUnvalidatedDestination(
-            playerDataJson.get("destination1"));
-        UnorderedPair<String> unvalidatedDestination2 = fromJsonToUnvalidatedDestination(
-            playerDataJson.get("destination2"));
+        try {
+            UnorderedPair<String> unvalidatedDestination1 = fromJsonToUnvalidatedDestination(
+                playerDataJson.get("destination1"));
+            UnorderedPair<String> unvalidatedDestination2 = fromJsonToUnvalidatedDestination(
+                playerDataJson.get("destination2"));
 
-        Set<Destination> destinations = new HashSet<>();
-        destinations.add(convertDestinationNamesToDestination(unvalidatedDestination1, map));
-        destinations.add(convertDestinationNamesToDestination(unvalidatedDestination2, map));
+            Set<Destination> destinations = new HashSet<>();
+            destinations.add(convertDestinationNamesToDestination(unvalidatedDestination1, map));
+            destinations.add(convertDestinationNamesToDestination(unvalidatedDestination2, map));
 
-        return destinations;
+            return destinations;
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -394,17 +447,21 @@ public class FromJsonConverter {
      * hand.
      */
     private static Map<RailCard, Integer> cardsInHandFromJson(JsonArray cardsJson) {
-        Map<RailCard, Integer> cardsInHand = new HashMap<>();
-        for (JsonElement cardJson : cardsJson) {
-            RailCard card = RailCardUtils.railCardFromLowercaseCard(cardJson.getAsString());
-            if (cardsInHand.containsKey(card)) {
-                cardsInHand.put(card, cardsInHand.get(card) + 1);
+        try {
+            Map<RailCard, Integer> cardsInHand = new HashMap<>();
+            for (JsonElement cardJson : cardsJson) {
+                RailCard card = RailCardUtils.railCardFromLowercaseCard(cardJson.getAsString());
+                if (cardsInHand.containsKey(card)) {
+                    cardsInHand.put(card, cardsInHand.get(card) + 1);
+                } else {
+                    cardsInHand.put(card, 1);
+                }
             }
-            else {
-                cardsInHand.put(card, 1);
-            }
+            return cardsInHand;
         }
-        return cardsInHand;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -415,9 +472,14 @@ public class FromJsonConverter {
      * @return The destinations occupied by the player represented by the given state.
      */
     private static Set<IRailConnection> occupiedConnectionsFromJson(JsonObject playerStateJson) {
-        return new HashSet<>(
-            occupiedConnectionForPlayer(
-                playerStateJson.getAsJsonObject("this").get("acquired").getAsJsonArray()));
+        try {
+            return new HashSet<>(
+                occupiedConnectionForPlayer(
+                    playerStateJson.getAsJsonObject("this").get("acquired").getAsJsonArray()));
+        }
+        catch (Exception e) {
+                throw new IllegalArgumentException("Invalid JSON");
+            }
     }
 
     /**
@@ -431,11 +493,16 @@ public class FromJsonConverter {
      * @return The connections occupied by a player as a set.
      */
     private static Set<IRailConnection> occupiedConnectionForPlayer(JsonElement player) {
-        Set<IRailConnection> occupiedConnections = new HashSet<>();
-        for (JsonElement connection : player.getAsJsonArray()) {
-            occupiedConnections.add(acquiredConnectionFromJson(connection));
+        try {
+            Set<IRailConnection> occupiedConnections = new HashSet<>();
+            for (JsonElement connection : player.getAsJsonArray()) {
+                occupiedConnections.add(acquiredConnectionFromJson(connection));
+            }
+            return occupiedConnections;
         }
-        return occupiedConnections;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -448,12 +515,18 @@ public class FromJsonConverter {
      * @return The connection as an object.
      */
     public static IRailConnection acquiredConnectionFromJson(JsonElement connectionJson) {
-        JsonArray jsonArray = connectionJson.getAsJsonArray();
-        ICity city1 = new City(jsonArray.get(0).getAsString(), 0, 0);
-        ICity city2 = new City(jsonArray.get(1).getAsString(), 0, 0);
-        RailColor color = RailCardUtils.railColorFromLowercaseColor(jsonArray.get(2).getAsString());
-        int length = jsonArray.get(3).getAsInt();
-        return new RailConnection(new UnorderedPair<>(city1, city2), length, color);
+        try {
+            JsonArray jsonArray = connectionJson.getAsJsonArray();
+            ICity city1 = new City(jsonArray.get(0).getAsString(), 0, 0);
+            ICity city2 = new City(jsonArray.get(1).getAsString(), 0, 0);
+            RailColor color = RailCardUtils
+                .railColorFromLowercaseColor(jsonArray.get(2).getAsString());
+            int length = jsonArray.get(3).getAsInt();
+            return new RailConnection(new UnorderedPair<>(city1, city2), length, color);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     /**
@@ -468,34 +541,49 @@ public class FromJsonConverter {
      * @return The turn action as an object.
      */
     public static TurnAction turnActionFromJson(JsonElement turnActionJson) {
-        if (turnActionJson.isJsonArray()) {
-            IRailConnection acquired = acquiredConnectionFromJson(turnActionJson);
-            return new AcquireConnectionAction(acquired);
+        try {
+            if (turnActionJson.isJsonArray()) {
+                IRailConnection acquired = acquiredConnectionFromJson(turnActionJson);
+                return new AcquireConnectionAction(acquired);
+            }
+            if (turnActionJson.getAsString().equals("more cards")) {
+                return new DrawCardsAction();
+            } else {
+                throw new IllegalArgumentException("Action JSON is malformed");
+            }
         }
-        if (turnActionJson.getAsString().equals("more cards")) {
-            return new DrawCardsAction();
-        } else {
-            throw new IllegalArgumentException("Action JSON is malformed");
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
         }
     }
 
     public static List<Pair<String, IPlayer>> playersFromJson(JsonArray jsonPlayers, ITrainMap map) {
-        List<Pair<String, IPlayer>> players = new ArrayList<>();
-        for (JsonElement jsonPlayer : jsonPlayers) {
-            Pair<String, IPlayer> player = playerFromJson(jsonPlayer, map);
-            players.add(player);
+        try {
+            List<Pair<String, IPlayer>> players = new ArrayList<>();
+            for (JsonElement jsonPlayer : jsonPlayers) {
+                Pair<String, IPlayer> player = playerFromJson(jsonPlayer, map);
+                players.add(player);
+            }
+            return players;
         }
-        return players;
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 
     public static Pair<String, IPlayer> playerFromJson(JsonElement jsonPlayer, ITrainMap map) {
-        JsonArray playerInstance = jsonPlayer.getAsJsonArray();
-        String playerName = playerInstance.get(0).getAsString();
-        String playerStrategy = playerInstance.get(1).getAsString();
-        String strategyFilepath = strategyNameToFilepath(playerStrategy);
+        try {
+            JsonArray playerInstance = jsonPlayer.getAsJsonArray();
+            String playerName = playerInstance.get(0).getAsString();
+            String playerStrategy = playerInstance.get(1).getAsString();
+            String strategyFilepath = strategyNameToFilepath(playerStrategy);
 
-        IPlayer player = new Player(strategyFilepath, map);
+            IPlayer player = new Player(strategyFilepath, map);
 
-        return new Pair<>(playerName, player);
+            return new Pair<>(playerName, player);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
     }
 }

@@ -9,6 +9,7 @@ import game_state.RailCard;
 import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
+import referee.PlayerMisbehaviorException;
 import utils.Constants;
 import utils.UnorderedPair;
 import utils.json.FromJsonConverter;
@@ -41,12 +42,20 @@ public class ProxyPlayer implements IPlayer {
     private JsonElement getMessageFromPlayer() throws TimeoutException {
         long startTime = System.currentTimeMillis();
         JsonStreamParser parser = new JsonStreamParser(this.input);
-        while (!parser.hasNext()) {
-            if (System.currentTimeMillis() - startTime
-                > Constants.TIMEOUT_BETWEEN_INTERACTIONS_MILLISECONDS) {
-                throw new TimeoutException("Client took too longer to respond during a turn");
+        // Check both that there are bytes to be read, and that those bytes are valid JSON
+        // parser.hasNext() will block forever if given an empty but not closed stream
+        try {
+            while (!this.input.ready() && !parser.hasNext()) {
+                if (System.currentTimeMillis() - startTime
+                    > Constants.TIMEOUT_BETWEEN_INTERACTIONS_MILLISECONDS) {
+                    throw new TimeoutException("Client took too longer to respond during a turn");
+                }
             }
         }
+        catch (IOException e) {
+            throw new PlayerMisbehaviorException();
+        }
+
         return parser.next();
     }
 

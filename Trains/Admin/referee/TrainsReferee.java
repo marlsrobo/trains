@@ -222,10 +222,6 @@ public class TrainsReferee implements IReferee {
         INVALID
     }
 
-    private static class PlayerMisbehaviorException extends Exception {
-
-    }
-
     private boolean isGameOver(int numConsecutiveInsignificantTurns) {
         return numConsecutiveInsignificantTurns == this.numPlayersRemaining()
             || this.refereeGameState.getActivePlayerState().getNumRails()
