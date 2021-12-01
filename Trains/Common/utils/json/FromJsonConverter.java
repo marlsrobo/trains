@@ -33,8 +33,22 @@ import utils.UnorderedPair;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Contains static utility methods that are used to convert JsonElements from the gson library into
+ * the Java objects that they represent.
+ */
 public class FromJsonConverter {
 
+    /**
+     * Creates a set of pairs of strings that represent destinations in a game of Trains. This
+     * method does not validate that the cities exist in any map, or that the pairs are valid
+     * Destinations.
+     * <p>
+     * The Json input will be in the form: [ ["Boston", "New York"], ["Chicago", "Seattle"] ]
+     *
+     * @param json The Json element containing the array of destinations.
+     * @return A set of pairs of strings representing the given array of destinations.
+     */
     public static Set<UnorderedPair<String>> fromJsonToUnvalidatedSetOfDestinations(
         JsonElement json) {
         JsonArray jsonAsArray = json.getAsJsonArray();
@@ -45,6 +59,15 @@ public class FromJsonConverter {
         return destinationsNames;
     }
 
+    /**
+     * Creates pair of strings that represent a destination in a game of Trains. This method does
+     * not validate that the cities exist in any map, or that the pair is a valid Destinations.
+     * <p>
+     * The Json input will be in the form: ["Boston", "New York"]
+     *
+     * @param json The Json element containing the destination.
+     * @return A pairs of strings representing the given destination.
+     */
     public static UnorderedPair<String> fromJsonToUnvalidatedDestination(JsonElement json) {
         JsonArray jsonAsArray = json.getAsJsonArray();
         if (jsonAsArray.size() != 2) {
@@ -190,6 +213,22 @@ public class FromJsonConverter {
         return railConnections;
     }
 
+    /**
+     * Creates a list of rail cards that represent the list of cards contained in the given json
+     * array.
+     * <p>
+     * The Json input will be in the form:
+     * [
+     *      "red",
+     *      "blue",
+     *      "red",
+     *      "white"
+     * ]
+     *
+     * @param cardsJson The Json element containing the array of cards.
+     * @return A list of rail cards that represent the list of cards contained in the given json
+     *      array.
+     */
     public static List<RailCard> cardsFromJson(JsonElement cardsJson) {
         JsonArray cardsArray = cardsJson.getAsJsonArray();
         if (cardsArray.size() != Constants.DECK_SIZE) {
@@ -202,6 +241,30 @@ public class FromJsonConverter {
         return cards;
     }
 
+    /**
+     * Creates an IPlayerGameState from json that represents one. This method also uses the
+     * ITrainMap for the game that contains this IPlayerGameState because IPlayerGameStates contain
+     * the destinations the player has selected, which can only be created from a valid ITrainMap.
+     *
+     * The Json input will be in the form:
+     * {
+     *      "this" : {
+     *          "destination1" : Destination,
+     *          "destination2" : Destination,
+     *          "rails"        : Natural,
+     *          "cards"        : Card*,
+     *          "acquired"     : Player
+     *       },
+     *      "acquired" : [Player, ..., Player]
+     * }
+     *
+     * Where Player is a JSON array of Acquireds,
+     * And Acquired is [Name, Name, Color, Length]
+     *
+     * @param playerStateJson The Json element containing the player game state.
+     * @param map The map for the game of Trains that contains this player game state.
+     * @return The player game state parsed from the given Json.
+     */
     public static IPlayerGameState playerStateFromJson(JsonElement playerStateJson, ITrainMap map) {
         JsonObject playerObject = playerStateJson.getAsJsonObject();
         JsonObject thisPlayersData = playerObject.getAsJsonObject("this");
@@ -223,14 +286,47 @@ public class FromJsonConverter {
             opponentConnections);
     }
 
-    private static List<IOpponentInfo> opponentConnectionsFromJson(JsonElement opponentAcquired) {
+    /**
+     * Creates the list of information known about opponents in a player's game state from the Json
+     * that represents it.
+     *
+     * The Json input will be in the form:
+     * [Player, ..., Player]
+     *
+     * Where Player is a JSON array of Acquireds,
+     * And Acquired is [Name, Name, Color, Length]
+     *
+     * @param opponentJson The known information about opponents in a player game state as Json.
+     * @return The known information about opponents in a player game state as a list.
+     */
+    private static List<IOpponentInfo> opponentConnectionsFromJson(JsonElement opponentJson) {
         List<IOpponentInfo> opponentConnections = new ArrayList<>();
-        for (JsonElement player : opponentAcquired.getAsJsonArray()) {
+        for (JsonElement player : opponentJson.getAsJsonArray()) {
             opponentConnections.add(new OpponentInfo(occupiedConnectionForPlayer(player)));
         }
         return opponentConnections;
     }
 
+    /**
+     * Creates the set of destinations that a player has selected from json representing an entire
+     * player state. This method also uses the ITrainMap for the game that contains this
+     * IPlayerGameState because IPlayerGameStates contain the destinations the player has selected,
+     * which can only be created from a valid ITrainMap.
+     *
+     * The Json input will be in the form:
+     * {
+     *          "destination1" : Destination,
+     *          "destination2" : Destination,
+     *          "rails"        : Natural,
+     *          "cards"        : Card*,
+     *          "acquired"     : Player
+     * }
+     *
+     * @param playerDataJson The Json element containing the data about one player from the player
+     *                       game state.
+     * @param map The map for the game of Trains that contains this player game data.
+     * @return The set of destinations parsed from the given Json.
+     */
     private static Set<Destination> selectedDestinationsFromPlayerState(JsonObject playerDataJson,
         ITrainMap map) {
         UnorderedPair<String> unvalidatedDestination1 = fromJsonToUnvalidatedDestination(
@@ -248,7 +344,8 @@ public class FromJsonConverter {
     /**
      * Converts a set of pairs of city names to a set of Destinations that exist in this TrainsMap.
      *
-     * @param destinationsNamePairs the set of pairs of names corresponding to city names
+     * @param destinationsNamePairs The set of pairs of names corresponding to city names.
+     * @param map The map for the game of Trains that contains this player game data.
      * @return the Set of Destination
      */
     public static Set<Destination> convertDestinationNamesToDestinations(
@@ -262,8 +359,7 @@ public class FromJsonConverter {
 
     /**
      * Converts the given pair of city names to a Destination if the names exist within this
-     * TrainsMap as a Destination. Throws an exception if the names don't exist as a destination in
-     * this map
+     * TrainsMap as a Destination.
      *
      * @param destinationCityNames the pair of names for a destination
      * @return the Destination corresponding to the same pair of names given
@@ -281,6 +377,17 @@ public class FromJsonConverter {
         throw new IllegalArgumentException("Destination doesn't exist in the map");
     }
 
+    /**
+     * Creates a map representing the number of each type of card in a hand from a Json array of
+     * cards.
+     *
+     * The Json input will be in the form:
+     * ["red", ..., "white"]
+     *
+     * @param cardsJson The cards in a hand as a Json array.
+     * @return The cards in a hand as a map from the type of card to the number of that card in the
+     * hand.
+     */
     private static Map<RailCard, Integer> cardsInHandFromJson(JsonObject cardsJson) {
         Map<RailCard, Integer> cardsInHand = new HashMap<>();
         for (String cardString : cardsJson.keySet()) {
@@ -291,13 +398,29 @@ public class FromJsonConverter {
         return cardsInHand;
     }
 
+    /**
+     * Creates a set of the connections occupied by the player represented by the given player game
+     * state as Json.
+     *
+     * @param playerStateJson A player game state as Json.
+     * @return The destinations occupied by the player represented by the given state.
+     */
     private static Set<IRailConnection> occupiedConnectionsFromJson(JsonObject playerStateJson) {
-        Set<IRailConnection> occupiedConnections = new HashSet<>(
+        return new HashSet<>(
             occupiedConnectionForPlayer(
                 playerStateJson.getAsJsonObject("this").get("acquired").getAsJsonArray()));
-        return occupiedConnections;
     }
 
+    /**
+     * Creates a set of connections from a Json array representing the connections occupied by one
+     * player.
+     *
+     * The Json input will be an array of Acquireds,
+     * Where Acquired is [Name, Name, Color, Length]
+     *
+     * @param player The connections occupied by a player as Json.
+     * @return The connections occupied by a player as a set.
+     */
     private static Set<IRailConnection> occupiedConnectionForPlayer(JsonElement player) {
         Set<IRailConnection> occupiedConnections = new HashSet<>();
         for (JsonElement connection : player.getAsJsonArray()) {
@@ -306,6 +429,15 @@ public class FromJsonConverter {
         return occupiedConnections;
     }
 
+    /**
+     * Creates a connection from the Json that represents it.
+     *
+     * The Json input will be in the form:
+     * [Name, Name, Color, Length]
+     *
+     * @param connectionJson A connection as Json.
+     * @return The connection as an object.
+     */
     public static IRailConnection acquiredConnectionFromJson(JsonElement connectionJson) {
         JsonArray jsonArray = connectionJson.getAsJsonArray();
         ICity city1 = new City(jsonArray.get(0).getAsString(), 0, 0);
@@ -315,6 +447,17 @@ public class FromJsonConverter {
         return new RailConnection(new UnorderedPair<>(city1, city2), length, color);
     }
 
+    /**
+     * Creates a turn action from the Json that represents it.
+     *
+     * The Json input will be either be:
+     * [Name, Name, Color, Length]
+     * or
+     * "more cards"
+     *
+     * @param turnActionJson A turn action as Json.
+     * @return The turn action as an object.
+     */
     public static TurnAction turnActionFromJson(JsonElement turnActionJson) {
         if (turnActionJson.isJsonArray()) {
             IRailConnection acquired = acquiredConnectionFromJson(turnActionJson);
@@ -322,8 +465,7 @@ public class FromJsonConverter {
         }
         if (turnActionJson.getAsString().equals("more cards")) {
             return new DrawCardsAction();
-        }
-        else {
+        } else {
             throw new IllegalArgumentException("Action JSON is malformed");
         }
     }

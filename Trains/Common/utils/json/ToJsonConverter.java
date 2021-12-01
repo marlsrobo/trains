@@ -29,7 +29,8 @@ import java.util.Set;
 public class ToJsonConverter {
 
     /**
-     * Converts an ITrainsMap to JSON
+     * Converts an ITrainsMap to JSON.
+     *
      * @param map the ITrainsMap
      * @return the JSON representation of the ITrainsMaps
      */
@@ -137,6 +138,11 @@ public class ToJsonConverter {
         return jsonCards;
     }
 
+    /**
+     * Converts a set of Destinations to their JSON representation.
+     * @param destinations The Set of Destinations to convert.
+     * @return The JSON representation of the destinations.
+     */
     public static JsonArray destinationsToJson(Set<Destination> destinations) {
         JsonArray jsonDestinations = new JsonArray();
         for (Destination destination : destinations) {
@@ -145,6 +151,12 @@ public class ToJsonConverter {
         return jsonDestinations;
     }
 
+    /**
+     * Converts one destination into its JSON representation.
+     *
+     * @param destination The Destination to convert.
+     * @return The JSON representation of the Destination.
+     */
     public static JsonArray destinationToJson(Destination destination) {
         JsonArray jsonDestination = new JsonArray();
         jsonDestination.add(destination.left.getName());
@@ -152,10 +164,22 @@ public class ToJsonConverter {
         return jsonDestination;
     }
 
+    /**
+     * Converts a TurnAction into its JSON representation.
+     *
+     * @param turnAction The TurnAction to convert.
+     * @return The JSON representation of the TurnAction.
+     */
     public static JsonElement turnActionToJSON(TurnAction turnAction) {
         return new ActionToJSONVisitor().apply(turnAction);
     }
 
+    /**
+     * Converts an IRailConnection into its JSON representation.
+     *
+     * @param railConnection The IRailConnection to convert.
+     * @return The JSON representation of the IRailConnection.
+     */
     public static JsonElement railConnectionToJSON(IRailConnection railConnection) {
         JsonArray acquired = new JsonArray();
 
@@ -169,6 +193,12 @@ public class ToJsonConverter {
         return acquired;
     }
 
+    /**
+     * Converts a Set of IRailConnections into their JSON representation.
+     *
+     * @param acquiredConnections The Set of IRailConnections to convert.
+     * @return The JSON representation of the Set of IRailConnections.
+     */
     public static JsonElement acquiredConnectionsToJson(Set<IRailConnection> acquiredConnections) {
         JsonArray acquireds = new JsonArray();
         for (IRailConnection connection : acquiredConnections) {

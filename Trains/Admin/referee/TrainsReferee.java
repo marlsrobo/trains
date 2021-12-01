@@ -203,7 +203,7 @@ public class TrainsReferee implements IReferee {
                 return turnApplyResult == TurnResult.SIGNIFICANT;
             }
         } catch (Exception ignored) {
-            // If the player misbehaves, or performs an invalid action, the result id the same.
+            // If the player misbehaves, or performs an invalid action, the result is the same.
         }
         this.removedPlayerNames.add(activePlayer.getKey());
         turnOrder.remove();
