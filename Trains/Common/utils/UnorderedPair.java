@@ -77,6 +77,11 @@ public class UnorderedPair<T> {
         || orderedEquals(otherUnorderedPair.right, otherUnorderedPair.left);
   }
 
+  @Override
+  public String toString() {
+    return this.left.toString() + ", " + this.right.toString();
+  }
+
   /**
    * Determines whether the given elements are equal to this' elements in a particular order.
    *

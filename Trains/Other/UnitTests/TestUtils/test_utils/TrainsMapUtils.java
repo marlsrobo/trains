@@ -130,4 +130,11 @@ public class TrainsMapUtils {
         }
         return maps.get(0);
     }
+
+    public static boolean sameMap(ITrainMap map1, ITrainMap map2) {
+        boolean sameCities = map1.getCities().equals(map2.getCities());
+        boolean sameConnections = map1.getRailConnections().equals(map2.getRailConnections());
+
+        return sameCities && sameConnections;
+    }
 }

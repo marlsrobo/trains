@@ -124,4 +124,9 @@ public class RailConnection implements IRailConnection {
         RailConnection otherRailConnection = (RailConnection) obj;
         return this.sameRailConnection(otherRailConnection);
     }
+
+  @Override
+  public String toString() {
+    return this.cities.toString() + ", " + this.color.toString() + ", " + this.length;
+  }
 }

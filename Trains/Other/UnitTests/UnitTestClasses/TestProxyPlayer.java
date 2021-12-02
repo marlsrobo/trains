@@ -32,6 +32,7 @@ import org.junit.jupiter.api.Test;
 import referee.game_state.PlayerData;
 import referee.game_state.TrainsPlayerHand;
 import remote.ProxyPlayer;
+import test_utils.TrainsMapUtils;
 import utils.UnorderedPair;
 import utils.json.ToJsonConverter;
 
@@ -49,7 +50,7 @@ public class TestProxyPlayer {
         ITrainMap returnedMap = player.startTournament(true);
 
         assertEquals(expectedOutput, outputStream.toString());
-        assertTrue(sameMap(defaultMap, returnedMap));
+        assertTrue(TrainsMapUtils.sameMap(defaultMap, returnedMap));
     }
 
     @Test
@@ -219,12 +220,5 @@ public class TestProxyPlayer {
 
         assertEquals(expectedOutput, outputStream.toString());
         assertEquals(returnedDestinations, actualReturnedDestinations);
-    }
-
-    private static boolean sameMap(ITrainMap map1, ITrainMap map2) {
-        boolean sameCities = map1.getCities().equals(map2.getCities());
-        boolean sameConnections = map1.getRailConnections().equals(map2.getRailConnections());
-
-        return sameCities && sameConnections;
     }
 }
