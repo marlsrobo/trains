@@ -263,12 +263,14 @@ public class SingleElimTournamentManager implements ITournamentManager {
             this.remainingPlayers, Constants.MAX_PLAYERS_PER_GAME, Constants.MIN_PLAYERS_PER_GAME);
         Set<String> winnerNames = new HashSet<>();
         Set<String> cheaterNames = new HashSet<>();
+        System.out.println("starting round");
 
         for (LinkedHashMap<String, IPlayer> game : gameAllocation) {
             IReferee ref = new RefereeBuilder(map, game)
                 .deckProvider(this.deckSupplier)
                 .destinationProvider(this.destinationProvider)
                 .build();
+            System.out.println("starting game");
             ref.playGame();
             GameEndReport report = ref.calculateGameEndReport();
             winnerNames.addAll(report.getWinners());

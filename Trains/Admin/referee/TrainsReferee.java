@@ -196,8 +196,9 @@ public class TrainsReferee implements IReferee {
                 player.winNotification(won);
                 return true;
             };
-
-            callFunctionWithTimeout(reportWinnerCallable, PLAYER_INTERACTION_TIMEOUT);
+            if (!this.removedPlayerNames.contains(playerRanking.get(finalI).getPlayerName())) {
+                callFunctionWithTimeout(reportWinnerCallable, PLAYER_INTERACTION_TIMEOUT);
+            }
         }
     }
 

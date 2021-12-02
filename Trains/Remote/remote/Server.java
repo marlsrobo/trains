@@ -24,6 +24,7 @@ import test_utils.TrainsMapUtils;
 import tournament_manager.ITournamentManager;
 import tournament_manager.SingleElimTournamentManager;
 import tournament_manager.TournamentResult;
+import utils.SynchronizedCounter;
 
 public class Server {
 
@@ -134,11 +135,12 @@ public class Server {
         serverSocket.setSoTimeout(ONE_CONNECTION_WAITING_TIMEOUT_MILLIS);
         List<ClientHandler> signedUpPlayerHandlers = new ArrayList<>();
         List<Thread> signedUpPlayerThreads = new ArrayList<>();
+        SynchronizedCounter counter = new SynchronizedCounter();
 
-        waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
+        waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads, counter);
 
         if (signedUpPlayerHandlers.size() < MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1) {
-            waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads);
+            waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads, counter);
         }
 
         LinkedHashMap<String, IPlayer> players = getSignedUpPlayers(signedUpPlayerHandlers,
@@ -154,6 +156,7 @@ public class Server {
             .mapSelector(mapSelector)
             .build();
 
+        System.out.println("Starting");
         return manager.runTournament(players);
     }
 
@@ -187,16 +190,18 @@ public class Server {
     }
 
     private static void waitForPlayers(ServerSocket serverSocket,
-        List<ClientHandler> signedUpPlayerHandlers, List<Thread> signedUpPlayerThreads)
+        List<ClientHandler> signedUpPlayerHandlers,
+        List<Thread> signedUpPlayerThreads,
+        SynchronizedCounter counter)
         throws IOException {
 
         long startTime = System.currentTimeMillis();
-        while (signedUpPlayerHandlers.size() < MAX_CONNECTIONS_FOR_TOURNAMENT
+        while (counter.get() < MAX_CONNECTIONS_FOR_TOURNAMENT
             && System.currentTimeMillis() - startTime < PLAYERS_CONNECTION_WAITING_TIMEOUT_MILLIS) {
 
             try {
                 Socket clientSocket = serverSocket.accept();
-                ClientHandler handler = new ClientHandler(clientSocket);
+                ClientHandler handler = new ClientHandler(clientSocket, counter);
                 Thread clientHandlerThread = new Thread(handler);
                 clientHandlerThread.start();
                 signedUpPlayerHandlers.add(handler);
@@ -212,9 +217,11 @@ public class Server {
         private final Socket clientSocket;
         private volatile String name;
         private volatile boolean respondedInTime = false;
+        private SynchronizedCounter counter;
 
-        public ClientHandler(Socket clientSocket) {
+        public ClientHandler(Socket clientSocket, SynchronizedCounter counter) {
             this.clientSocket = clientSocket;
+            this.counter = counter;
         }
 
         @Override
@@ -229,6 +236,7 @@ public class Server {
                         if (validateName(jsonName)) {
                             this.name = jsonName.getAsString();
                             this.respondedInTime = true;
+                            this.counter.increment();
                             return;
                         }
                     }

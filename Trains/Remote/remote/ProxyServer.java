@@ -24,7 +24,7 @@ import utils.json.ToJsonConverter;
 
 public class ProxyServer {
 
-    private static final int DISCONNECT_TIMEOUT_MILLIS = 45000;
+    private static final int DISCONNECT_TIMEOUT_MILLIS = 45000000;
 
     private final Reader input;
     private final PrintWriter output;
@@ -50,6 +50,9 @@ public class ProxyServer {
 
                 JsonArray args = methodInfo.get(1).getAsJsonArray();
                 JsonElement returnValue;
+
+                System.out.println(methodName);
+                System.out.println(args);
                 switch (methodName) {
                     case "start":
                         returnValue = parseAndRunStart(args);
