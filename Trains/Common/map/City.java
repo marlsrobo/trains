@@ -123,4 +123,9 @@ public class City implements ICity {
         ICity otherCity = (ICity) obj;
         return this.sameName(otherCity);
     }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

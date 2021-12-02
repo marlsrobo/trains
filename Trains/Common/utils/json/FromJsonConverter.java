@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
+
 import map.City;
 import map.Destination;
 import map.ICity;
@@ -32,7 +32,6 @@ import player.IPlayer;
 import player.Player;
 import referee.game_state.PlayerData;
 import referee.game_state.TrainsPlayerHand;
-import utils.Constants;
 import utils.RailCardUtils;
 import utils.UnorderedPair;
 
@@ -137,7 +136,7 @@ public class FromJsonConverter {
      * @return A map of city names to ICity objects for all of the cities specified in the JSON
      * input
      */
-    private static Map<String, ICity> getCitiesFromJson(int mapWidth, int mapHeight,
+    public static Map<String, ICity> getCitiesFromJson(int mapWidth, int mapHeight,
         JsonArray citiesSpecification) {
         try {
             Map<String, ICity> cities = new HashMap<>();
@@ -172,7 +171,7 @@ public class FromJsonConverter {
      * @return A list of IRailConnection objects for all of the connections specified in the JSON
      * input
      */
-    private static List<IRailConnection> getRailConnectionsFromJson(
+    public static List<IRailConnection> getRailConnectionsFromJson(
         JsonObject connectionsSpecification, Map<String, ICity> cities) {
         try {
             List<IRailConnection> railConnections = new ArrayList<>();
@@ -216,7 +215,7 @@ public class FromJsonConverter {
                 ICity endCity = cities.get(target.getKey());
                 UnorderedPair<ICity> endPoints = new UnorderedPair<>(startCity, endCity);
                 JsonObject segment = target.getValue().getAsJsonObject();
-                railConnections.addAll(parseConnections(segment, endPoints));
+                railConnections.addAll(parseConnectionsForPairOfCities(segment, endPoints));
             }
 
             return railConnections;
@@ -234,8 +233,8 @@ public class FromJsonConverter {
      * @param endPoints the two cities being connected.
      * @return a list of IRailConnection specified for the two cities.
      */
-    private static List<IRailConnection> parseConnections(JsonObject segment,
-        UnorderedPair<ICity> endPoints) {
+    public static List<IRailConnection> parseConnectionsForPairOfCities(JsonObject segment,
+                                                                        UnorderedPair<ICity> endPoints) {
         try {
             List<IRailConnection> railConnections = new ArrayList<>();
 
@@ -347,7 +346,7 @@ public class FromJsonConverter {
      * @param opponentJson The known information about opponents in a player game state as Json.
      * @return The known information about opponents in a player game state as a list.
      */
-    private static List<IOpponentInfo> opponentConnectionsFromJson(JsonElement opponentJson) {
+    public static List<IOpponentInfo> opponentConnectionsFromJson(JsonElement opponentJson) {
         try {
             List<IOpponentInfo> opponentConnections = new ArrayList<>();
             for (JsonElement player : opponentJson.getAsJsonArray()) {
@@ -380,7 +379,7 @@ public class FromJsonConverter {
      * @param map The map for the game of Trains that contains this player game data.
      * @return The set of destinations parsed from the given Json.
      */
-    private static Set<Destination> selectedDestinationsFromPlayerState(JsonObject playerDataJson,
+    public static Set<Destination> selectedDestinationsFromPlayerState(JsonObject playerDataJson,
         ITrainMap map) {
         try {
             UnorderedPair<String> unvalidatedDestination1 = fromJsonToUnvalidatedDestination(
@@ -446,7 +445,7 @@ public class FromJsonConverter {
      * @return The cards in a hand as a map from the type of card to the number of that card in the
      * hand.
      */
-    private static Map<RailCard, Integer> cardsInHandFromJson(JsonArray cardsJson) {
+    public static Map<RailCard, Integer> cardsInHandFromJson(JsonArray cardsJson) {
         try {
             Map<RailCard, Integer> cardsInHand = new HashMap<>();
             for (JsonElement cardJson : cardsJson) {
@@ -471,7 +470,7 @@ public class FromJsonConverter {
      * @param playerStateJson A player game state as Json.
      * @return The destinations occupied by the player represented by the given state.
      */
-    private static Set<IRailConnection> occupiedConnectionsFromJson(JsonObject playerStateJson) {
+    public static Set<IRailConnection> occupiedConnectionsFromJson(JsonObject playerStateJson) {
         try {
             return new HashSet<>(
                 occupiedConnectionForPlayer(
@@ -492,7 +491,7 @@ public class FromJsonConverter {
      * @param player The connections occupied by a player as Json.
      * @return The connections occupied by a player as a set.
      */
-    private static Set<IRailConnection> occupiedConnectionForPlayer(JsonElement player) {
+    public static Set<IRailConnection> occupiedConnectionForPlayer(JsonElement player) {
         try {
             Set<IRailConnection> occupiedConnections = new HashSet<>();
             for (JsonElement connection : player.getAsJsonArray()) {
