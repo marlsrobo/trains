@@ -79,7 +79,7 @@ public class ProxyPlayer implements IPlayer {
         JsonArray args = new JsonArray();
         args.add(ToJsonConverter.mapToJson(map));
         args.add(numRails);
-        args.add(ToJsonConverter.railCardsToJson(cards));
+        args.add(ToJsonConverter.railCardsToJsonArray(cards));
         methodMessage.add(args);
 
         this.callMethodOnPlayer(methodMessage);
@@ -154,7 +154,7 @@ public class ProxyPlayer implements IPlayer {
         methodMessage.add("more");
 
         JsonArray args = new JsonArray();
-        args.add(ToJsonConverter.railCardsToJson(drawnCards));
+        args.add(ToJsonConverter.railCardsToJsonArray(drawnCards));
         methodMessage.add(args);
 
         this.callMethodOnPlayer(methodMessage);

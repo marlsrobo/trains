@@ -137,12 +137,21 @@ public class ToJsonConverter {
      * @param cards the List of RailCard
      * @return the JSON representation of the list of RailCard ([Card, ..., Card])
      */
-    public static JsonArray railCardsToJson(List<RailCard> cards) {
+    public static JsonArray railCardsToJsonArray(List<RailCard> cards) {
         JsonArray jsonCards = new JsonArray();
         for (RailCard card : cards) {
             jsonCards.add(card.name().toLowerCase());
         }
         return jsonCards;
+    }
+
+    public static JsonObject railCardsToJsonObject(Map<RailCard, Integer> cards) {
+        JsonObject cardsMapJson = new JsonObject();
+        for (Map.Entry<RailCard, Integer> cardEntry : cards.entrySet()) {
+            cardsMapJson.add(cardEntry.getKey().toString().toLowerCase(),
+                    new JsonPrimitive(cardEntry.getValue()));
+        }
+        return cardsMapJson;
     }
 
     /**
@@ -222,8 +231,7 @@ public class ToJsonConverter {
         jsonPlayerState.add("destination1", destinationToJson(iterator.next()));
         jsonPlayerState.add("destination2", destinationToJson(iterator.next()));
         jsonPlayerState.add("rails", new JsonPrimitive(gameState.getNumRails()));
-        jsonPlayerState
-            .add("cards", railCardsToJson(mapCardsToListCards(gameState.getCardsInHand())));
+        jsonPlayerState.add("cards", railCardsToJsonObject(gameState.getCardsInHand()));
         jsonPlayerState.add("acquired", acquiredConnectionsToJson(gameState.getOwnedConnections()));
 
         JsonObject jsonPlayerGameState = new JsonObject();

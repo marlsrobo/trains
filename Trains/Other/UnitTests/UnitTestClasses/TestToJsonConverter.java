@@ -198,7 +198,7 @@ public class TestToJsonConverter {
     expected.add(new JsonPrimitive("red"));
     expected.add(new JsonPrimitive("red"));
 
-    assertEquals(expected, ToJsonConverter.railCardsToJson(TestTrainsReferee.TenCardDeckSupplier()));
+    assertEquals(expected, ToJsonConverter.railCardsToJsonArray(TestTrainsReferee.TenCardDeckSupplier()));
   }
 
   @Test
@@ -343,7 +343,7 @@ public class TestToJsonConverter {
     thisObject.add("destination1", destination1);
     thisObject.add("destination2", destination2);
     thisObject.add("rails", new JsonPrimitive(10));
-    thisObject.add("cards", ToJsonConverter.railCardsToJson(TestTrainsReferee.TenCardDeckSupplier()));
+    thisObject.add("cards", ToJsonConverter.railCardsToJsonObject(gameState.getCardsInHand()));
     thisObject.add("acquired", ToJsonConverter.acquiredConnectionsToJson(acquiredConnections));
 
     expected.add("this", thisObject);
