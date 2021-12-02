@@ -78,13 +78,13 @@ public class ToJsonConverter {
 
             JsonObject segment = new JsonObject();
             segment
-                .add(connection.getColor().toString(), new JsonPrimitive(connection.getLength()));
+                .add(connection.getColor().toString().toLowerCase(), new JsonPrimitive(connection.getLength()));
 
             if (jsonConnections.keySet().contains(sourceName)) {
                 // the source and target already exist
                 if (jsonConnections.getAsJsonObject(sourceName).keySet().contains(targetName)) {
                     jsonConnections.getAsJsonObject(sourceName).getAsJsonObject(targetName)
-                        .add(connection.getColor().toString(),
+                        .add(connection.getColor().toString().toLowerCase(),
                             new JsonPrimitive(connection.getLength()));
                 }
                 // the source already exists, but the target doesn't yet
