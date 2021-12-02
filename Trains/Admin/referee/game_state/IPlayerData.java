@@ -36,14 +36,14 @@ public interface IPlayerData {
   Set<Destination> getDestinations();
 
   /**
-   *
-   * @return
+   * Getter for the connections that the player has acquired in the game so far.
+   * @return the IRailConnections that this player owns/acquires
    */
   Set<IRailConnection> getOwnedConnections();
 
   /**
-   *
-   * @return
+   * Returns a defensive copy of this IPlayerData.
+   * @return IPlayerData defensive copy
    */
   IPlayerData copyData();
 }
