@@ -11,21 +11,6 @@ import java.util.concurrent.TimeoutException;
 
 public class Utils {
 
-    public static void main(String[] args) {
-        Callable<Integer> c = () -> {
-            //throw new IllegalArgumentException();
-            Thread.sleep(1000000);
-            return 3;
-        };
-
-        Optional<Integer> ret = callFunctionWithTimeout(c, 3000);
-
-        ret.ifPresent(System.out::println);
-        if (ret.isEmpty()) {
-            System.out.println("no output");
-        }
-    }
-
     public static <T> Optional<T> callFunctionWithTimeout(Callable<T> function, long timeoutMillis) {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<T> future = executor.submit(function);

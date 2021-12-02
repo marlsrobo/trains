@@ -157,6 +157,7 @@ public class ProxyServer {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for play");
         }
+        System.out.println(args);
 
         IPlayerGameState gameState;
         try {

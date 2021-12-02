@@ -1,21 +1,22 @@
 package tournament_manager;
 
 import static tournament_manager.PlayerAllocator.allocatePlayersToGames;
+import static utils.Constants.PLAYER_INTERACTION_TIMEOUT;
+import static utils.Utils.callFunctionWithTimeout;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 import java.util.Map.Entry;
 import java.util.Objects;
-import java.util.Random;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import game_state.RailCard;
 import map.Destination;
@@ -59,6 +60,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
      * customizable features to be set.
      */
     public static class SingleElimTournamentManagerBuilder {
+
         private Function<ITrainMap, List<Destination>> destinationProvider;
         private Supplier<List<RailCard>> deckProvider;
         private Function<List<ITrainMap>, ITrainMap> mapSelector;
@@ -206,16 +208,15 @@ public class SingleElimTournamentManager implements ITournamentManager {
     private ITrainMap getMapToStartTournament(LinkedHashMap<String, IPlayer> players) {
         List<ITrainMap> submittedMaps = new ArrayList<>();
         for (Entry<String, IPlayer> player : players.entrySet()) {
-            // remove player if they return an invalid TrainsMap
-            try {
-                // TODO: move method call on player to other location
-                if (player.getValue().startTournament(true) == null) {
-                    this.cheaters.add(player.getKey());
-                    this.remainingPlayers.remove(player.getKey());
-                }
-                submittedMaps.add(player.getValue().startTournament(true));
+            Callable<ITrainMap> startTournamentCallable = () -> player.getValue()
+                .startTournament(true);
+
+            Optional<ITrainMap> map = callFunctionWithTimeout(startTournamentCallable,
+                PLAYER_INTERACTION_TIMEOUT);
+            if (map.isPresent()) {
+                submittedMaps.add(map.get());
             }
-            catch (TimeoutException e) {
+            else {
                 this.cheaters.add(player.getKey());
                 this.remainingPlayers.remove(player.getKey());
             }
@@ -288,14 +289,11 @@ public class SingleElimTournamentManager implements ITournamentManager {
     private void reportTournamentResultToPlayers(TournamentResult result,
         LinkedHashMap<String, IPlayer> players) {
         for (Entry<String, IPlayer> player : players.entrySet()) {
-            try {
-                // TODO: move method call on player to other location
+            Callable<Boolean> resultOfTournamentCallable = () -> {
                 player.getValue().resultOfTournament(result.getWinners().contains(player.getKey()));
-            }
-            catch (TimeoutException e) {
-                // TODO: remove player from the ranking
-            }
-
+                return true;
+            };
+            callFunctionWithTimeout(resultOfTournamentCallable, PLAYER_INTERACTION_TIMEOUT);
         }
     }
 }

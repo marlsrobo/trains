@@ -60,7 +60,7 @@ public class TestProxyPlayer {
 
         String input = "void";
         String defaultMapString = ToJsonConverter.mapToJson(defaultMap).toString();
-        String cardsString = ToJsonConverter.railCardsToJson(cards).toString();
+        String cardsString = ToJsonConverter.railCardsToJsonArray(cards).toString();
         String expectedOutput = String
             .format("[\"setup\",[%s,45,%s]]", defaultMapString, cardsString);
 
@@ -159,7 +159,7 @@ public class TestProxyPlayer {
             Arrays.asList(RailCard.BLUE, RailCard.GREEN, RailCard.RED));
 
         String input = "void";
-        String cardsString = ToJsonConverter.railCardsToJson(cards).toString();
+        String cardsString = ToJsonConverter.railCardsToJsonArray(cards).toString();
         String expectedOutput = String
             .format("[\"more\",[%s]]", cardsString);
 
@@ -200,6 +200,7 @@ public class TestProxyPlayer {
     @Test
     public void testMalformedJsonResponse() throws TimeoutException, IOException {
         ITrainMap defaultMap = createDefaultMap();
+
         List<Destination> allDestinations = defaultDestinationProvider(defaultMap);
         Set<Destination> destinationOptions = new HashSet<>(allDestinations.subList(0, 5));
         Set<Destination> returnedDestinations = new HashSet<>(allDestinations.subList(0, 3));

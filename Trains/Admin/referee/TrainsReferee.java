@@ -1,5 +1,8 @@
 package referee;
 
+import static utils.Constants.PLAYER_INTERACTION_TIMEOUT;
+import static utils.Utils.callFunctionWithTimeout;
+
 import com.google.common.collect.Iterables;
 import game_state.RailCard;
 import java.util.ArrayList;
@@ -12,11 +15,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
@@ -176,7 +178,27 @@ public class TrainsReferee implements IReferee {
             }
         }
         gameReportScores.sort(Comparator.comparingInt(s -> s.getScore() * -1));
-        return new GameEndReport(gameReportScores, new HashSet<>(this.removedPlayerNames));
+        GameEndReport report = new GameEndReport(gameReportScores,
+            new HashSet<>(this.removedPlayerNames));
+
+        this.informResult(report);
+        return report;
+    }
+
+    private void informResult(GameEndReport report) {
+        List<PlayerScore> playerRanking = report.getPlayerRanking();
+        for (int i = 1; i < playerRanking.size(); i++) {
+            int finalI = i;
+            IPlayer player = this.playersInOrder.get(playerRanking.get(finalI).getPlayerName());
+            boolean won = playerRanking.get(i).getScore() == playerRanking.get(0).getScore();
+
+            Callable<Boolean> reportWinnerCallable = () -> {
+                player.winNotification(won);
+                return true;
+            };
+
+            callFunctionWithTimeout(reportWinnerCallable, PLAYER_INTERACTION_TIMEOUT);
+        }
     }
 
     private LinkedHashMap<String, IPlayer> remainingPlayersInOrder() {
@@ -193,22 +215,31 @@ public class TrainsReferee implements IReferee {
     private boolean takePlayerTurn(Iterator<Map.Entry<String, IPlayer>> turnOrder) {
         Map.Entry<String, IPlayer> activePlayer = turnOrder.next();
 
-        try {
-            TurnAction turn = activePlayer.getValue()
-                .takeTurn(this.refereeGameState.getActivePlayerState());
-            TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer.getValue());
-
-            if (turnApplyResult != TurnResult.INVALID) {
-                this.refereeGameState.advanceTurn();
-                return turnApplyResult == TurnResult.SIGNIFICANT;
-            }
-        } catch (Exception ignored) {
-            // If the player misbehaves, or performs an invalid action, the result is the same.
+        IPlayer player = activePlayer.getValue();
+        Callable<TurnAction> takeTurnCallable = () -> player
+            .takeTurn(this.refereeGameState.getActivePlayerState());
+        Optional<TurnAction> returnedTurn = callFunctionWithTimeout(takeTurnCallable,
+            PLAYER_INTERACTION_TIMEOUT);
+        if (returnedTurn.isEmpty()) {
+            this.removePlayer(activePlayer.getKey(), turnOrder);
+            return true;
         }
-        this.removedPlayerNames.add(activePlayer.getKey());
+        TurnAction turn = returnedTurn.get();
+        TurnResult turnApplyResult = applyActionToActivePlayer(turn, activePlayer.getValue());
+
+        if (turnApplyResult != TurnResult.INVALID) {
+            this.refereeGameState.advanceTurn();
+            return turnApplyResult == TurnResult.SIGNIFICANT;
+        }
+
+        this.removePlayer(activePlayer.getKey(), turnOrder);
+        return true;
+    }
+
+    private void removePlayer(String playerName, Iterator<Map.Entry<String, IPlayer>> turnOrder) {
+        this.removedPlayerNames.add(playerName);
         turnOrder.remove();
         this.refereeGameState.removeActivePlayer();
-        return true;
     }
 
     private TurnResult applyActionToActivePlayer(
@@ -270,15 +301,26 @@ public class TrainsReferee implements IReferee {
         List<Destination> playerDestinationOptions =
             activeDestinationList.subList(0, Constants.PLAYER_NUM_DEST_OPTIONS);
 
-        Set<Destination> notChosenDestinations;
-        try {
+        Callable<Boolean> setupCallable = () -> {
             player
                 .setup(map, Constants.PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
-            notChosenDestinations = player
-                .chooseDestinations(new HashSet<>(playerDestinationOptions));
-        } catch (Exception e) {
+            return true;
+        };
+        Optional<Boolean> setupReturn = callFunctionWithTimeout(setupCallable,
+            PLAYER_INTERACTION_TIMEOUT);
+        if (setupReturn.isEmpty()) {
             return Optional.empty();
         }
+
+        Callable<Set<Destination>> chooseDestinationsCallable = () -> player
+            .chooseDestinations(new HashSet<>(playerDestinationOptions));
+        Optional<Set<Destination>> notChosenDestinationsReturn = callFunctionWithTimeout(
+            chooseDestinationsCallable,
+            PLAYER_INTERACTION_TIMEOUT);
+        if (notChosenDestinationsReturn.isEmpty()) {
+            return Optional.empty();
+        }
+        Set<Destination> notChosenDestinations = notChosenDestinationsReturn.get();
 
         if (!validDestinationChoice(new HashSet<>(playerDestinationOptions),
             notChosenDestinations)) {
