@@ -77,22 +77,9 @@ public class ProxyServer {
                             String.format("Requested method %s does not exist", methodName));
                 }
                 startTime = System.currentTimeMillis();
-                if (returnValue.toString().length() > 20) {
-                    this.output.print(returnValue.toString().substring(0, 10));
-                    this.output.flush();
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    this.output.print(returnValue.toString().substring(10));
-                    this.output.flush();
-                }
-                else {
-                    this.output.print(returnValue);
-                    this.output.flush();
-                }
-//                this.output.flush();
+
+                this.output.print(returnValue);
+                this.output.flush();
             }
         }
     }
@@ -157,7 +144,6 @@ public class ProxyServer {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for play");
         }
-        System.out.println(args);
 
         IPlayerGameState gameState;
         try {

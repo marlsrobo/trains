@@ -183,7 +183,6 @@ public class Server {
                 }
             }
         }
-        System.out.println(players);
         return players;
     }
 

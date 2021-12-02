@@ -170,6 +170,8 @@ public class TestFromJsonConverter {
   }
 
   @Test
-  public void testParseConnections
+  public void testParseConnections() {
+
+  }
 
 }
