@@ -311,7 +311,7 @@ public class FromJsonConverter {
             JsonObject playerObject = playerStateJson.getAsJsonObject();
             JsonObject thisPlayersData = playerObject.getAsJsonObject("this");
             Map<RailCard, Integer> cardsInHand =
-                cardsInHandFromJson(thisPlayersData.getAsJsonArray("cards"));
+                cardsInHandFromJsonObject(thisPlayersData.getAsJsonObject("cards"));
 
             Set<Destination> destinations = selectedDestinationsFromPlayerState(thisPlayersData,
                 map);
@@ -445,7 +445,7 @@ public class FromJsonConverter {
      * @return The cards in a hand as a map from the type of card to the number of that card in the
      * hand.
      */
-    public static Map<RailCard, Integer> cardsInHandFromJson(JsonArray cardsJson) {
+    public static Map<RailCard, Integer> cardsInHandFromJsonArray(JsonArray cardsJson) {
         try {
             Map<RailCard, Integer> cardsInHand = new HashMap<>();
             for (JsonElement cardJson : cardsJson) {
@@ -454,6 +454,40 @@ public class FromJsonConverter {
                     cardsInHand.put(card, cardsInHand.get(card) + 1);
                 } else {
                     cardsInHand.put(card, 1);
+                }
+            }
+            return cardsInHand;
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Invalid JSON");
+        }
+    }
+
+    /**
+     * Creates a map representing the number of each type of card in a hand from a Json object of
+     * cards.
+     *
+     * The Json input will be in the form:
+     * {"red": ..., "blue": ..., ...}
+     *
+     * @param cardsJson The cards in a hand as a Json object.
+     * @return The cards in a hand as a map from the type of card to the number of that card in the
+     * hand.
+     */
+    public static Map<RailCard, Integer> cardsInHandFromJsonObject(JsonObject cardsJson) {
+        try {
+            Map<RailCard, Integer> cardsInHand = new HashMap<>();
+
+            for (Map.Entry<String, JsonElement> card : cardsJson.entrySet()) {
+                if (card.getValue().getAsInt() < 0) {
+                    throw new IllegalArgumentException("Negative cards");
+                }
+                cardsInHand.put(RailCardUtils.railCardFromLowercaseCard(card.getKey()),
+                        card.getValue().getAsInt());
+            }
+            for (RailCard cardType : RailCard.values()) {
+                if (!cardsInHand.containsKey(cardType)) {
+                    cardsInHand.put(cardType, 0);
                 }
             }
             return cardsInHand;
