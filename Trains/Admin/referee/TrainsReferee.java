@@ -245,7 +245,7 @@ public class TrainsReferee implements IReferee {
 
         for (Map.Entry<String, IPlayer> player : this.playersInOrder.entrySet()) {
             Optional<IPlayerData> thisPlayersData =
-                this.setupPlayer(player.getValue(), activeDestinationList, deck, map);
+                this.setupPlayer(player.getValue(), activeDestinationList, deck, this.map);
             if (thisPlayersData.isPresent()) {
                 playerDataInTurnOrder.add(thisPlayersData.get());
             } else {
@@ -253,7 +253,7 @@ public class TrainsReferee implements IReferee {
             }
         }
 
-        return new RefereeGameState(playerDataInTurnOrder, deck, map);
+        return new RefereeGameState(playerDataInTurnOrder, deck, this.map);
     }
 
     private Optional<IPlayerData> setupPlayer(

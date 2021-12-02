@@ -10,7 +10,10 @@ import com.google.gson.JsonPrimitive;
 import game_state.IOpponentInfo;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
+
+import java.util.HashMap;
 import java.util.Iterator;
+
 import map.Destination;
 import map.ICity;
 import map.IRailConnection;
@@ -282,20 +285,28 @@ public class ToJsonConverter {
             ranking.add(new ArrayList<>());
             return ranking;
         }
-        List<String> playerNames = new ArrayList<>();
-        playerNames.add(report.getPlayerRanking().get(0).getPlayerName());
-        ranking.add(playerNames);
-        for (int i = 1; i < report.getPlayerRanking().size(); i++) {
-            if (report.getPlayerRanking().get(i).getScore() == report.getPlayerRanking().get(i - 1).getScore()) {
-                ranking.get(ranking.size() - 1).add(report.getPlayerRanking().get(i).getPlayerName());
-            } else {
-                List<String> rank = new ArrayList<>();
-                rank.add(report.getPlayerRanking().get(i).getPlayerName());
-                ranking.add(rank);
-            }
+        Map<Integer, List<String>> ranksWithScores = new HashMap<>();
+
+        for (GameEndReport.PlayerScore playerNameAndScore : report.getPlayerRanking()) {
+            List<String> rankNames = ranksWithScores.getOrDefault(playerNameAndScore.getScore(),
+                    new ArrayList<>());
+            rankNames.add(playerNameAndScore.getPlayerName());
+            ranksWithScores.put(playerNameAndScore.getScore(), rankNames);
         }
+
+        List<Integer> sortedScores = new ArrayList<>(ranksWithScores.keySet());
+        Collections.sort(sortedScores);
+        Collections.reverse(sortedScores);
+
+        for (int score : sortedScores) {
+            List<String> rankNames = ranksWithScores.get(score);
+            Collections.sort(rankNames);
+            ranking.add(rankNames);
+        }
+
         return ranking;
     }
+
 
     public static JsonArray rankToJson(List<String> rank) {
         List<String> sortedRank = new ArrayList<>(rank);

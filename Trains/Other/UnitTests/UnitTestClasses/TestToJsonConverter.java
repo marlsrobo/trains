@@ -29,6 +29,7 @@ import map.MapDimensions;
 import map.RailColor;
 import map.RailConnection;
 import map.TrainMap;
+import referee.GameEndReport;
 import referee.game_state.IPlayerData;
 import referee.game_state.PlayerData;
 import referee.game_state.TrainsPlayerHand;
@@ -389,15 +390,121 @@ public class TestToJsonConverter {
   public void testTournamentResultToJson() {
     Set<String> winners = new HashSet<>();
     winners.add("Marley");
-    winners.add("Ronan");
     winners.add("marley");
+    winners.add("Ronan");
     Set<String> cheaters = new HashSet<>();
     cheaters.add("Bob");
     cheaters.add("Alice");
     TournamentResult result = new TournamentResult(winners, cheaters);
 
     JsonArray expected = new JsonArray();
+    JsonArray expectedWinners = new JsonArray();
+    expectedWinners.add(new JsonPrimitive("Marley"));
+    expectedWinners.add(new JsonPrimitive("Ronan"));
+    expectedWinners.add(new JsonPrimitive("marley"));
+    expected.add(expectedWinners);
 
+    JsonArray expectedCheaters = new JsonArray();
+    expectedCheaters.add(new JsonPrimitive("Alice"));
+    expectedCheaters.add(new JsonPrimitive("Bob"));
+    expected.add(expectedCheaters);
+
+    assertEquals(expected, ToJsonConverter.tournamentResultToJson(result));
+  }
+
+  @Test
+  public void testGameReportToJson() {
+    List<GameEndReport.PlayerScore> scores = new ArrayList<>();
+    scores.add(new GameEndReport.PlayerScore("laura", 2));
+    scores.add(new GameEndReport.PlayerScore("Lauren", 5));
+    scores.add(new GameEndReport.PlayerScore("Marley", 20));
+    scores.add(new GameEndReport.PlayerScore("Ronan", 20));
+
+    Set<String> removedPlayers = new HashSet<>();
+    removedPlayers.add("bruce");
+    removedPlayers.add("harry");
+    removedPlayers.add("Zorro");
+
+    GameEndReport report = new GameEndReport(scores, removedPlayers);
+
+    JsonArray expected = new JsonArray();
+    JsonArray winnerRanks = new JsonArray();
+
+    List<String> first = new ArrayList<>();
+    first.add("Marley");
+    first.add("Ronan");
+
+    List<String> second = new ArrayList<>();
+    second.add("Lauren");
+
+    List<String> third = new ArrayList<>();
+    third.add("laura");
+
+    winnerRanks.add(ToJsonConverter.rankToJson(first));
+    winnerRanks.add(ToJsonConverter.rankToJson(second));
+    winnerRanks.add(ToJsonConverter.rankToJson(third));
+
+    expected.add(winnerRanks);
+
+    List<String> cheaterNames = new ArrayList<>();
+    cheaterNames.add("Zorro");
+    cheaterNames.add("bruce");
+    cheaterNames.add("harry");
+
+    expected.add(ToJsonConverter.rankToJson(cheaterNames));
+
+    assertEquals(expected, ToJsonConverter.gameReportToJson(report));
+  }
+
+  @Test
+  public void testGameReportToRanking() {
+    List<GameEndReport.PlayerScore> scores = new ArrayList<>();
+    scores.add(new GameEndReport.PlayerScore("Lauren", 5));
+    scores.add(new GameEndReport.PlayerScore("laura", 2));
+    scores.add(new GameEndReport.PlayerScore("Marley", 20));
+    scores.add(new GameEndReport.PlayerScore("Ronan", 20));
+
+    Set<String> removedPlayers = new HashSet<>();
+    removedPlayers.add("bruce");
+    removedPlayers.add("harry");
+    removedPlayers.add("Zorro");
+
+    GameEndReport report = new GameEndReport(scores, removedPlayers);
+
+    List<List<String>> expected = new ArrayList<>();
+
+    List<String> first = new ArrayList<>();
+    first.add("Marley");
+    first.add("Ronan");
+
+    List<String> second = new ArrayList<>();
+    second.add("Lauren");
+
+    List<String> third = new ArrayList<>();
+    third.add("laura");
+
+    expected.add(first);
+    expected.add(second);
+    expected.add(third);
+
+    assertEquals(expected, ToJsonConverter.gameReportToRanking(report));
+  }
+
+  @Test
+  public void testRankToJson() {
+    List<String> rank = new ArrayList<>();
+    rank.add("Marley");
+    rank.add("Adam");
+    rank.add("adam");
+    rank.add("Bruce");
+
+    JsonArray expected = new JsonArray();
+    expected.add(new JsonPrimitive("Adam"));
+    expected.add(new JsonPrimitive("Bruce"));
+    expected.add(new JsonPrimitive("Marley"));
+    expected.add(new JsonPrimitive("adam"));
+
+    assertEquals(expected, ToJsonConverter.rankToJson(rank));
   }
 
 }
