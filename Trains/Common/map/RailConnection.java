@@ -127,6 +127,6 @@ public class RailConnection implements IRailConnection {
 
   @Override
   public String toString() {
-    return this.cities.toString() + ", " + this.color.toString() + ", " + this.length;
+    return "{" + this.cities.toString() + ", " + this.color.toString() + ", " + this.length + "}";
   }
 }
