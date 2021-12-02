@@ -7,6 +7,9 @@ import java.util.Set;
 import map.Destination;
 import map.IRailConnection;
 
+/**
+ * The data that a specific player knows about their own game components.
+ */
 public class PlayerData implements IPlayerData {
 
     private final IPlayerHand<RailCard> hand;
@@ -14,6 +17,13 @@ public class PlayerData implements IPlayerData {
     private final Set<Destination> destinations;
     private final Set<IRailConnection> ownedConnections;
 
+    /**
+     * Constructor for a PlayerData
+     * @param hand the RailCards the player currently has in their hand
+     * @param numRails the number of rails the player currently has
+     * @param destinations the chosen destinations of the player
+     * @param ownedConnections the RailConnections that the player has occupied so far in the game
+     */
     public PlayerData(IPlayerHand<RailCard> hand, int numRails,
         Set<Destination> destinations, Set<IRailConnection> ownedConnections) {
         Objects.requireNonNull(hand);

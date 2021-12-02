@@ -11,6 +11,8 @@ import java.util.Set;
 import action.AcquireConnectionAction;
 import action.DrawCardsAction;
 import action.TurnAction;
+import game_state.IPlayerGameState;
+import game_state.PlayerGameState;
 import map.City;
 import map.Destination;
 import map.ICity;
@@ -20,6 +22,8 @@ import map.MapDimensions;
 import map.RailColor;
 import map.RailConnection;
 import map.TrainMap;
+import referee.game_state.IPlayerData;
+import referee.game_state.PlayerData;
 import utils.UnorderedPair;
 import utils.json.ToJsonConverter;
 
@@ -296,6 +300,10 @@ public class TestToJsonConverter {
 
   @Test
   public void testPlayerGameStateToJson() {
+    IPlayerData playerData = new PlayerData(TestTrainsReferee.TenCardDeckSupplier(),
+            10, )
+
+    IPlayerGameState gameState = new PlayerGameState()
 
   }
 
