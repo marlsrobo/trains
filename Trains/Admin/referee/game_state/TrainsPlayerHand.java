@@ -7,10 +7,17 @@ import java.util.Map;
 import java.util.Objects;
 import referee.game_state.IPlayerHand;
 
+/**
+ * Represents a player's hand of RailCards at any point in the game of Trains
+ */
 public class TrainsPlayerHand implements IPlayerHand<RailCard> {
 
   Map<RailCard, Integer> playerHand; // All card types are represented as keys (possibly with 0 cards)
 
+  /**
+   * Constructor that takes just a list of cards
+   * @param initialHand a list of RailCard
+   */
   public TrainsPlayerHand(List<RailCard> initialHand) {
     Objects.requireNonNull(initialHand);
     this.playerHand = new HashMap<>();
@@ -22,6 +29,12 @@ public class TrainsPlayerHand implements IPlayerHand<RailCard> {
     }
   }
 
+  /**
+   * Constructor that takes in the cards as a Map of the card suit/color to the number of cards of
+   * that suit/color
+   * @param initialHand the initial hand of cards represented as a Map of RailCard to Integer
+   * @throws IllegalArgumentException
+   */
   public TrainsPlayerHand(Map<RailCard, Integer> initialHand) throws IllegalArgumentException {
     Objects.requireNonNull(initialHand);
     this.playerHand = new HashMap<>();
