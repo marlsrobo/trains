@@ -350,15 +350,15 @@ public class TestTrainsReferee {
     }
 
     private static void assertGameReportEquals(GameEndReport expected, GameEndReport actual) {
-        for (int ii = 0; ii < expected.playerRanking.size(); ii++) {
-            PlayerScore expectedPlayerScore = expected.playerRanking.get(ii);
-            PlayerScore actualPlayerScore = actual.playerRanking.get(ii);
+        for (int ii = 0; ii < expected.getPlayerRanking().size(); ii++) {
+            PlayerScore expectedPlayerScore = expected.getPlayerRanking().get(ii);
+            PlayerScore actualPlayerScore = actual.getPlayerRanking().get(ii);
 
-            assertEquals(expectedPlayerScore.score, actualPlayerScore.score);
-            assertEquals(expectedPlayerScore.playerName,
-                actualPlayerScore.playerName);
+            assertEquals(expectedPlayerScore.getScore(), actualPlayerScore.getScore());
+            assertEquals(expectedPlayerScore.getPlayerName(),
+                actualPlayerScore.getPlayerName());
         }
-        assertEquals(expected.removedPlayerNames, actual.removedPlayerNames);
+        assertEquals(expected.getRemovedPlayerNames(), actual.getRemovedPlayerNames());
     }
 
 }

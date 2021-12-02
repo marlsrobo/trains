@@ -175,7 +175,7 @@ public class TrainsReferee implements IReferee {
                     .add(new PlayerScore(player.getKey(), finalScoresInTurnOrder.remove(0)));
             }
         }
-        gameReportScores.sort(Comparator.comparingInt(s -> s.score * -1));
+        gameReportScores.sort(Comparator.comparingInt(s -> s.getScore() * -1));
         return new GameEndReport(gameReportScores, new HashSet<>(this.removedPlayerNames));
     }
 

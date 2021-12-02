@@ -17,12 +17,12 @@ public class GameEndReport {
     /**
      * List of players who were not removed, in descending order of their score.
      */
-    public List<PlayerScore> playerRanking;
+    private List<PlayerScore> playerRanking;
 
     /**
      * The indices of removed players.
      */
-    public Set<String> removedPlayerNames;
+    private Set<String> removedPlayerNames;
 
     /**
      * Constructs this report directly from the given data - no defensive copies are made since this
@@ -45,12 +45,12 @@ public class GameEndReport {
         /**
          * The index identifying the player.
          */
-        public String playerName;
+        private String playerName;
 
         /**
          * Score of the player.
          */
-        public int score;
+        private int score;
 
         /**
          * Constructs this from given inputs without validation.
@@ -63,10 +63,26 @@ public class GameEndReport {
             this.score = score;
         }
 
+        public String getPlayerName() {
+            return playerName;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
         @Override
         public String toString() {
             return this.playerName + " " + this.score;
         }
+    }
+
+    public List<PlayerScore> getPlayerRanking() {
+        return new ArrayList<>(this.playerRanking);
+    }
+
+    public Set<String> getRemovedPlayerNames() {
+        return new HashSet<>(this.removedPlayerNames);
     }
 
     public Set<String> getWinners() {

@@ -1,6 +1,5 @@
 package utils.json;
 
-import static harnesses.XRef.rankToJson;
 import static utils.ComparatorUtils.fromUnordered;
 
 import action.TurnAction;
@@ -16,6 +15,7 @@ import map.Destination;
 import map.ICity;
 import map.IRailConnection;
 import map.ITrainMap;
+import referee.GameEndReport;
 import tournament_manager.TournamentResult;
 import utils.ComparatorUtils;
 import utils.OrderedPair;
@@ -241,14 +241,6 @@ public class ToJsonConverter {
         return jsonPlayerGameState;
     }
 
-    private static List<RailCard> mapCardsToListCards(Map<RailCard, Integer> mapCards) {
-        List<RailCard> playerCardsList = new ArrayList<>();
-        for (Map.Entry<RailCard, Integer> cardCount : mapCards.entrySet()) {
-            playerCardsList.addAll(Collections.nCopies(cardCount.getValue(), cardCount.getKey()));
-        }
-        return playerCardsList;
-    }
-
     private static JsonArray opponentInfoToJson(List<IOpponentInfo> opponentInfo) {
         JsonArray opponentInfoJson = new JsonArray();
 
@@ -266,5 +258,52 @@ public class ToJsonConverter {
         reportJson.add(rankToJson(winners));
         reportJson.add(rankToJson(cheaters));
         return reportJson;
+    }
+
+    public static JsonArray gameReportToJson(GameEndReport report) {
+        JsonArray reportJson = new JsonArray();
+        List<List<String>> ranking = gameReportToRanking(report);
+        JsonArray rankingJson = new JsonArray();
+        for (List<String> rank : ranking) {
+            rankingJson.add(rankToJson(rank));
+        }
+
+        List<String> eliminatedPlayerNames = new ArrayList<>(report.getRemovedPlayerNames());
+        JsonArray eliminatedPlayersJson = rankToJson(eliminatedPlayerNames);
+
+        reportJson.add(rankingJson);
+        reportJson.add(eliminatedPlayersJson);
+        return reportJson;
+    }
+
+    public static List<List<String>> gameReportToRanking(GameEndReport report) {
+        List<List<String>> ranking = new ArrayList<>();
+        if (report.getPlayerRanking().size() < 1) {
+            ranking.add(new ArrayList<>());
+            return ranking;
+        }
+        List<String> playerNames = new ArrayList<>();
+        playerNames.add(report.getPlayerRanking().get(0).getPlayerName());
+        ranking.add(playerNames);
+        for (int i = 1; i < report.getPlayerRanking().size(); i++) {
+            if (report.getPlayerRanking().get(i).getScore() == report.getPlayerRanking().get(i - 1).getScore()) {
+                ranking.get(ranking.size() - 1).add(report.getPlayerRanking().get(i).getPlayerName());
+            } else {
+                List<String> rank = new ArrayList<>();
+                rank.add(report.getPlayerRanking().get(i).getPlayerName());
+                ranking.add(rank);
+            }
+        }
+        return ranking;
+    }
+
+    public static JsonArray rankToJson(List<String> rank) {
+        List<String> sortedRank = new ArrayList<>(rank);
+        Collections.sort(sortedRank);
+        JsonArray rankJson = new JsonArray();
+        for (String name : sortedRank) {
+            rankJson.add(new JsonPrimitive(name));
+        }
+        return rankJson;
     }
 }

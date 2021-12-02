@@ -28,6 +28,7 @@ import referee.IReferee;
 import referee.TrainsReferee;
 import utils.ComparatorUtils;
 import utils.json.FromJsonConverter;
+import utils.json.ToJsonConverter;
 
 public class XRef {
 
@@ -62,57 +63,11 @@ public class XRef {
 
             GameEndReport gameEndReport = ref.calculateGameEndReport();
             // Calculate and output result
-            output.println(gameReportToJson(gameEndReport));
+            output.println(ToJsonConverter.gameReportToJson(gameEndReport));
         } catch (JsonIOException | IOException ignored) {
         }
     }
 
-    public static JsonArray gameReportToJson(GameEndReport report) {
-        JsonArray reportJson = new JsonArray();
-        List<List<String>> ranking = gameReportToRanking(report);
-        JsonArray rankingJson = new JsonArray();
-        for (List<String> rank : ranking) {
-            rankingJson.add(rankToJson(rank));
-        }
-
-        List<String> eliminatedPlayerNames = new ArrayList<>(report.removedPlayerNames);
-        JsonArray eliminatedPlayersJson = rankToJson(eliminatedPlayerNames);
-
-        reportJson.add(rankingJson);
-        reportJson.add(eliminatedPlayersJson);
-        return reportJson;
-    }
-
-    public static JsonArray rankToJson(List<String> rank) {
-        List<String> sortedRank = new ArrayList<>(rank);
-        Collections.sort(sortedRank);
-        JsonArray rankJson = new JsonArray();
-        for (String name : sortedRank) {
-            rankJson.add(new JsonPrimitive(name));
-        }
-        return rankJson;
-    }
-
-    public static List<List<String>> gameReportToRanking(GameEndReport report) {
-        List<List<String>> ranking = new ArrayList<>();
-        if (report.playerRanking.size() < 1) {
-            ranking.add(new ArrayList<>());
-            return ranking;
-        }
-        List<String> playerNames = new ArrayList<>();
-        playerNames.add(report.playerRanking.get(0).playerName);
-        ranking.add(playerNames);
-        for (int i = 1; i < report.playerRanking.size(); i++) {
-            if (report.playerRanking.get(i).score == report.playerRanking.get(i - 1).score) {
-                ranking.get(ranking.size() - 1).add(report.playerRanking.get(i).playerName);
-            } else {
-                List<String> rank = new ArrayList<>();
-                rank.add(report.playerRanking.get(i).playerName);
-                ranking.add(rank);
-            }
-        }
-        return ranking;
-    }
 
     public static List<Destination> lexicographicOrderOfDestinations(ITrainMap map) {
         List<Destination> result =

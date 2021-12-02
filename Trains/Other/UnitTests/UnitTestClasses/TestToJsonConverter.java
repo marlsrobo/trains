@@ -6,8 +6,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import action.AcquireConnectionAction;
@@ -17,6 +19,7 @@ import game_state.IOpponentInfo;
 import game_state.IPlayerGameState;
 import game_state.OpponentInfo;
 import game_state.PlayerGameState;
+import game_state.RailCard;
 import map.City;
 import map.Destination;
 import map.ICity;
@@ -29,10 +32,12 @@ import map.TrainMap;
 import referee.game_state.IPlayerData;
 import referee.game_state.PlayerData;
 import referee.game_state.TrainsPlayerHand;
+import tournament_manager.TournamentResult;
 import utils.UnorderedPair;
 import utils.json.ToJsonConverter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TestToJsonConverter {
 
@@ -185,7 +190,7 @@ public class TestToJsonConverter {
   }
 
   @Test
-  public void testRailCardsToJson() {
+  public void testRailCardsToJsonArray() {
     JsonArray expected = new JsonArray();
     expected.add(new JsonPrimitive("blue"));
     expected.add(new JsonPrimitive("blue"));
@@ -199,6 +204,24 @@ public class TestToJsonConverter {
     expected.add(new JsonPrimitive("red"));
 
     assertEquals(expected, ToJsonConverter.railCardsToJsonArray(TestTrainsReferee.TenCardDeckSupplier()));
+  }
+
+  @Test
+  public void testRailCardsToJsonObject() {
+
+    Map<RailCard, Integer> cards = new HashMap<>();
+    cards.put(RailCard.BLUE, 5);
+    cards.put(RailCard.RED, 10);
+    cards.put(RailCard.GREEN, 12);
+    cards.put(RailCard.WHITE, 2);
+
+    JsonObject expected = new JsonObject();
+    expected.add("blue", new JsonPrimitive(5));
+    expected.add("red", new JsonPrimitive(10));
+    expected.add("green", new JsonPrimitive(12));
+    expected.add("white", new JsonPrimitive(2));
+
+    assertEquals(expected, ToJsonConverter.railCardsToJsonObject(cards));
   }
 
   @Test
@@ -296,11 +319,14 @@ public class TestToJsonConverter {
     washingtonNYCJson.add(new JsonPrimitive(4));
 
     JsonArray expected = new JsonArray();
-    expected.add(lincolnNYCJson);
     expected.add(bostonNYCJson);
+    expected.add(lincolnNYCJson);
     expected.add(washingtonNYCJson);
 
-    assertEquals(expected, ToJsonConverter.acquiredConnectionsToJson(acquiredConnections));
+    assertTrue(ToJsonConverter.acquiredConnectionsToJson(acquiredConnections).contains(bostonNYCJson));
+    assertTrue(ToJsonConverter.acquiredConnectionsToJson(acquiredConnections).contains(lincolnNYCJson));
+    assertTrue(ToJsonConverter.acquiredConnectionsToJson(acquiredConnections).contains(washingtonNYCJson));
+    assertEquals(3, ToJsonConverter.acquiredConnectionsToJson(acquiredConnections).size());
   }
 
   @Test
@@ -357,6 +383,21 @@ public class TestToJsonConverter {
     expected.add("acquired", opponentsConnections);
 
     assertEquals(expected, ToJsonConverter.playerGameStateToJson(gameState));
+  }
+
+  @Test
+  public void testTournamentResultToJson() {
+    Set<String> winners = new HashSet<>();
+    winners.add("Marley");
+    winners.add("Ronan");
+    winners.add("marley");
+    Set<String> cheaters = new HashSet<>();
+    cheaters.add("Bob");
+    cheaters.add("Alice");
+    TournamentResult result = new TournamentResult(winners, cheaters);
+
+    JsonArray expected = new JsonArray();
+
   }
 
 }

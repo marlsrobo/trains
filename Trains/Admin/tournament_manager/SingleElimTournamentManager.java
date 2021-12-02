@@ -273,7 +273,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
             ref.playGame();
             GameEndReport report = ref.calculateGameEndReport();
             winnerNames.addAll(report.getWinners());
-            cheaterNames.addAll(report.removedPlayerNames);
+            cheaterNames.addAll(report.getRemovedPlayerNames());
         }
         return new TournamentResult(winnerNames, cheaterNames);
     }
