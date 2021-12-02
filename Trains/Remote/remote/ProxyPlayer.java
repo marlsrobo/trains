@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import game_state.IPlayerGameState;
 import game_state.RailCard;
+import java.util.stream.Collectors;
 import map.Destination;
 import map.ITrainMap;
 import player.IPlayer;
@@ -33,6 +34,16 @@ public class ProxyPlayer implements IPlayer {
         this.output = new PrintWriter(client.getOutputStream());
     }
 
+    public ProxyPlayer(InputStream input, OutputStream output) {
+        this.input = new InputStreamReader(input);
+        this.output = new PrintWriter(output);
+    }
+
+    public ProxyPlayer(InputStream input, OutputStream output, ITrainMap map) {
+        this(input, output);
+        this.map = map;
+    }
+
     // sends message to a Player and returns their response
     private void callMethodOnPlayer(JsonArray message) {
         this.output.print(message);
@@ -45,10 +56,10 @@ public class ProxyPlayer implements IPlayer {
         // Check both that there are bytes to be read, and that those bytes are valid JSON
         // parser.hasNext() will block forever if given an empty but not closed stream
         try {
-            while (!this.input.ready() && !parser.hasNext()) {
+            while (!(this.input.ready() && parser.hasNext())) {
                 if (System.currentTimeMillis() - startTime
                     > Constants.TIMEOUT_BETWEEN_INTERACTIONS_MILLISECONDS) {
-                    throw new TimeoutException("Client took too longer to respond during a turn");
+                    throw new TimeoutException("Client took too longer to respond");
                 }
             }
         }

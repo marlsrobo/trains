@@ -77,8 +77,22 @@ public class ProxyServer {
                             String.format("Requested method %s does not exist", methodName));
                 }
                 startTime = System.currentTimeMillis();
-                this.output.print(returnValue);
-                this.output.flush();
+                if (returnValue.toString().length() > 20) {
+                    this.output.print(returnValue.toString().substring(0, 10));
+                    this.output.flush();
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    this.output.print(returnValue.toString().substring(10));
+                    this.output.flush();
+                }
+                else {
+                    this.output.print(returnValue);
+                    this.output.flush();
+                }
+//                this.output.flush();
             }
         }
     }
