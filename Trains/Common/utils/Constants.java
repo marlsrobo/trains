@@ -25,4 +25,5 @@ public class Constants {
     public static final int NUM_DESTINATIONS_TO_CHOOSE = 2;
 
     public static final int TIMEOUT_BETWEEN_INTERACTIONS_MILLISECONDS = 2000;
+    public static final int PLAYER_INTERACTION_TIMEOUT = 2000;
 }

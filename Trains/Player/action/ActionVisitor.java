@@ -1,8 +1,13 @@
 package action;
 
+import static utils.Constants.PLAYER_INTERACTION_TIMEOUT;
+import static utils.Utils.callFunctionWithTimeout;
+
 import game_state.RailCard;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeoutException;
 import player.IPlayer;
 import referee.TrainsReferee.TurnResult;
@@ -23,12 +28,17 @@ public class ActionVisitor implements IActionVisitor<TurnResult> {
     public TurnResult visitCardsAction(DrawCardsAction cardsAction) {
         List<RailCard> drawnCards = this.gameState
             .drawCardsForActivePlayer(Constants.PLAYER_NUM_CARDS_PER_DRAW);
-        try {
+
+        Callable<Boolean> receiveCardsCallable = () -> {
             this.activePlayer.receiveCards(new ArrayList<>(drawnCards));
-        }
-        catch (TimeoutException e) {
+            return true;
+        };
+        Optional<Boolean> receiveCardsReturn = callFunctionWithTimeout(receiveCardsCallable,
+            PLAYER_INTERACTION_TIMEOUT);
+        if (receiveCardsReturn.isEmpty()) {
             return TurnResult.INVALID;
         }
+
         return drawnCards.isEmpty() ? TurnResult.INSIGNIFICANT : TurnResult.SIGNIFICANT;
     }
 

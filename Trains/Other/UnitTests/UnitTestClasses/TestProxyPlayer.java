@@ -201,6 +201,7 @@ public class TestProxyPlayer {
     @Test
     public void testMalformedJsonResponse() throws TimeoutException, IOException {
         ITrainMap defaultMap = createDefaultMap();
+
         List<Destination> allDestinations = defaultDestinationProvider(defaultMap);
         Set<Destination> destinationOptions = new HashSet<>(allDestinations.subList(0, 5));
         Set<Destination> returnedDestinations = new HashSet<>(allDestinations.subList(0, 3));
