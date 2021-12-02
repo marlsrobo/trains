@@ -188,7 +188,7 @@ public class ToJsonConverter {
      * @param railConnection The IRailConnection to convert.
      * @return The JSON representation of the IRailConnection.
      */
-    public static JsonElement railConnectionToJSON(IRailConnection railConnection) {
+    public static JsonArray railConnectionToJSON(IRailConnection railConnection) {
         JsonArray acquired = new JsonArray();
 
         OrderedPair<ICity> orderedCities = fromUnordered(railConnection.getCities());
@@ -207,7 +207,7 @@ public class ToJsonConverter {
      * @param acquiredConnections The Set of IRailConnections to convert.
      * @return The JSON representation of the Set of IRailConnections.
      */
-    public static JsonElement acquiredConnectionsToJson(Set<IRailConnection> acquiredConnections) {
+    public static JsonArray acquiredConnectionsToJson(Set<IRailConnection> acquiredConnections) {
         JsonArray acquireds = new JsonArray();
         for (IRailConnection connection : acquiredConnections) {
             acquireds.add(railConnectionToJSON(connection));
@@ -215,7 +215,7 @@ public class ToJsonConverter {
         return acquireds;
     }
 
-    public static JsonElement playerGameStateToJson(IPlayerGameState gameState) {
+    public static JsonObject playerGameStateToJson(IPlayerGameState gameState) {
         JsonObject jsonPlayerState = new JsonObject();
         Set<Destination> chosenDestinations = gameState.getDestinations();
         Iterator<Destination> iterator = chosenDestinations.iterator();
@@ -241,7 +241,7 @@ public class ToJsonConverter {
         return playerCardsList;
     }
 
-    private static JsonElement opponentInfoToJson(List<IOpponentInfo> opponentInfo) {
+    private static JsonArray opponentInfoToJson(List<IOpponentInfo> opponentInfo) {
         JsonArray opponentInfoJson = new JsonArray();
 
         for (IOpponentInfo oneOpponentInfo : opponentInfo) {

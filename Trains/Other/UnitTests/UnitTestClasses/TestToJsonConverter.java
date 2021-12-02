@@ -5,13 +5,17 @@ import com.google.gson.JsonPrimitive;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import action.AcquireConnectionAction;
 import action.DrawCardsAction;
 import action.TurnAction;
+import game_state.IOpponentInfo;
 import game_state.IPlayerGameState;
+import game_state.OpponentInfo;
 import game_state.PlayerGameState;
 import map.City;
 import map.Destination;
@@ -24,6 +28,7 @@ import map.RailConnection;
 import map.TrainMap;
 import referee.game_state.IPlayerData;
 import referee.game_state.PlayerData;
+import referee.game_state.TrainsPlayerHand;
 import utils.UnorderedPair;
 import utils.json.ToJsonConverter;
 
@@ -300,11 +305,58 @@ public class TestToJsonConverter {
 
   @Test
   public void testPlayerGameStateToJson() {
-    IPlayerData playerData = new PlayerData(TestTrainsReferee.TenCardDeckSupplier(),
-            10, )
+    Destination lincolnWashington = new Destination(new UnorderedPair<ICity>(lincoln, washington));
+    Destination texasChicago = new Destination(texas, chicago);
 
-    IPlayerGameState gameState = new PlayerGameState()
+    Set<Destination> destinations = new HashSet<>();
+    destinations.add(lincolnWashington);
+    destinations.add(texasChicago);
 
+    Set<IRailConnection> acquiredConnections = new HashSet<>();
+    acquiredConnections.add(texasNYC);
+    acquiredConnections.add(bostonLincoln);
+
+    IPlayerData playerData = new PlayerData(new TrainsPlayerHand(TestTrainsReferee.TenCardDeckSupplier()),
+            10, destinations, acquiredConnections);
+
+    List<IOpponentInfo> opponentInfo = new ArrayList<>();
+
+    Set<IRailConnection> opponent1Connections = new HashSet<>();
+    opponent1Connections.add(bostonNYC);
+    IOpponentInfo opponent1 = new OpponentInfo(opponent1Connections);
+    opponentInfo.add(opponent1);
+
+    Set<IRailConnection> opponent2Connections = new HashSet<>();
+    opponent2Connections.add(washingtonNYC);
+    IOpponentInfo opponent2 = new OpponentInfo(opponent2Connections);
+    opponentInfo.add(opponent2);
+
+    IPlayerGameState gameState = new PlayerGameState(playerData, opponentInfo);
+
+    JsonObject expected = new JsonObject();
+
+    JsonObject thisObject = new JsonObject();
+
+    JsonArray destination1 = ToJsonConverter.destinationToJson(lincolnWashington);
+    JsonArray destination2 = ToJsonConverter.destinationToJson(texasChicago);
+
+    thisObject.add("destination1", destination1);
+    thisObject.add("destination2", destination2);
+    thisObject.add("rails", new JsonPrimitive(10));
+    thisObject.add("cards", ToJsonConverter.railCardsToJson(TestTrainsReferee.TenCardDeckSupplier()));
+    thisObject.add("acquired", ToJsonConverter.acquiredConnectionsToJson(acquiredConnections));
+
+    expected.add("this", thisObject);
+
+    JsonArray opponentsConnections = new JsonArray();
+    JsonArray opponent1Array = ToJsonConverter.acquiredConnectionsToJson(opponent1Connections);
+    JsonArray opponent2Array = ToJsonConverter.acquiredConnectionsToJson(opponent2Connections);
+    opponentsConnections.add(opponent1Array);
+    opponentsConnections.add(opponent2Array);
+
+    expected.add("acquired", opponentsConnections);
+
+    assertEquals(expected, ToJsonConverter.playerGameStateToJson(gameState));
   }
 
 }
