@@ -1,7 +1,5 @@
 package harnesses;
 
-import static harnesses.XManager.playerArrayToMap;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonStreamParser;
@@ -9,9 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.Reader;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import map.ITrainMap;
 import org.apache.commons.math3.util.Pair;
 import player.IPlayer;

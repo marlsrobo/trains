@@ -1,11 +1,14 @@
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static test_utils.TrainsMapUtils.createDefaultMap;
 import static test_utils.TrainsMapUtils.defaultDestinationProvider;
 
 import action.AcquireConnectionAction;
 import action.DrawCardsAction;
 import action.TurnAction;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.stream.MalformedJsonException;
 import game_state.IPlayerGameState;
 import game_state.OpponentInfo;
 import game_state.PlayerGameState;
@@ -199,7 +202,7 @@ public class TestProxyPlayer {
     }
 
     @Test
-    public void testMalformedJsonResponse() throws TimeoutException, IOException {
+    public void testMalformedJsonResponse() {
         ITrainMap defaultMap = createDefaultMap();
 
         List<Destination> allDestinations = defaultDestinationProvider(defaultMap);
@@ -207,18 +210,30 @@ public class TestProxyPlayer {
         Set<Destination> returnedDestinations = new HashSet<>(allDestinations.subList(0, 3));
 
         // only give the first 50 characters as input
-        String input = "";//ToJsonConverter.destinationsToJson(returnedDestinations).toString()
-            //.substring(0, 50);
-        String destinationOptionsString = ToJsonConverter.destinationsToJson(destinationOptions)
-            .toString();
-        String expectedOutput = String.format("[\"pick\",[%s]]", destinationOptionsString);
+        String input = ToJsonConverter.destinationsToJson(returnedDestinations).toString()
+            .substring(0, 50);
 
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         OutputStream outputStream = new ByteArrayOutputStream();
         ProxyPlayer player = new ProxyPlayer(inputStream, outputStream, defaultMap);
-        Set<Destination> actualReturnedDestinations = player.chooseDestinations(destinationOptions);
+        assertThrows(JsonSyntaxException.class,
+            () -> player.chooseDestinations(destinationOptions));
+    }
 
-        assertEquals(expectedOutput, outputStream.toString());
-        assertEquals(returnedDestinations, actualReturnedDestinations);
+    @Test
+    public void testNoJsonResponse() {
+        ITrainMap defaultMap = createDefaultMap();
+
+        List<Destination> allDestinations = defaultDestinationProvider(defaultMap);
+        Set<Destination> destinationOptions = new HashSet<>(allDestinations.subList(0, 5));
+
+        // only give the first 50 characters as input
+        String input = "";
+
+        InputStream inputStream = new ByteArrayInputStream(input.getBytes());
+        OutputStream outputStream = new ByteArrayOutputStream();
+        ProxyPlayer player = new ProxyPlayer(inputStream, outputStream, defaultMap);
+        assertThrows(TimeoutException.class,
+            () -> player.chooseDestinations(destinationOptions));
     }
 }

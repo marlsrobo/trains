@@ -24,7 +24,7 @@ import utils.json.ToJsonConverter;
 
 public class ProxyServer {
 
-    private static final int DISCONNECT_TIMEOUT_MILLIS = 45000000;
+    private static final int DISCONNECT_TIMEOUT_MILLIS = 300000;
 
     private final Reader input;
     private final PrintWriter output;
@@ -42,45 +42,47 @@ public class ProxyServer {
         JsonStreamParser parser = new JsonStreamParser(this.input);
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < DISCONNECT_TIMEOUT_MILLIS) {
-            // Check both that there are bytes to be read, and that those bytes are valid JSON
-            // parser.hasNext() will block forever if given an empty but not closed stream
-            if (this.input.ready() && parser.hasNext()) {
-                JsonArray methodInfo = parser.next().getAsJsonArray();
-                String methodName = methodInfo.get(0).getAsString();
-
-                JsonArray args = methodInfo.get(1).getAsJsonArray();
-                JsonElement returnValue;
-                switch (methodName) {
-                    case "start":
-                        returnValue = parseAndRunStart(args);
-                        break;
-                    case "setup":
-                        returnValue = parseAndRunSetup(args);
-                        break;
-                    case "pick":
-                        returnValue = parseAndRunPick(args);
-                        break;
-                    case "play":
-                        returnValue = parseAndRunPlay(args);
-                        break;
-                    case "more":
-                        returnValue = parseAndRunMore(args);
-                        break;
-                    case "win":
-                        returnValue = parseAndRunWin(args);
-                        break;
-                    case "end":
-                        returnValue = parseAndRunEnd(args);
-                        break;
-                    default:
-                        throw new IllegalArgumentException(
-                            String.format("Requested method %s does not exist", methodName));
-                }
-                startTime = System.currentTimeMillis();
-
-                this.output.print(returnValue);
-                this.output.flush();
+            JsonArray methodInfo;
+            try {
+                methodInfo = parser.next().getAsJsonArray();
             }
+            catch (Exception e) {
+                return;
+            }
+            String methodName = methodInfo.get(0).getAsString();
+
+            JsonArray args = methodInfo.get(1).getAsJsonArray();
+            JsonElement returnValue;
+            switch (methodName) {
+                case "start":
+                    returnValue = parseAndRunStart(args);
+                    break;
+                case "setup":
+                    returnValue = parseAndRunSetup(args);
+                    break;
+                case "pick":
+                    returnValue = parseAndRunPick(args);
+                    break;
+                case "play":
+                    returnValue = parseAndRunPlay(args);
+                    break;
+                case "more":
+                    returnValue = parseAndRunMore(args);
+                    break;
+                case "win":
+                    returnValue = parseAndRunWin(args);
+                    break;
+                case "end":
+                    returnValue = parseAndRunEnd(args);
+                    break;
+                default:
+                    throw new IllegalArgumentException(
+                        String.format("Requested method %s does not exist", methodName));
+            }
+            startTime = System.currentTimeMillis();
+
+            this.output.print(returnValue);
+            this.output.flush();
         }
     }
 
