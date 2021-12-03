@@ -350,7 +350,7 @@ public class FromJsonConverter {
         try {
             List<IOpponentInfo> opponentConnections = new ArrayList<>();
             for (JsonElement player : opponentJson.getAsJsonArray()) {
-                opponentConnections.add(new OpponentInfo(occupiedConnectionForPlayer(player)));
+                opponentConnections.add(new OpponentInfo(occupiedConnectionsForPlayer(player)));
             }
             return opponentConnections;
         }
@@ -507,7 +507,7 @@ public class FromJsonConverter {
     public static Set<IRailConnection> occupiedConnectionsFromJson(JsonObject playerStateJson) {
         try {
             return new HashSet<>(
-                occupiedConnectionForPlayer(
+                occupiedConnectionsForPlayer(
                     playerStateJson.getAsJsonObject("this").get("acquired").getAsJsonArray()));
         }
         catch (Exception e) {
@@ -525,7 +525,7 @@ public class FromJsonConverter {
      * @param player The connections occupied by a player as Json.
      * @return The connections occupied by a player as a set.
      */
-    public static Set<IRailConnection> occupiedConnectionForPlayer(JsonElement player) {
+    public static Set<IRailConnection> occupiedConnectionsForPlayer(JsonElement player) {
         try {
             Set<IRailConnection> occupiedConnections = new HashSet<>();
             for (JsonElement connection : player.getAsJsonArray()) {

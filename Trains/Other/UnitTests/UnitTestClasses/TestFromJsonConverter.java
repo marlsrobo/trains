@@ -47,6 +47,7 @@ public class TestFromJsonConverter {
   ICity washington;
   ICity texas;
   ICity lincoln;
+  ICity sydney;
 
   IRailConnection bostonNYC;
   IRailConnection bostonNYC2;
@@ -69,6 +70,7 @@ public class TestFromJsonConverter {
     washington = new City("washington", 0, 0);
     texas = new City("texas", 0, 0);
     lincoln = new City("lincoln", 0, 0);
+    sydney = new City("sydney", 1, 1);
     cities = new HashSet<>();
     cities.add(boston);
     cities.add(nyc);
@@ -76,6 +78,7 @@ public class TestFromJsonConverter {
     cities.add(washington);
     cities.add(texas);
     cities.add(lincoln);
+    cities.add(sydney);
 
     bostonNYC = new RailConnection(new UnorderedPair<>(boston, nyc), 3,
             RailColor.BLUE);
@@ -254,21 +257,156 @@ public class TestFromJsonConverter {
 
   private boolean samePlayerGameState(IPlayerGameState gameState1, IPlayerGameState gameState2) {
     boolean sameCards = gameState1.getCardsInHand().equals(gameState2.getCardsInHand());
-    System.out.println("1 cards: " + gameState1.getCardsInHand().toString());
-    System.out.println("2 cards: " + gameState2.getCardsInHand().toString());
     boolean sameDestinations = gameState1.getDestinations().equals(gameState2.getDestinations());
-    System.out.println("1 destinations: " + gameState1.getDestinations().toString());
-    System.out.println("2 destinations: " + gameState2.getDestinations().toString());
     boolean sameRails = gameState1.getNumRails() == gameState2.getNumRails();
-    System.out.println("1 rails: " + gameState1.getNumRails());
-    System.out.println("2 rails: " + gameState2.getNumRails());
     boolean sameOwnedConnections = gameState1.getOwnedConnections().equals(gameState2.getOwnedConnections());
-    System.out.println("1 connections: " + gameState1.getOwnedConnections().toString());
-    System.out.println("2 connections: " + gameState2.getOwnedConnections().toString());
     boolean sameOpponentInfo = gameState1.getOpponentInfo().equals(gameState2.getOpponentInfo());
-    System.out.println("1 opponent info: " + gameState1.getOpponentInfo().toString());
-    System.out.println("2 opponent info: " + gameState2.getOpponentInfo().toString());
     return sameCards && sameDestinations && sameRails && sameOwnedConnections && sameOpponentInfo;
+  }
+
+  @Test
+  public void testOpponentConnectionsFromJsonValidJson() {
+    JsonArray opponents = new JsonArray();
+
+    JsonArray opponent1 = new JsonArray();
+    JsonArray opponent1Acquired1 = new JsonArray();
+    opponent1Acquired1.add("Boston");
+    opponent1Acquired1.add("NYC");
+    opponent1Acquired1.add("blue");
+    opponent1Acquired1.add(new JsonPrimitive(3));
+
+    JsonArray opponent1Acquired2 = new JsonArray();
+    opponent1Acquired2.add("lincoln");
+    opponent1Acquired2.add("texas");
+    opponent1Acquired2.add("red");
+    opponent1Acquired2.add(new JsonPrimitive(3));
+
+    opponent1.add(opponent1Acquired1);
+    opponent1.add(opponent1Acquired2);
+
+    opponents.add(opponent1);
+
+    JsonArray opponent2 = new JsonArray();
+    JsonArray opponent2Acquired1 = new JsonArray();
+    opponent2Acquired1.add("NYC");
+    opponent2Acquired1.add("washington");
+    opponent2Acquired1.add("white");
+    opponent2Acquired1.add(new JsonPrimitive(4));
+    opponent2.add(opponent2Acquired1);
+    opponents.add(opponent2);
+
+    List<IOpponentInfo> expected = new ArrayList<>();
+    Set<IRailConnection> opponent1Connections = new HashSet<>();
+    opponent1Connections.add(bostonNYC);
+    opponent1Connections.add(lincolnTexas);
+
+    Set<IRailConnection> opponent2Connections = new HashSet<>();
+    opponent2Connections.add(washingtonNYC);
+
+    expected.add(new OpponentInfo(opponent1Connections));
+    expected.add(new OpponentInfo(opponent2Connections));
+
+    assertEquals(expected, FromJsonConverter.opponentConnectionsFromJson(opponents));
+  }
+
+  @Test
+  public void testSelectedDestinationsFromPlayerStateValidJson() {
+
+    Destination lincolnWashington = new Destination(new UnorderedPair<ICity>(lincoln, washington));
+    Destination texasChicago = new Destination(texas, chicago);
+
+    Set<Destination> destinations = new HashSet<>();
+    destinations.add(lincolnWashington);
+    destinations.add(texasChicago);
+
+    Set<IRailConnection> acquiredConnections = new HashSet<>();
+    acquiredConnections.add(texasNYC);
+    acquiredConnections.add(bostonLincoln);
+
+    IPlayerData playerData = new PlayerData(new TrainsPlayerHand(TestTrainsReferee.TenCardDeckSupplier()),
+            10, destinations, acquiredConnections);
+
+    List<IOpponentInfo> opponentInfo = new ArrayList<>();
+
+    Set<IRailConnection> opponent1Connections = new HashSet<>();
+    opponent1Connections.add(bostonNYC);
+    IOpponentInfo opponent1 = new OpponentInfo(opponent1Connections);
+    opponentInfo.add(opponent1);
+
+    Set<IRailConnection> opponent2Connections = new HashSet<>();
+    opponent2Connections.add(washingtonNYC);
+    IOpponentInfo opponent2 = new OpponentInfo(opponent2Connections);
+    opponentInfo.add(opponent2);
+
+    IPlayerGameState gameState = new PlayerGameState(playerData, opponentInfo);
+
+    JsonObject jsonPlayerState = ToJsonConverter.playerGameStateToJson(gameState);
+    JsonObject jsonPlayerData = jsonPlayerState.getAsJsonObject("this");
+
+    assertEquals(destinations, FromJsonConverter.selectedDestinationsFromPlayerState(jsonPlayerData, this.map));
+  }
+
+  @Test
+  public void testConvertDestinationNamesToDestinationsValid() {
+    Destination lincolnWashington = new Destination(new UnorderedPair<ICity>(lincoln, washington));
+    Destination texasChicago = new Destination(texas, chicago);
+    Set<Destination> destinations = new HashSet<>();
+    destinations.add(lincolnWashington);
+    destinations.add(texasChicago);
+
+    Set<UnorderedPair<String>> destinationNames = new HashSet<>();
+    destinationNames.add(new UnorderedPair<>("lincoln", "washington"));
+    destinationNames.add(new UnorderedPair<>("texas", "chicago"));
+
+    assertEquals(destinations, FromJsonConverter.convertDestinationNamesToDestinations(destinationNames, this.map));
+  }
+
+  @Test
+  public void testConvertDestinationNamesToDestinationsInvalid() {
+    Set<UnorderedPair<String>> destinationNames = new HashSet<>();
+    destinationNames.add(new UnorderedPair<>("lincoln", "sydney"));
+    destinationNames.add(new UnorderedPair<>("texas", "chicago"));
+
+    assertThrows(IllegalArgumentException.class,
+            () -> FromJsonConverter.convertDestinationNamesToDestinations(destinationNames, this.map));
+  }
+
+  @Test
+  public void testConvertDestinationNamesToDestinationValid() {
+    Destination texasChicago = new Destination(texas, chicago);
+    UnorderedPair<String> destinationNames = new UnorderedPair<>("texas", "chicago");
+    assertEquals(texasChicago, FromJsonConverter.convertDestinationNamesToDestination(destinationNames, this.map));
+  }
+
+  @Test
+  public void testConvertDestinationNamesToDestinationInValid() {
+    UnorderedPair<String> destinationNames = new UnorderedPair<>("texas", "sydney");
+    assertThrows(IllegalArgumentException.class,
+            () -> FromJsonConverter.convertDestinationNamesToDestination(destinationNames, this.map));
+  }
+
+  @Test
+  public void testOccupiedConnectionForPlayer() {
+    JsonArray opponent1 = new JsonArray();
+    JsonArray opponent1Acquired1 = new JsonArray();
+    opponent1Acquired1.add("Boston");
+    opponent1Acquired1.add("NYC");
+    opponent1Acquired1.add("blue");
+    opponent1Acquired1.add(new JsonPrimitive(3));
+    opponent1.add(opponent1Acquired1);
+
+    JsonArray opponent1Acquired2 = new JsonArray();
+    opponent1Acquired2.add("lincoln");
+    opponent1Acquired2.add("texas");
+    opponent1Acquired2.add("red");
+    opponent1Acquired2.add(new JsonPrimitive(3));
+    opponent1.add(opponent1Acquired2);
+
+    Set<IRailConnection> opponent1Connections = new HashSet<>();
+    opponent1Connections.add(bostonNYC);
+    opponent1Connections.add(lincolnTexas);
+
+    assertEquals(opponent1Connections, FromJsonConverter.occupiedConnectionsForPlayer(opponent1));
   }
 
 }
