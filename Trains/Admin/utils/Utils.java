@@ -2,27 +2,23 @@ package utils;
 
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 public class Utils {
 
-    public static <T> Optional<T> callFunctionWithTimeout(Callable<T> function, long timeoutMillis) {
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Future<T> future = executor.submit(function);
-
-        T returnValue = null;
+    /**
+     * Call a function, and return its return value. If the method throws an exception or returns
+     * null, this method will return an empty optional.
+     *
+     * @param function The function to call.
+     * @param <T>      The return type of the function.
+     * @return The value that the function returned, or empty if it threw an exception or returned
+     * null.
+     */
+    public static <T> Optional<T> callFunction(Callable<T> function) {
         try {
-             returnValue = future.get(timeoutMillis, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException | ExecutionException | TimeoutException e) {
-            future.cancel(true);
+            return Optional.ofNullable(function.call());
+        } catch (Exception e) {
+            return Optional.empty();
         }
-
-        executor.shutdownNow();
-        return Optional.ofNullable(returnValue);
     }
 }

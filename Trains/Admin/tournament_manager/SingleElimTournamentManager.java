@@ -2,7 +2,7 @@ package tournament_manager;
 
 import static tournament_manager.PlayerAllocator.allocatePlayersToGames;
 import static utils.Constants.PLAYER_INTERACTION_TIMEOUT;
-import static utils.Utils.callFunctionWithTimeout;
+import static utils.Utils.callFunction;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -211,8 +210,7 @@ public class SingleElimTournamentManager implements ITournamentManager {
             Callable<ITrainMap> startTournamentCallable = () -> player.getValue()
                 .startTournament(true);
 
-            Optional<ITrainMap> map = callFunctionWithTimeout(startTournamentCallable,
-                PLAYER_INTERACTION_TIMEOUT);
+            Optional<ITrainMap> map = callFunction(startTournamentCallable);
             if (map.isPresent()) {
                 submittedMaps.add(map.get());
             }
@@ -293,7 +291,9 @@ public class SingleElimTournamentManager implements ITournamentManager {
                 player.getValue().resultOfTournament(result.getWinners().contains(player.getKey()));
                 return true;
             };
-            callFunctionWithTimeout(resultOfTournamentCallable, PLAYER_INTERACTION_TIMEOUT);
+            if (!this.cheaters.contains(player.getKey())) {
+                callFunction(resultOfTournamentCallable);
+            }
         }
     }
 }

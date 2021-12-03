@@ -1,12 +1,11 @@
 package referee;
 
 import static utils.Constants.PLAYER_INTERACTION_TIMEOUT;
-import static utils.Utils.callFunctionWithTimeout;
+import static utils.Utils.callFunction;
 
 import com.google.common.collect.Iterables;
 import game_state.RailCard;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -197,7 +196,7 @@ public class TrainsReferee implements IReferee {
                 return true;
             };
             if (!this.removedPlayerNames.contains(playerRanking.get(finalI).getPlayerName())) {
-                callFunctionWithTimeout(reportWinnerCallable, PLAYER_INTERACTION_TIMEOUT);
+                callFunction(reportWinnerCallable);
             }
         }
     }
@@ -219,8 +218,7 @@ public class TrainsReferee implements IReferee {
         IPlayer player = activePlayer.getValue();
         Callable<TurnAction> takeTurnCallable = () -> player
             .takeTurn(this.refereeGameState.getActivePlayerState());
-        Optional<TurnAction> returnedTurn = callFunctionWithTimeout(takeTurnCallable,
-            PLAYER_INTERACTION_TIMEOUT);
+        Optional<TurnAction> returnedTurn = callFunction(takeTurnCallable);
         if (returnedTurn.isEmpty()) {
             this.removePlayer(activePlayer.getKey(), turnOrder);
             return true;
@@ -307,17 +305,15 @@ public class TrainsReferee implements IReferee {
                 .setup(map, Constants.PLAYER_NUM_RAILS_START, new ArrayList<>(playerStartingHand));
             return true;
         };
-        Optional<Boolean> setupReturn = callFunctionWithTimeout(setupCallable,
-            PLAYER_INTERACTION_TIMEOUT);
+        Optional<Boolean> setupReturn = callFunction(setupCallable);
         if (setupReturn.isEmpty()) {
             return Optional.empty();
         }
 
         Callable<Set<Destination>> chooseDestinationsCallable = () -> player
             .chooseDestinations(new HashSet<>(playerDestinationOptions));
-        Optional<Set<Destination>> notChosenDestinationsReturn = callFunctionWithTimeout(
-            chooseDestinationsCallable,
-            PLAYER_INTERACTION_TIMEOUT);
+        Optional<Set<Destination>> notChosenDestinationsReturn = callFunction(
+            chooseDestinationsCallable);
         if (notChosenDestinationsReturn.isEmpty()) {
             return Optional.empty();
         }

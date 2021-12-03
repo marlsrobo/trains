@@ -207,8 +207,8 @@ public class TestProxyPlayer {
         Set<Destination> returnedDestinations = new HashSet<>(allDestinations.subList(0, 3));
 
         // only give the first 50 characters as input
-        String input = ToJsonConverter.destinationsToJson(returnedDestinations).toString()
-            .substring(0, 50);
+        String input = "";//ToJsonConverter.destinationsToJson(returnedDestinations).toString()
+            //.substring(0, 50);
         String destinationOptionsString = ToJsonConverter.destinationsToJson(destinationOptions)
             .toString();
         String expectedOutput = String.format("[\"pick\",[%s]]", destinationOptionsString);
