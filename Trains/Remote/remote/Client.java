@@ -7,6 +7,10 @@ import java.net.Socket;
 import java.util.concurrent.TimeoutException;
 import player.IPlayer;
 
+/**
+ * Runs one client for a remote game of Trains. It first connects to the server on the specified
+ * host and port, sends its given name, and then waits for commands from the server.
+ */
 public class Client implements Runnable {
 
     private final String serverHost;
@@ -21,6 +25,16 @@ public class Client implements Runnable {
         this.player = player;
     }
 
+    /**
+     * Runs the client according to the inputs to its constructor.
+     *
+     * Follows this order:
+     * 1. Connect to the server
+     * 2. Send its name to the server
+     * 3. wait for commands from the server
+     *
+     * This will eventually timeout after not hearing from the server for a certain amount of time.
+     */
     @Override
     public void run() {
         try {

@@ -22,6 +22,9 @@ import utils.UnorderedPair;
 import utils.json.FromJsonConverter;
 import utils.json.ToJsonConverter;
 
+/**
+ * Remote proxy object for a server that runs tournaments of the game Trains.
+ */
 public class ProxyServer {
 
     private static final int DISCONNECT_TIMEOUT_MILLIS = 300000;
@@ -38,15 +41,21 @@ public class ProxyServer {
         this.player = player;
     }
 
-    public void run() throws TimeoutException, IOException {
+    /**
+     * Waits for commands from the server over the given socket. When a command is received, it is
+     * parsed in to a method call on the underlying IPlayer, and the executed.
+     * <p>
+     * This method terminates when the server closes the socket, or if no commands from the server
+     * are received for DISCONNECT_TIMEOUT_MILLIS milliseconds.
+     */
+    public void run() throws TimeoutException {
         JsonStreamParser parser = new JsonStreamParser(this.input);
         long startTime = System.currentTimeMillis();
         while (System.currentTimeMillis() - startTime < DISCONNECT_TIMEOUT_MILLIS) {
             JsonArray methodInfo;
             try {
                 methodInfo = parser.next().getAsJsonArray();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 return;
             }
             String methodName = methodInfo.get(0).getAsString();
@@ -86,6 +95,13 @@ public class ProxyServer {
         }
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the start method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the start method as Json.
+     * @return The return value of start, converted into Json.
+     */
     private JsonElement parseAndRunStart(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of argument given for start");
@@ -102,6 +118,13 @@ public class ProxyServer {
         return ToJsonConverter.mapToJson(map);
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the setup method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the setup method as Json.
+     * @return The return value of setup, converted into Json.
+     */
     private JsonElement parseAndRunSetup(JsonArray args) throws TimeoutException {
         if (args.size() != 3) {
             throw new IllegalArgumentException("Incorrect number of arguments given for setup");
@@ -123,6 +146,13 @@ public class ProxyServer {
         return new JsonPrimitive("void");
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the pick method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the pick method as Json.
+     * @return The return value of pick, converted into Json.
+     */
     private JsonElement parseAndRunPick(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for pick");
@@ -142,6 +172,13 @@ public class ProxyServer {
         return ToJsonConverter.destinationsToJson(returnedDestinations);
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the play method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the play method as Json.
+     * @return The return value of play, converted into Json.
+     */
     private JsonElement parseAndRunPlay(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for play");
@@ -158,6 +195,13 @@ public class ProxyServer {
         return ToJsonConverter.turnActionToJSON(action);
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the more method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the more method as Json.
+     * @return The return value of more, converted into Json.
+     */
     private JsonElement parseAndRunMore(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for more");
@@ -174,6 +218,13 @@ public class ProxyServer {
         return new JsonPrimitive("void");
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the win method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the win method as Json.
+     * @return The return value of win, converted into Json.
+     */
     private JsonElement parseAndRunWin(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for win");
@@ -190,6 +241,13 @@ public class ProxyServer {
         return new JsonPrimitive("void");
     }
 
+    /**
+     * Parses the given JsonArray as the arguments to the end method, and then calls it on the
+     * underlying player.
+     *
+     * @param args The arguments to the end method as Json.
+     * @return The return value of end, converted into Json.
+     */
     private JsonElement parseAndRunEnd(JsonArray args) throws TimeoutException {
         if (args.size() != 1) {
             throw new IllegalArgumentException("Incorrect number of arguments given for end");

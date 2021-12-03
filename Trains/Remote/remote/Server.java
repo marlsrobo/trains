@@ -3,8 +3,9 @@ package remote;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import game_state.RailCard;
-import java.io.BufferedReader;
+import java.io.CharArrayReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -26,6 +27,9 @@ import tournament_manager.SingleElimTournamentManager;
 import tournament_manager.TournamentResult;
 import utils.SynchronizedCounter;
 
+/**
+ * A server that will run a tournament of games of Trains.
+ */
 public class Server {
 
     private static final int NAME_TIMEOUT_MILLIS = 3000;
@@ -130,6 +134,20 @@ public class Server {
         this.mapSelector = mapSelector;
     }
 
+    /**
+     * Runs the tournament.
+     *
+     * Sets up the tournament according to the following steps:
+     * 1. accept sign ups for 20 seconds
+     * 2. if fewer than MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_1 have signed up, wait another 20 seconds
+     * 3. if fewer than MIN_CONNECTIONS_FOR_TOURNAMENT_ROUND_2 have signed up, cancel the tournament
+     * 4. run the tournament with all signed up players
+     *
+     * If at any point during the two waiting periods MAX_CONNECTIONS_FOR_TOURNAMENT have signed up,
+     * the tournament will start immediately.
+     *
+     * @return The result of the tournament, or an empty result if it was cancelled
+     */
     public TournamentResult run() throws IOException, InterruptedException {
         ServerSocket serverSocket = new ServerSocket(this.port);
         serverSocket.setSoTimeout(ONE_CONNECTION_WAITING_TIMEOUT_MILLIS);
@@ -159,6 +177,15 @@ public class Server {
         return manager.runTournament(players);
     }
 
+    /**
+     * Parses all of the threads responsible for signing up players for the names of the players
+     * who successfully signed up.
+     *
+     * @param signedUpPlayerHandlers The handlers for all players that connected to the server.
+     * @param signedUpPlayerThreads The threads that ran the handlers for all players that connected
+     *                             to the server
+     * @return A map of all players that signed up successfully.
+     */
     private static LinkedHashMap<String, IPlayer> getSignedUpPlayers(
         List<ClientHandler> signedUpPlayerHandlers,
         List<Thread> signedUpPlayerThreads
@@ -188,6 +215,16 @@ public class Server {
         return players;
     }
 
+    /**
+     * Waits PLAYERS_CONNECTION_WAITING_TIMEOUT_MILLIS for players to connect to the server. All
+     * incoming connections are dispatched to ClientHandlers to finish signing up. If at any point
+     * MAX_CONNECTIONS_FOR_TOURNAMENT players have signed up, return immediately.
+     *
+     * @param serverSocket The socket to accept connections on.
+     * @param signedUpPlayerHandlers All handlers that are signing up players.
+     * @param signedUpPlayerThreads All threads running handlers that are singing up players
+     * @param counter The thread safe count of all players that have finished signing up.
+     */
     private static void waitForPlayers(ServerSocket serverSocket,
         List<ClientHandler> signedUpPlayerHandlers,
         List<Thread> signedUpPlayerThreads,
@@ -211,26 +248,39 @@ public class Server {
         }
     }
 
-    private static class ClientHandler implements Runnable {
+    /**
+     * Handles completing the sign-up of a player after they have connected to the server.
+     */
+    public static class ClientHandler implements Runnable {
 
         private final Socket clientSocket;
+        private final InputStream input;
         private volatile String name;
         private volatile boolean respondedInTime = false;
         private SynchronizedCounter counter;
 
-        public ClientHandler(Socket clientSocket, SynchronizedCounter counter) {
+        public ClientHandler(Socket clientSocket, SynchronizedCounter counter) throws IOException {
             this.clientSocket = clientSocket;
+            this.input = clientSocket.getInputStream();
+            this.counter = counter;
+        }
+
+        public ClientHandler(InputStream in, SynchronizedCounter counter) {
+            this.clientSocket = null;
+            this.input = in;
             this.counter = counter;
         }
 
         @Override
         public void run() {
-            try {
-                JsonStreamParser parser = new JsonStreamParser(
-                    new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream())));
-                long startTime = System.currentTimeMillis();
-                while (System.currentTimeMillis() - startTime < NAME_TIMEOUT_MILLIS) {
-                    if (parser.hasNext()) {
+            InputStreamReader inputStreamReader = new InputStreamReader(this.input);
+            long startTime = System.currentTimeMillis();
+            while (System.currentTimeMillis() - startTime < NAME_TIMEOUT_MILLIS) {
+                try {
+                    if (inputStreamReader.ready()) {
+                        char[] buff = new char[51];
+                        inputStreamReader.read(buff);
+                        JsonStreamParser parser = new JsonStreamParser(new CharArrayReader(buff));
                         JsonElement jsonName = parser.next();
                         if (validateName(jsonName)) {
                             this.name = jsonName.getAsString();
@@ -239,9 +289,9 @@ public class Server {
                             return;
                         }
                     }
+                } catch (Exception e) {
+                    return;
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
         }
 

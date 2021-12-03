@@ -23,6 +23,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
+/**
+ * Remote proxy for a player in a game of Trains.
+ */
 public class ProxyPlayer implements IPlayer {
 
     private final Reader input;
@@ -45,12 +48,23 @@ public class ProxyPlayer implements IPlayer {
         this.map = map;
     }
 
-    // sends message to a Player and returns their response
+    /**
+     * Sends the given message to the underlying remote player.
+     *
+     * @param message The Json message to send.
+     */
     private void callMethodOnPlayer(JsonArray message) {
         this.output.print(message);
         this.output.flush();
     }
 
+    /**
+     * Wait up to TIMEOUT_BETWEEN_INTERACTIONS_MILLISECONDS for the underlying remote player to
+     * send a message. Returns that message or throws a TimeoutException.
+     *
+     * @return The message sent by the remote player.
+     * @throws TimeoutException if no message is received.
+     */
     private JsonElement getMessageFromPlayer() throws TimeoutException {
         long startTime = System.currentTimeMillis();
         try {
@@ -241,7 +255,11 @@ public class ProxyPlayer implements IPlayer {
         assertIsVoid(responseFromClient);
     }
 
-    // If the given JsonElement is not the string "void", throw an IllegalArgumentException
+    /**
+     * Asserts that a given Json message is the String "void".
+     *
+     * @param message A Json message received from the player.
+     */
     private static void assertIsVoid(JsonElement message) {
         if (!(message.isJsonPrimitive() && message.getAsString().equals("void"))) {
             throw new IllegalArgumentException(
