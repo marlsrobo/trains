@@ -13,7 +13,7 @@ https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84ad
 ProxyPlayer implements the IPlayer interface, which contains all of the methods that both the tournament manager and referee call on players.
 
 
-2. the unit tests for the `remote-proxy-player` 
+2. the unit tests for the `remote-proxy-player`   
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Other/UnitTests/UnitTestClasses/TestProxyPlayer.java#L42  
 
 
@@ -25,11 +25,15 @@ https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84ad
 
    - signing up enough players in at most two rounds of waiting  
 One round of waiting is factored out here:  
+
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L218-L249  
+
 But we did not factor out both waiting periods together, they are performed here:  
+
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L158-L162  
 
    - signing up a single player (connect, check name, create proxy)  
+
 Signing up one player is performed in a seperate thread that is running this clientHandler.  
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L251-L319
 
@@ -38,6 +42,7 @@ https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84ad
 https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/ProxyServer.java#L28
 
 	With one sentence, explain how it deals with all calls from the manager and referee on the server side.   
+
 ProxyServer will receive all calls from the manager and referee as JSON messages over the socket or input stream that it is given at construction. It then parses the JSON for the method name and arguments, and calls it on the underlying IPlayer.
 
 
