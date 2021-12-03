@@ -9,23 +9,36 @@ different design-implementation tasks. Point to each of the following:
 
 	With one sentence explain how it satisfies the player interface. 
 
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/ProxyPlayer.java#L27  
+ProxyPlayer implements the IPlayer interface, which contains all of the methods that both the tournament manager and referee call on players.
 
 
 2. the unit tests for the `remote-proxy-player` 
-
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Other/UnitTests/UnitTestClasses/TestProxyPlayer.java#L42  
 
 
 3. the `server` and especially the following two pieces of factored-out
-   functionality: 
+   functionality:   
+   
+The server is at:  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L33
 
-   - signing up enough players in at most two rounds of waiting 
-   - signing up a single player (connect, check name, create proxy)
+   - signing up enough players in at most two rounds of waiting  
+One round of waiting is factored out here:  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L218-L249  
+But we did not factor out both waiting periods together, they are performed here:  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L158-L162  
+
+   - signing up a single player (connect, check name, create proxy)  
+Signing up one player is performed in a seperate thread that is running this clientHandler.  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/Server.java#L251-L319
 
 
+4. the `remote-proxy-manager-referee`  
+https://github.ccs.neu.edu/CS4500-F21/mark-twain/blob/db2bdb60006cf37db9a02a84adc4d2b0c45e49d0/Trains/Remote/remote/ProxyServer.java#L28
 
-4. the `remote-proxy-manager-referee`
-
-	With one sentence, explain how it deals with all calls from the manager and referee on the server side.  
+	With one sentence, explain how it deals with all calls from the manager and referee on the server side.   
+ProxyServer will receive all calls from the manager and referee as JSON messages over the socket or input stream that it is given at construction. It then parses the JSON for the method name and arguments, and calls it on the underlying IPlayer.
 
 
 
