@@ -50,9 +50,6 @@ public class ProxyServer {
 
                 JsonArray args = methodInfo.get(1).getAsJsonArray();
                 JsonElement returnValue;
-
-                System.out.println(methodName);
-                System.out.println(args);
                 switch (methodName) {
                     case "start":
                         returnValue = parseAndRunStart(args);

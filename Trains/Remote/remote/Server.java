@@ -156,7 +156,6 @@ public class Server {
             .mapSelector(mapSelector)
             .build();
 
-        System.out.println("Starting");
         return manager.runTournament(players);
     }
 
