@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import action.AcquireConnectionAction;
+import action.DrawCardsAction;
 import game_state.IOpponentInfo;
 import game_state.IPlayerGameState;
 import game_state.OpponentInfo;
@@ -62,6 +64,8 @@ public class TestFromJsonConverter {
   Set<IRailConnection> rails;
   ITrainMap map;
 
+  IPlayerGameState gameState;
+
   @BeforeEach
   public void init() {
     boston = new City("Boston", 0.5, 0.25);
@@ -107,6 +111,34 @@ public class TestFromJsonConverter {
     rails.add(lincolnTexas);
 
     map = new TrainMap(cities, rails);
+
+    Destination lincolnWashington = new Destination(new UnorderedPair<ICity>(lincoln, washington));
+    Destination texasChicago = new Destination(texas, chicago);
+
+    Set<Destination> destinations = new HashSet<>();
+    destinations.add(lincolnWashington);
+    destinations.add(texasChicago);
+
+    Set<IRailConnection> acquiredConnections = new HashSet<>();
+    acquiredConnections.add(texasNYC);
+    acquiredConnections.add(bostonLincoln);
+
+    IPlayerData playerData = new PlayerData(new TrainsPlayerHand(TestTrainsReferee.TenCardDeckSupplier()),
+            10, destinations, acquiredConnections);
+
+    List<IOpponentInfo> opponentInfo = new ArrayList<>();
+
+    Set<IRailConnection> opponent1Connections = new HashSet<>();
+    opponent1Connections.add(bostonNYC);
+    IOpponentInfo opponent1 = new OpponentInfo(opponent1Connections);
+    opponentInfo.add(opponent1);
+
+    Set<IRailConnection> opponent2Connections = new HashSet<>();
+    opponent2Connections.add(washingtonNYC);
+    IOpponentInfo opponent2 = new OpponentInfo(opponent2Connections);
+    opponentInfo.add(opponent2);
+
+    gameState = new PlayerGameState(playerData, opponentInfo);
   }
 
   @Test
@@ -222,37 +254,8 @@ public class TestFromJsonConverter {
 
   @Test
   public void testPlayerStateFromJsonValidJson() {
-    Destination lincolnWashington = new Destination(new UnorderedPair<ICity>(lincoln, washington));
-    Destination texasChicago = new Destination(texas, chicago);
-
-    Set<Destination> destinations = new HashSet<>();
-    destinations.add(lincolnWashington);
-    destinations.add(texasChicago);
-
-    Set<IRailConnection> acquiredConnections = new HashSet<>();
-    acquiredConnections.add(texasNYC);
-    acquiredConnections.add(bostonLincoln);
-
-    IPlayerData playerData = new PlayerData(new TrainsPlayerHand(TestTrainsReferee.TenCardDeckSupplier()),
-            10, destinations, acquiredConnections);
-
-    List<IOpponentInfo> opponentInfo = new ArrayList<>();
-
-    Set<IRailConnection> opponent1Connections = new HashSet<>();
-    opponent1Connections.add(bostonNYC);
-    IOpponentInfo opponent1 = new OpponentInfo(opponent1Connections);
-    opponentInfo.add(opponent1);
-
-    Set<IRailConnection> opponent2Connections = new HashSet<>();
-    opponent2Connections.add(washingtonNYC);
-    IOpponentInfo opponent2 = new OpponentInfo(opponent2Connections);
-    opponentInfo.add(opponent2);
-
-    IPlayerGameState expected = new PlayerGameState(playerData, opponentInfo);
-
-    JsonObject jsonPlayerState = ToJsonConverter.playerGameStateToJson(expected);
-
-    assertTrue(samePlayerGameState(expected, FromJsonConverter.playerStateFromJson(jsonPlayerState, this.map)));
+    JsonObject jsonPlayerState = ToJsonConverter.playerGameStateToJson(this.gameState);
+    assertTrue(samePlayerGameState(this.gameState, FromJsonConverter.playerStateFromJson(jsonPlayerState, this.map)));
   }
 
   private boolean samePlayerGameState(IPlayerGameState gameState1, IPlayerGameState gameState2) {
@@ -318,28 +321,6 @@ public class TestFromJsonConverter {
     Set<Destination> destinations = new HashSet<>();
     destinations.add(lincolnWashington);
     destinations.add(texasChicago);
-
-    Set<IRailConnection> acquiredConnections = new HashSet<>();
-    acquiredConnections.add(texasNYC);
-    acquiredConnections.add(bostonLincoln);
-
-    IPlayerData playerData = new PlayerData(new TrainsPlayerHand(TestTrainsReferee.TenCardDeckSupplier()),
-            10, destinations, acquiredConnections);
-
-    List<IOpponentInfo> opponentInfo = new ArrayList<>();
-
-    Set<IRailConnection> opponent1Connections = new HashSet<>();
-    opponent1Connections.add(bostonNYC);
-    IOpponentInfo opponent1 = new OpponentInfo(opponent1Connections);
-    opponentInfo.add(opponent1);
-
-    Set<IRailConnection> opponent2Connections = new HashSet<>();
-    opponent2Connections.add(washingtonNYC);
-    IOpponentInfo opponent2 = new OpponentInfo(opponent2Connections);
-    opponentInfo.add(opponent2);
-
-    IPlayerGameState gameState = new PlayerGameState(playerData, opponentInfo);
-
     JsonObject jsonPlayerState = ToJsonConverter.playerGameStateToJson(gameState);
     JsonObject jsonPlayerData = jsonPlayerState.getAsJsonObject("this");
 
@@ -386,7 +367,33 @@ public class TestFromJsonConverter {
   }
 
   @Test
-  public void testOccupiedConnectionForPlayer() {
+  public void testCardsInHandFromJsonObjectValid() {
+    JsonObject cardsObject = new JsonObject();
+    cardsObject.add("blue", new JsonPrimitive(23));
+    cardsObject.add("white", new JsonPrimitive(0));
+    cardsObject.add("green", new JsonPrimitive(2));
+
+    Map<RailCard, Integer> expected = new HashMap<>();
+    expected.put(RailCard.BLUE, 23);
+    expected.put(RailCard.WHITE, 0);
+    expected.put(RailCard.GREEN, 2);
+    expected.put(RailCard.RED, 0);
+
+    assertEquals(expected, FromJsonConverter.cardsInHandFromJsonObject(cardsObject));
+  }
+
+  @Test
+  public void testOccupiedConnectionsFromJsonValid() {
+    Set<IRailConnection> expected = new HashSet<>();
+    expected.add(texasNYC);
+    expected.add(bostonLincoln);
+
+    assertEquals(expected,
+            FromJsonConverter.occupiedConnectionsFromJson(ToJsonConverter.playerGameStateToJson(this.gameState)));
+  }
+
+  @Test
+  public void testOccupiedConnectionForPlayerValid() {
     JsonArray opponent1 = new JsonArray();
     JsonArray opponent1Acquired1 = new JsonArray();
     opponent1Acquired1.add("Boston");
@@ -407,6 +414,35 @@ public class TestFromJsonConverter {
     opponent1Connections.add(lincolnTexas);
 
     assertEquals(opponent1Connections, FromJsonConverter.occupiedConnectionsForPlayer(opponent1));
+  }
+
+  @Test
+  public void testAcquiredConnectionFromJsonValid() {
+    JsonArray connection = new JsonArray();
+    connection.add("Boston");
+    connection.add("NYC");
+    connection.add("blue");
+    connection.add(new JsonPrimitive(3));
+    assertEquals(this.bostonNYC, FromJsonConverter.acquiredConnectionFromJson(connection));
+  }
+
+  @Test
+  public void testTurnActionFromJsonMoreCards() {
+    assertEquals(new DrawCardsAction(),
+            FromJsonConverter.turnActionFromJson(new JsonPrimitive("more cards")));
+  }
+
+  @Test
+  public void testTurnActionFromJsonAcquireConnection() {
+    JsonArray acquireConnection = new JsonArray();
+    acquireConnection.add("Boston");
+    acquireConnection.add("NYC");
+    acquireConnection.add("blue");
+    acquireConnection.add(new JsonPrimitive(3));
+
+    AcquireConnectionAction expected = new AcquireConnectionAction(this.bostonNYC);
+
+    assertEquals(expected, FromJsonConverter.turnActionFromJson(acquireConnection));
   }
 
 }
