@@ -350,7 +350,7 @@ public class FromJsonConverter {
         try {
             List<IOpponentInfo> opponentConnections = new ArrayList<>();
             for (JsonElement player : opponentJson.getAsJsonArray()) {
-                opponentConnections.add(new OpponentInfo(occupiedConnectionForPlayer(player)));
+                opponentConnections.add(new OpponentInfo(occupiedConnectionsForPlayer(player)));
             }
             return opponentConnections;
         }
@@ -435,35 +435,6 @@ public class FromJsonConverter {
     }
 
     /**
-     * Creates a map representing the number of each type of card in a hand from a Json array of
-     * cards.
-     *
-     * The Json input will be in the form:
-     * ["red", ..., "white"]
-     *
-     * @param cardsJson The cards in a hand as a Json array.
-     * @return The cards in a hand as a map from the type of card to the number of that card in the
-     * hand.
-     */
-    public static Map<RailCard, Integer> cardsInHandFromJsonArray(JsonArray cardsJson) {
-        try {
-            Map<RailCard, Integer> cardsInHand = new HashMap<>();
-            for (JsonElement cardJson : cardsJson) {
-                RailCard card = RailCardUtils.railCardFromLowercaseCard(cardJson.getAsString());
-                if (cardsInHand.containsKey(card)) {
-                    cardsInHand.put(card, cardsInHand.get(card) + 1);
-                } else {
-                    cardsInHand.put(card, 1);
-                }
-            }
-            return cardsInHand;
-        }
-        catch (Exception e) {
-            throw new IllegalArgumentException("Invalid JSON");
-        }
-    }
-
-    /**
      * Creates a map representing the number of each type of card in a hand from a Json object of
      * cards.
      *
@@ -507,7 +478,7 @@ public class FromJsonConverter {
     public static Set<IRailConnection> occupiedConnectionsFromJson(JsonObject playerStateJson) {
         try {
             return new HashSet<>(
-                occupiedConnectionForPlayer(
+                occupiedConnectionsForPlayer(
                     playerStateJson.getAsJsonObject("this").get("acquired").getAsJsonArray()));
         }
         catch (Exception e) {
@@ -525,7 +496,7 @@ public class FromJsonConverter {
      * @param player The connections occupied by a player as Json.
      * @return The connections occupied by a player as a set.
      */
-    public static Set<IRailConnection> occupiedConnectionForPlayer(JsonElement player) {
+    public static Set<IRailConnection> occupiedConnectionsForPlayer(JsonElement player) {
         try {
             Set<IRailConnection> occupiedConnections = new HashSet<>();
             for (JsonElement connection : player.getAsJsonArray()) {
