@@ -52,6 +52,7 @@ public class ProxyPlayer implements IPlayer {
      * @param message The Json message to send.
      */
     private void callMethodOnPlayer(JsonArray message) {
+        System.out.println(message);
         this.output.print(message);
         this.output.flush();
     }

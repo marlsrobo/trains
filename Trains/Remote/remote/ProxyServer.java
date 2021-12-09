@@ -90,6 +90,7 @@ public class ProxyServer {
             }
             startTime = System.currentTimeMillis();
 
+            System.out.println(returnValue);
             this.output.print(returnValue);
             this.output.flush();
         }
