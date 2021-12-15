@@ -44,8 +44,8 @@ public class TestProxyPlayer {
     @Test
     public void testStart() throws TimeoutException {
         ITrainMap defaultMap = createDefaultMap();
-        String input = ToJsonConverter.mapToJson(defaultMap).toString();
         String expectedOutput = "[\"start\",[true]]";
+        String input = ToJsonConverter.mapToJson(defaultMap).toString();
 
         InputStream inputStream = new ByteArrayInputStream(input.getBytes());
         OutputStream outputStream = new ByteArrayOutputStream();

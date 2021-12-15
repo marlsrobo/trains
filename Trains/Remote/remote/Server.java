@@ -153,6 +153,8 @@ public class Server {
         serverSocket.setSoTimeout(ONE_CONNECTION_WAITING_TIMEOUT_MILLIS);
         List<ClientHandler> signedUpPlayerHandlers = new ArrayList<>();
         List<Thread> signedUpPlayerThreads = new ArrayList<>();
+
+        // Counts the number of successful sign ups across all sign up threads
         SynchronizedCounter counter = new SynchronizedCounter();
 
         waitForPlayers(serverSocket, signedUpPlayerHandlers, signedUpPlayerThreads, counter);
@@ -171,7 +173,7 @@ public class Server {
         ITournamentManager manager = new SingleElimTournamentManager.SingleElimTournamentManagerBuilder()
             .deckProvider(this.deckSupplier)
             .destinationProvider(this.destinationProvider)
-            .mapSelector(mapSelector)
+            .mapSelector(this.mapSelector)
             .build();
 
         return manager.runTournament(players);

@@ -161,7 +161,6 @@ public class ProxyPlayer implements IPlayer {
 
         // get the turn action back from the player
         JsonElement turnAction = getMessageFromPlayer();
-        // TODO need to catch exception?
         return FromJsonConverter.turnActionFromJson(turnAction);
     }
 

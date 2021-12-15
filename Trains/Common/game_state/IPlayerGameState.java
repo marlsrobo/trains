@@ -17,7 +17,6 @@ import map.ITrainMap;
  * expected to track separately:
  * <ul>
  *     <li>The game map</li>
- *     <li>Destinations</li>
  * </ul>
  */
 public interface IPlayerGameState {

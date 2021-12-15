@@ -50,8 +50,8 @@ public class ProxyServer {
      */
     public void run() throws TimeoutException {
         JsonStreamParser parser = new JsonStreamParser(this.input);
-        long startTime = System.currentTimeMillis();
-        while (System.currentTimeMillis() - startTime < DISCONNECT_TIMEOUT_MILLIS) {
+        long lastMessageTime = System.currentTimeMillis();
+        while (System.currentTimeMillis() - lastMessageTime < DISCONNECT_TIMEOUT_MILLIS) {
             JsonArray methodInfo;
             try {
                 methodInfo = parser.next().getAsJsonArray();
@@ -88,7 +88,7 @@ public class ProxyServer {
                     throw new IllegalArgumentException(
                         String.format("Requested method %s does not exist", methodName));
             }
-            startTime = System.currentTimeMillis();
+            lastMessageTime = System.currentTimeMillis();
 
             System.out.println(returnValue);
             this.output.print(returnValue);

@@ -1,0 +1,41 @@
+["start",[true]]
+
+{
+  "width":800,
+  "height":800,
+  "cities":[["Detroit",[550,250]],
+            ["Seattle",[100,100]],
+            ["Chicago",[500,225]],
+            ["Miami",[700,700]],
+            ["San Francisco",[50,400]],
+            ["LA",[50,700]],
+            ["NYC",[600,250]],
+            ["Phoenix",[250,500]],
+            ["Salt Lake City",[250,300]],
+            ["Philadelphia",[600,300]],
+            ["Las Vegas",[200,400]],
+            ["Boston",[700,200]],
+            ["Houston",[400,700]],
+            ["DC",[600,350]]],
+  "connections":
+    {"Chicago":
+        {"Detroit":{"red":3}},
+     "DC":
+        {"NYC":{"red":4}},
+     "NYC":
+        {"Philadelphia":{"red":3}},
+     "LA":
+        {"Las Vegas":{"red":3},
+         "San Francisco":{"red":4},
+         "Phoenix":{"red":5}},
+     "Boston":
+        {"NYC":{"red":4}},
+     "Salt Lake City":
+        {"Seattle":{"red":5}},
+     "Detroit":
+        {"Houston":{"red":4},
+         "Philadelphia":{"red":5}},
+     "Miami":
+        {"NYC":{"red":5}}
+    }
+}
