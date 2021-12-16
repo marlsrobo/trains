@@ -147,12 +147,23 @@ public class TrainsReferee implements IReferee {
         }
     }
 
+    /**
+     * Runs the entire game from start to finish except for calculating the results. This method
+     * should be run only once.
+     * <p>
+     * After this method is called, the results of the game will be available by calling
+     * calculateGameEndReport.
+     */
     @Override
     public void playGame() {
         this.refereeGameState = this.initializeGame();
         this.runGame();
     }
 
+    /**
+     * Runs the main playing section of the game. Starting after the board and players have been
+     * setup, and ending when the game is over.
+     */
     private void runGame() {
         int numConsecutiveInsignificantTurns = 0;
         LinkedHashMap<String, IPlayer> remainingPlayers = this.remainingPlayersInOrder();
@@ -167,6 +178,16 @@ public class TrainsReferee implements IReferee {
         }
     }
 
+    /**
+     * Calculates the scores of each player in the game and ranks them by descending order of score.
+     * Players that were removed from the game due to cheating are including separately in the game
+     * report.
+     * <p>
+     * This method informs each player of their placement in the game. Player misbehavior during
+     * this communication will be ignored.
+     *
+     * @return the rankings, scores, and removed players as a GameEndReport.
+     */
     public GameEndReport calculateGameEndReport() {
         List<Integer> finalScoresInTurnOrder = this.refereeGameState.calculatePlayerScores();
         List<PlayerScore> gameReportScores = new ArrayList<>();
@@ -184,23 +205,33 @@ public class TrainsReferee implements IReferee {
         return report;
     }
 
+    /**
+     * Communicates to each player that was not removed for cheating whether they won the game.
+     * Player misbehavior when receiving this report is ignored.
+     *
+     * @param report The report of the resut of this game.
+     */
     private void informResult(GameEndReport report) {
         List<PlayerScore> playerRanking = report.getPlayerRanking();
         for (int i = 1; i < playerRanking.size(); i++) {
-            int finalI = i;
-            IPlayer player = this.playersInOrder.get(playerRanking.get(finalI).getPlayerName());
+            IPlayer player = this.playersInOrder.get(playerRanking.get(i).getPlayerName());
             boolean won = playerRanking.get(i).getScore() == playerRanking.get(0).getScore();
 
             Callable<Boolean> reportWinnerCallable = () -> {
                 player.winNotification(won);
                 return true;
             };
-            if (!this.removedPlayerNames.contains(playerRanking.get(finalI).getPlayerName())) {
+            if (!this.removedPlayerNames.contains(playerRanking.get(i).getPlayerName())) {
                 callFunction(reportWinnerCallable);
             }
         }
     }
 
+    /**
+     * Gets all players that were not removed from the game for cheating in turn order.
+     *
+     * @return A map from player name to the player that can be iterated over in turn order.
+     */
     private LinkedHashMap<String, IPlayer> remainingPlayersInOrder() {
         LinkedHashMap<String, IPlayer> remainingPlayers = new LinkedHashMap<>(this.playersInOrder);
         for (String name : this.removedPlayerNames) {
@@ -210,6 +241,8 @@ public class TrainsReferee implements IReferee {
     }
 
     /**
+     * Takes the turn for the next player in turn order.
+     *
      * @return boolean indicating whether turn was significant
      */
     private boolean takePlayerTurn(Iterator<Map.Entry<String, IPlayer>> turnOrder) {

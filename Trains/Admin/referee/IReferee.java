@@ -9,20 +9,23 @@ package referee;
  */
 public interface IReferee {
 
-  /**
-   * Single call to this method plays the entire game from start to finish and yields a report of
-   * the rankings, scores, and removed players.
-   *
-   * @return the rankings, scores, and removed players as a GameEndReport.
-   */
-  void playGame();
+    /**
+     * Runs the entire game from start to finish except for calculating the results. This method
+     * should be run only once.
+     * <p>
+     * After this method is called, the results of the game will be available by calling
+     * calculateGameEndReport.
+     */
+    void playGame();
 
-  /**
-   * Calculates the scores of each player in the game and ranks them by descending order of score.
-   * Players that were removed from the game due to cheating are including separately in the game report.
-   * @return a container for the game report
-   */
-  GameEndReport calculateGameEndReport();
+    /**
+     * Calculates the scores of each player in the game and ranks them by descending order of score.
+     * Players that were removed from the game due to cheating are including separately in the game
+     * report.
+     *
+     * @return the rankings, scores, and removed players as a GameEndReport.
+     */
+    GameEndReport calculateGameEndReport();
 
 
 }
