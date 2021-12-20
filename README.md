@@ -1,3 +1,3 @@
 # Trains - Software Development Fall 2021  
 Language: Java  
-Assignment Description: https://www.ccs.neu.edu/home/matthias/4500-f21/trains.html
+Assignment Description: https://felleisen.org/matthias/4500-f21/trains.html
