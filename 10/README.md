@@ -14,8 +14,8 @@ The JSON file containing three JSON values should be formatted as the following 
 
 A `Map` represents the logical and visual layout of a game map and is represented as:  
 `{ "width"       : Width,  
-  "height"      : Height,  
-  "cities"      : [City, ..., City],  
+  "height"      : Height,    
+  "cities"      : [City, ..., City],    
   "connections" : Connections }`
   
 
