@@ -13,9 +13,10 @@ The JSON file containing three JSON values should be formatted as the following 
 - an array of 250 `Color`s (representing cards)
 
 A `Map` represents the logical and visual layout of a game map and is represented as:  
-```{ "width"       : Width,  
+```
+{ "width"       : Width,  
   "height"      : Height,    
   "cities"      : [City, ..., City],    
-  "connections" : Connections }```
-  
-
+  "connections" : Connections }
+```
+ 
