@@ -70,8 +70,16 @@ MAP EXAMPLE:
   "connections" : {"Boston" : {"NYC" : {"blue" : 3,
                                         "red"  : 5},
                                "Phoenix" : {"green" : 4}},
-                   "Los Angeles" : {"Phoenix" : {"white" : 4}}}
-}
+                   "Los Angeles" : {"Phoenix" : {"white" : 4}}}}
 ```
 
 INTERPRETATION: The Map has a width of 200 pixels, and height of 350 pixels. The Map has 4 cities: Boston, NYC, Los Angeles, and Phoenix which have various locations on the Map. Between Boston and NYC, there are 2 direct connections: one that is blue and of length 3, while the other is red and of length 5. There is also a direct connection between Boston and Phoenix that is green of length 4. Finally, there is a direct connection between Los Angeles and Phoenix that is white of length 4.
+
+A `PlayerInstance` is a JSON array of two values: `[PlayerName, Strategy]` that represents a player in the game.
+
+A `PlayerName` is a non-empty string of maximally 50 lower or uppercase alphabetical chars ([A-Za-z])
+
+A `Strategy` represents that strategy that the player will use for the entirety of the game and is one of:
+- "Hold-10" : During setup, chooses two destination cards that come first in lexicographic order. For a turn, requests more cards if the player has 10 or fewer cards, otherwise attempts to acquire a connection.
+- "Buy-Now" : During setup, chooses two destination cards that come last in lexicographic order. For a turn, always tries to acquire a connection if possible, otherwise draws more cards.
+- "Cheat" : like "Buy-Now" but attempts to acquire a non-existent connection the very first time a player is granted a turn.
