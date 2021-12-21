@@ -31,7 +31,8 @@ A `Name` is a string satisfying the natural expression "[a-zA-Z0-9\\ \\.\\,]+" a
 A `Connections` specifies from where connections originate and end, and the colors and lengths of the connections. It is formatted as:
 ```
 { Name    : Target,
- ... }
+  ...,
+  Name    : Target}
 ```
 
 CONSTRAINT: Every `Name` must be a member of the `Name`s in the "cities" field and the domain name must be lexicographically before the range's name.
@@ -40,14 +41,16 @@ A `Target` specifies where a connection goes and their characteristics. It is fo
 
 ```
 { Name    : Segment,
- ... }
+  ...,
+  Name    : Segment}
 ```  
 
 A `Segment` specifies the length and color of a connection. It is formatted as:
 
 ```
 { Color   : Length,
-  ... }
+  ...,
+  Color   : Length}
 ```
 
 CONSTRAINT: The colors must be pairwise distinct.
