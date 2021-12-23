@@ -4,6 +4,19 @@
 
 In one command line window, run `xref`. You must feed JSON as input to the executable, and can be done so by adding `< Tests/json` where `json` is one of the example JSON inputs within the Tests folder.
 
+The output can be one of two JSON outputs:
+- the JSON string "error: not enough destinations" : there were not enough destinations in the Map to offer 5 destinations to each player for them to pick 2 from
+- the JSON representation of the result of running the game : a JSON array containing a `Ranking` (the order of players based on descending score) and a `Rank` (the names of cheating player)
+
+A `Ranking` is an array of `Rank`s where the ith array contains the `PlayerName`s of all ith-place finishers.  
+
+A `Rank` is a JSON array of `PlayerName`s sorted in descending lexicographic order.  
+
+EXAMPLE OUTPUT:  
+`[[["Mary"], ["Sarah", "Tyler"], ["Laura"]], ["Alice", "Bob", "Charlie"]]`
+
+INTERPRETATION: Mary was in first place, Sarah and Tyler were tied in second place, and Laura came in third. Alice, Bob, and Charlie were all marked as cheaters.
+
 ### JSON Input
 
 The JSON file containing three JSON values should be formatted as the following (in order):  
