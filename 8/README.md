@@ -1,5 +1,9 @@
 # Milestone 8 - The League - Xref  
 
+### What this Tests
+
+These integration tests ensure that the running of a single game of Trains works properly by expecting the correct output of a game which consists of the ranking of players, as well as a list of players who cheated.
+
 ### How to Run
 
 In one command line window, run `xref`. You must feed JSON as input to the executable, and can be done so by adding `< Tests/json` where `json` is one of the example JSON inputs within the Tests folder.
