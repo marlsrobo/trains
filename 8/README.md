@@ -12,8 +12,7 @@ A `Ranking` is an array of `Rank`s where the ith array contains the `PlayerName`
 
 A `Rank` is a JSON array of `PlayerName`s sorted in descending lexicographic order.  
 
-EXAMPLE OUTPUT:  
-`[[["Mary"], ["Sarah", "Tyler"], ["Laura"]], ["Alice", "Bob", "Charlie"]]`
+EXAMPLE OUTPUT: `[[["Mary"], ["Sarah", "Tyler"], ["Laura"]], ["Alice", "Bob", "Charlie"]]`
 
 INTERPRETATION: Mary was in first place, Sarah and Tyler were tied in second place, and Laura came in third. Alice, Bob, and Charlie were all marked as cheaters.
 
